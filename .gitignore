@@ -47,6 +47,10 @@ example
 *.iml
 .history
 
+# Claude Code local-only configuration
+.claude/settings.local.json
+CLAUDE.local.md
+
 # OMC runtime state
 .omc/*
 !.omc/skills/

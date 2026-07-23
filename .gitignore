@@ -45,6 +45,7 @@ example
 # IntelliJ IDEA / Android Studio
 .idea/
 *.iml
+.history
 
 # OMC runtime state
 .omc/*
@@ -56,3 +57,4 @@ example
 
 # Generated documentation previews
 site/
+

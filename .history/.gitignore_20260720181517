@@ -45,14 +45,3 @@ example
 # IntelliJ IDEA / Android Studio
 .idea/
 *.iml
-
-# OMC runtime state
-.omc/*
-!.omc/skills/
-!.omc/skills/**
-
-# Legacy OMX compatibility state
-.omx/
-
-# Generated documentation previews
-site/

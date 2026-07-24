@@ -323,6 +323,12 @@ If a native or Expo configuration change is required, explain the runtime and bu
 - Do not commit, push, merge, rebase, create a PR, close an Issue, or change remotes without explicit instruction.
 - Keep UI, API integration, generated types, configuration, documentation, and AI-tool changes logically separated when practical.
 - Never commit local environment files, OMC runtime state, personal settings, secrets, signing files, or user data.
+- Do not include references to Claude, AI, or automated tooling in the commit message or body.
+- Do not add a "Generated with Claude Code" signature.
+- Do not add a `Co-Authored-By: Claude` trailer.
+- Write commit messages concisely from the developer's perspective, describing the actual purpose of the change.
+- Keep each commit scoped to a single logical change.
+- Before committing, show the changed files and the proposed commit message to the user and get approval.
 
 ## Working Procedure
 

@@ -1,0 +1,325 @@
+openapi: 3.1.0
+info:
+  title: Naroom API
+  description: Naroom 모바일 앱을 위한 백엔드 API
+  version: v1
+servers:
+- url: /
+paths:
+  /api/v1/auth/refresh:
+    post:
+      tags:
+      - auth-controller
+      operationId: refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseRefreshResponse"
+  /api/v1/auth/logout:
+    post:
+      tags:
+      - auth-controller
+      operationId: logout
+      responses:
+        "204":
+          description: No Content
+  /api/v1/auth/kakao/login:
+    post:
+      tags:
+      - auth-controller
+      operationId: kakaoLogin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KakaoLoginRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseKakaoLoginResponse"
+  /api/v1/account/onboarding/complete:
+    post:
+      tags:
+      - account-controller
+      operationId: completeOnboarding
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OnboardingCompleteRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseOnboardingCompleteResponse"
+  /api/v1/health:
+    get:
+      tags:
+      - health-controller
+      operationId: health
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseHealthResponse"
+  /api/v1/auth/session:
+    get:
+      tags:
+      - auth-controller
+      operationId: session
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseSessionCheckResponse"
+components:
+  schemas:
+    RefreshRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          minLength: 1
+        installationKey:
+          type: string
+      required:
+      - refreshToken
+    ApiResponseRefreshResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/RefreshResponse"
+    RefreshResponse:
+      type: object
+      properties:
+        tokenType:
+          type: string
+        accessToken:
+          type: string
+        accessTokenExpiresAt:
+          type: string
+          format: date-time
+        refreshToken:
+          type: string
+        refreshTokenExpiresAt:
+          type: string
+          format: date-time
+        session:
+          $ref: "#/components/schemas/SessionSummary"
+    SessionSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        expiresAt:
+          type: string
+          format: date-time
+    DeviceInfo:
+      type: object
+      properties:
+        installationKey:
+          type: string
+        platform:
+          type: string
+        appVersion:
+          type: string
+    KakaoLoginRequest:
+      type: object
+      properties:
+        providerAccessToken:
+          type: string
+          minLength: 1
+        device:
+          $ref: "#/components/schemas/DeviceInfo"
+      required:
+      - device
+      - providerAccessToken
+    AccountSummary:
+      type: object
+      properties:
+        memberId:
+          type: string
+          format: uuid
+        displayName:
+          type: string
+        status:
+          type: string
+          enum:
+          - ACTIVE
+          - LOCKED
+          - PENDING_DELETION
+        onboardingCompletedAt:
+          type: string
+          format: date-time
+        version:
+          type: integer
+          format: int64
+    ApiResponseKakaoLoginResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/KakaoLoginResponse"
+    KakaoLoginResponse:
+      type: object
+      properties:
+        tokenType:
+          type: string
+        accessToken:
+          type: string
+        accessTokenExpiresAt:
+          type: string
+          format: date-time
+        refreshToken:
+          type: string
+        refreshTokenExpiresAt:
+          type: string
+          format: date-time
+        session:
+          $ref: "#/components/schemas/SessionSummary"
+        account:
+          $ref: "#/components/schemas/AccountSummary"
+        nextAction:
+          type: string
+          enum:
+          - COMPLETE_ONBOARDING
+          - ENTER_APP
+    ConsentRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - TERMS
+          - PRIVACY
+          - AI_PROCESSING
+        documentVersion:
+          type: string
+          minLength: 1
+        agreed:
+          type: boolean
+      required:
+      - agreed
+      - documentVersion
+      - type
+    NotificationPreferenceRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - WEEKLY_REFLECTION
+          - EXPERIMENT_MISSION
+          - DAILY_QUOTE
+        enabled:
+          type: boolean
+        dayOfWeek:
+          type: integer
+          format: int32
+          maximum: 7
+          minimum: 1
+        localTime:
+          type: string
+      required:
+      - enabled
+      - type
+    OnboardingCompleteRequest:
+      type: object
+      properties:
+        version:
+          type: integer
+          format: int64
+        displayName:
+          type: string
+          minLength: 1
+        timezone:
+          type: string
+          minLength: 1
+        locale:
+          type: string
+          minLength: 1
+        consents:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConsentRequest"
+          minItems: 1
+        notificationPreferences:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationPreferenceRequest"
+      required:
+      - consents
+      - displayName
+      - locale
+      - timezone
+      - version
+    ApiResponseOnboardingCompleteResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/OnboardingCompleteResponse"
+    OnboardingCompleteResponse:
+      type: object
+      properties:
+        account:
+          $ref: "#/components/schemas/AccountSummary"
+        nextAction:
+          type: string
+          enum:
+          - COMPLETE_ONBOARDING
+          - ENTER_APP
+    ApiResponseHealthResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/HealthResponse"
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+    ApiResponseSessionCheckResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/SessionCheckResponse"
+    SessionCheckResponse:
+      type: object
+      properties:
+        authenticated:
+          type: boolean
+        session:
+          $ref: "#/components/schemas/SessionSummary"
+        account:
+          $ref: "#/components/schemas/AccountSummary"
+        nextAction:
+          type: string
+          enum:
+          - COMPLETE_ONBOARDING
+          - ENTER_APP
+  securitySchemes:
+    bearerAuth:
+      type: http
+      name: bearerAuth
+      scheme: bearer
+      bearerFormat: JWT

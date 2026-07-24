@@ -1,0 +1,167 @@
+import Constants from "expo-constants";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+
+import { completeOnboarding, getSession, type AccountSummary } from "@/api";
+import { ApiError } from "@/api/errors";
+import type { components } from "@/api/generated/openapi.types";
+import type { DeviceInfo } from "@/api/types";
+import {
+  clearInvalidSession,
+  getValidAccessToken,
+  loginWithKakao,
+  logout as logoutSession,
+} from "@/auth/authManager";
+import { getDevicePlatform, getOrCreateInstallationKey } from "@/auth/deviceIdentity";
+import { requestKakaoProviderAccessToken } from "@/auth/kakaoNativeLogin";
+import { logger } from "@/lib/logger";
+
+// authentication.md "앱 시작 판정 순서"의 4단계 분기와 1:1로 대응한다.
+export type AuthState =
+  | { status: "loading" }
+  | { status: "unauthenticated" }
+  | { status: "account_locked" }
+  | { status: "account_pending_deletion"; scheduledDeletionAt?: string }
+  | { status: "onboarding_required"; account: AccountSummary }
+  | { status: "active"; account: AccountSummary }
+  // 세션 확인 자체가 실패한 경우(오프라인 등) — 로컬 세션은 지우지 않고 재시도를 허용한다.
+  | { status: "check_failed" };
+
+interface AuthContextValue {
+  state: AuthState;
+  loginWithKakao: () => Promise<void>;
+  completeOnboarding: (
+    request: components["schemas"]["OnboardingCompleteRequest"],
+  ) => Promise<void>;
+  logout: () => Promise<void>;
+  retry: () => void;
+}
+
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+async function resolveEntryState(): Promise<AuthState> {
+  const accessToken = await getValidAccessToken();
+  if (!accessToken) {
+    logger.debug("auth.entry", "no valid local token; entering unauthenticated");
+    return { status: "unauthenticated" };
+  }
+
+  try {
+    const session = await getSession(accessToken);
+    logger.debug("auth.entry", "session check resolved", { nextAction: session.nextAction });
+    return session.nextAction === "COMPLETE_ONBOARDING"
+      ? { status: "onboarding_required", account: session.account }
+      : { status: "active", account: session.account };
+  } catch (error) {
+    if (error instanceof ApiError) {
+      if (error.code === "ACCOUNT_LOCKED") {
+        return { status: "account_locked" };
+      }
+      if (error.code === "ACCOUNT_PENDING_DELETION") {
+        return {
+          status: "account_pending_deletion",
+          scheduledDeletionAt: error.context?.scheduledDeletionAt as string | undefined,
+        };
+      }
+      // 재발급까지 마친 Access Token이 세션 확인에서만 거부된 경우(세션 폐기 등) — 다시 쓸 수 없는
+      // 로컬 세션을 남겨두지 않고 재로그인으로 유도한다.
+      logger.warn("auth.entry", "session check rejected; clearing local session", { code: error.code });
+      await clearInvalidSession();
+      return { status: "unauthenticated" };
+    }
+    logger.error("auth.entry", "session check failed with a non-API error (offline?)");
+    return { status: "check_failed" };
+  }
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [state, setState] = useState<AuthState>({ status: "loading" });
+  const [retryToken, setRetryToken] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    resolveEntryState().then((next) => {
+      if (!cancelled) {
+        setState(next);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [retryToken]);
+
+  const handleLoginWithKakao = useCallback(async () => {
+    try {
+      const providerAccessToken = await requestKakaoProviderAccessToken();
+      const device: DeviceInfo = {
+        installationKey: await getOrCreateInstallationKey(),
+        platform: getDevicePlatform(),
+        appVersion: Constants.expoConfig?.version ?? "0.0.0",
+      };
+      const result = await loginWithKakao(providerAccessToken, device);
+      logger.debug("auth.login", "kakao login succeeded", { nextAction: result.nextAction });
+      setState(
+        result.nextAction === "COMPLETE_ONBOARDING"
+          ? { status: "onboarding_required", account: result.account }
+          : { status: "active", account: result.account },
+      );
+    } catch (error) {
+      logger.error("auth.login", "kakao login failed", {
+        code: error instanceof ApiError ? error.code : undefined,
+        name: error instanceof Error ? error.name : undefined,
+      });
+      throw error;
+    }
+  }, []);
+
+  const handleCompleteOnboarding = useCallback(
+    async (request: components["schemas"]["OnboardingCompleteRequest"]) => {
+      try {
+        const accessToken = await getValidAccessToken();
+        if (!accessToken) {
+          setState({ status: "unauthenticated" });
+          return;
+        }
+        const result = await completeOnboarding(accessToken, request);
+        logger.debug("auth.onboarding", "onboarding complete succeeded");
+        setState({ status: "active", account: result.account });
+      } catch (error) {
+        logger.error("auth.onboarding", "onboarding complete failed", {
+          code: error instanceof ApiError ? error.code : undefined,
+        });
+        throw error;
+      }
+    },
+    [],
+  );
+
+  const handleLogout = useCallback(async () => {
+    await logoutSession();
+    setState({ status: "unauthenticated" });
+  }, []);
+
+  const retry = useCallback(() => {
+    setState({ status: "loading" });
+    setRetryToken((token) => token + 1);
+  }, []);
+
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      state,
+      loginWithKakao: handleLoginWithKakao,
+      completeOnboarding: handleCompleteOnboarding,
+      logout: handleLogout,
+      retry,
+    }),
+    [state, handleLoginWithKakao, handleCompleteOnboarding, handleLogout, retry],
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth(): AuthContextValue {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+}

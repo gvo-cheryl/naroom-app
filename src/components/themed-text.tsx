@@ -1,10 +1,21 @@
 import { Platform, StyleSheet, Text, type TextProps } from 'react-native';
 
-import { Fonts, ThemeColor } from '@/constants/theme';
+import { AppFonts, Fonts, ThemeColor } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 export type ThemedTextProps = TextProps & {
-  type?: 'default' | 'title' | 'small' | 'smallBold' | 'subtitle' | 'link' | 'linkPrimary' | 'code';
+  type?:
+    | 'default'
+    | 'title'
+    | 'small'
+    | 'smallBold'
+    | 'subtitle'
+    | 'link'
+    | 'linkPrimary'
+    | 'code'
+    | 'eyebrow'
+    | 'heading'
+    | 'wordmark';
   themeColor?: ThemeColor;
 };
 
@@ -23,6 +34,9 @@ export function ThemedText({ style, type = 'default', themeColor, ...rest }: The
         type === 'link' && styles.link,
         type === 'linkPrimary' && styles.linkPrimary,
         type === 'code' && styles.code,
+        type === 'eyebrow' && styles.eyebrow,
+        type === 'heading' && styles.heading,
+        type === 'wordmark' && styles.wordmark,
         style,
       ]}
       {...rest}
@@ -69,5 +83,25 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.mono,
     fontWeight: Platform.select({ android: 700 }) ?? 500,
     fontSize: 12,
+  },
+  // 프로토타입 .eyebrow
+  eyebrow: {
+    fontSize: 11,
+    letterSpacing: 1.4,
+  },
+  // 프로토타입 h2.sc
+  heading: {
+    fontFamily: AppFonts.serifRegular,
+    fontSize: 22,
+    lineHeight: 30,
+    fontWeight: '400',
+    letterSpacing: -0.2,
+  },
+  // 프로토타입 A01/A02의 "나로움" 워드마크
+  wordmark: {
+    fontFamily: AppFonts.serifRegular,
+    fontSize: 34,
+    letterSpacing: 2,
+    fontWeight: '400',
   },
 });

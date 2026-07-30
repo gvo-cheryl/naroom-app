@@ -2,10 +2,13 @@ import { apiFetch } from "./client";
 import type { components } from "./generated/openapi.types";
 import {
   requireData,
+  toEntryAiReflectionSummary,
+  toEntrySelfReflectionSummary,
   toEntrySummary,
   toEntryTagSummary,
   toTagSummary,
-  type AiJobStatus,
+  type EntryAiReflectionSummary,
+  type EntrySelfReflectionSummary,
   type EntrySummary,
   type EntryTagSummary,
   type EntryType,
@@ -94,13 +97,30 @@ export async function rejectEntryTag(accessToken: string, entryId: string, entry
   );
 }
 
-// 개별 기록 AI 정리(키워드 후보 추출 포함)의 진행 상태만 필요해서 상태만 좁혀 반환한다.
-export async function getAiReflectionStatus(accessToken: string, entryId: string): Promise<AiJobStatus | null> {
-  const data = await apiFetch<components["schemas"]["EntryAiReflectionResponse"]>(
-    `/api/v1/record/entries/${entryId}/ai-reflection`,
-    { accessToken },
+export async function getEntryAiReflection(accessToken: string, entryId: string): Promise<EntryAiReflectionSummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["EntryAiReflectionResponse"]>(
+      `/api/v1/record/entries/${entryId}/ai-reflection`,
+      { accessToken },
+    ),
+    "getEntryAiReflection",
   );
-  return data?.status ?? null;
+  return toEntryAiReflectionSummary(data, "getEntryAiReflection");
+}
+
+export async function createSelfReflection(
+  accessToken: string,
+  entryId: string,
+  request: { content: string; aiReflectionId?: string },
+): Promise<EntrySelfReflectionSummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["EntrySelfReflectionResponse"]>(
+      `/api/v1/record/entries/${entryId}/reflections`,
+      { method: "POST", body: request, accessToken },
+    ),
+    "createSelfReflection",
+  );
+  return toEntrySelfReflectionSummary(data, "createSelfReflection");
 }
 
 export async function getSystemTags(accessToken: string): Promise<TagSummary[]> {

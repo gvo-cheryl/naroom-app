@@ -99,7 +99,7 @@ export default function RecordWriteScreen() {
         promptSnapshot: recordType.id === 'PROMPT' ? prompt : undefined,
       });
       await publishEntry(accessToken, created.id);
-      router.replace({ pathname: '/record/tags', params: { entryId: created.id } });
+      router.replace({ pathname: '/record/reflection', params: { entryId: created.id } });
     } catch (error) {
       logger.error('record.write', 'failed to save entry', {
         code: error instanceof ApiError ? error.code : undefined,

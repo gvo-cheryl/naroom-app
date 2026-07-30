@@ -12,6 +12,7 @@ export type TagCategory = components["schemas"]["TagResponse"]["category"] & str
 export type TagScope = components["schemas"]["TagResponse"]["scope"] & string;
 export type EntryTagState = components["schemas"]["EntryTagResponse"]["state"] & string;
 export type AiJobStatus = components["schemas"]["EntryAiReflectionResponse"]["status"] & string;
+export type AiFeedbackHelpfulness = components["schemas"]["AiFeedbackSubmitRequest"]["helpfulness"] & string;
 
 export interface AccountSummary {
   memberId: string;
@@ -97,6 +98,30 @@ export interface QuoteSummary {
   sourceName: string | null;
 }
 
+export interface EntryAiReflectionSummary {
+  status: AiJobStatus | null;
+  generationRunId: string | null;
+  reflectionText: string | null;
+  reflectionQuestion: string | null;
+}
+
+export interface AiFeedbackSummary {
+  id: string;
+  generationRunId: string;
+  helpfulness: AiFeedbackHelpfulness;
+  applyLongTerm: boolean | null;
+}
+
+export interface AiFeedbackReportSummary {
+  id: string;
+  generationRunId: string;
+}
+
+export interface EntrySelfReflectionSummary {
+  id: string;
+  content: string;
+}
+
 // 성공 응답의 data가 계약대로라면 항상 있어야 하는데 비어 있으면, 조용히 넘어가지 않고
 // 바로 알 수 있는 에러로 실패시킨다(뒤에서 undefined 관련 버그로 나타나는 것보다 낫다).
 export function requireData<T>(data: T | undefined, context: string): T {
@@ -176,6 +201,57 @@ export function toEntryTagSummary(
     id: requireField(entryTag.id, "entryTag.id", context),
     tag: toTagSummary(entryTag.tag, `${context}.tag`),
     state: requireField(entryTag.state, "entryTag.state", context),
+  };
+}
+
+// EntryAiReflectionResponse는 AI 작업이 아직 생성되지 않았을 때 필드가 전부 비어 있을 수 있는
+// 유일한 응답이라(entry.aiProcessingAllowed=false 등), 다른 to*Summary와 달리 raw 자체가
+// undefined일 때만 예외를 던지고 나머지 필드는 전부 null 허용으로 다룬다.
+export function toEntryAiReflectionSummary(
+  raw: components["schemas"]["EntryAiReflectionResponse"] | undefined,
+  context: string,
+): EntryAiReflectionSummary {
+  const reflection = requireField(raw, "reflection", context);
+  return {
+    status: reflection.status ?? null,
+    generationRunId: reflection.generationRunId ?? null,
+    reflectionText: reflection.reflectionText ?? null,
+    reflectionQuestion: reflection.reflectionQuestion ?? null,
+  };
+}
+
+export function toAiFeedbackSummary(
+  raw: components["schemas"]["AiFeedbackResponse"] | undefined,
+  context: string,
+): AiFeedbackSummary {
+  const feedback = requireField(raw, "feedback", context);
+  return {
+    id: requireField(feedback.id, "feedback.id", context),
+    generationRunId: requireField(feedback.generationRunId, "feedback.generationRunId", context),
+    helpfulness: requireField(feedback.helpfulness, "feedback.helpfulness", context),
+    applyLongTerm: feedback.applyLongTerm ?? null,
+  };
+}
+
+export function toAiFeedbackReportSummary(
+  raw: components["schemas"]["AiFeedbackReportResponse"] | undefined,
+  context: string,
+): AiFeedbackReportSummary {
+  const report = requireField(raw, "report", context);
+  return {
+    id: requireField(report.id, "report.id", context),
+    generationRunId: requireField(report.generationRunId, "report.generationRunId", context),
+  };
+}
+
+export function toEntrySelfReflectionSummary(
+  raw: components["schemas"]["EntrySelfReflectionResponse"] | undefined,
+  context: string,
+): EntrySelfReflectionSummary {
+  const reflection = requireField(raw, "reflection", context);
+  return {
+    id: requireField(reflection.id, "reflection.id", context),
+    content: requireField(reflection.content, "reflection.content", context),
   };
 }
 

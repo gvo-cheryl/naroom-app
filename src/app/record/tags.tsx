@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -14,18 +14,12 @@ import {
   attachEntryTag,
   confirmEntryTag,
   createMyTag,
-  getAiReflectionStatus,
   getEntryTags,
   getSystemTags,
   rejectEntryTag,
 } from "@/api";
 import { ApiError } from "@/api/errors";
-import type {
-  AiJobStatus,
-  EntryTagSummary,
-  TagCategory,
-  TagSummary,
-} from "@/api/types";
+import type { EntryTagSummary, TagCategory, TagSummary } from "@/api/types";
 import { getValidAccessToken } from "@/auth/authManager";
 import { RecordScreenHeader } from "@/components/record-screen-header";
 import { ThemedText } from "@/components/themed-text";
@@ -33,6 +27,7 @@ import { ThemedView } from "@/components/themed-view";
 import { AppButton } from "@/components/ui/app-button";
 import { TAG_CATEGORY_LABELS } from "@/constants/record";
 import { MaxContentWidth, Radius, Spacing } from "@/constants/theme";
+import { AI_REFLECTION_TERMINAL_STATUSES, useAiReflectionPoll } from "@/hooks/use-ai-reflection-poll";
 import { useTheme } from "@/hooks/use-theme";
 import { logger } from "@/lib/logger";
 
@@ -44,15 +39,6 @@ const CATEGORY_ORDER: TagCategory[] = [
   "ACTION",
   "RECOVERY",
   "CUSTOM",
-];
-
-const AI_POLL_INTERVAL_MS = 2000;
-const AI_POLL_MAX_ATTEMPTS = 15;
-const AI_TERMINAL_STATUSES: AiJobStatus[] = [
-  "COMPLETED",
-  "BLOCKED",
-  "SAFETY_SUPPORT",
-  "FAILED",
 ];
 
 function groupByCategory<T>(
@@ -79,12 +65,13 @@ export default function RecordTagsScreen() {
   const [loading, setLoading] = useState(true);
   const [attached, setAttached] = useState<EntryTagSummary[]>([]);
   const [systemTags, setSystemTags] = useState<TagSummary[]>([]);
-  const [aiStatus, setAiStatus] = useState<AiJobStatus | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [newTagName, setNewTagName] = useState("");
   const [addingTag, setAddingTag] = useState(false);
-  const [pollTimedOut, setPollTimedOut] = useState(false);
-  const pollAttempts = useRef(0);
+
+  const { reflection, loading: aiLoading, timedOut: pollTimedOut } = useAiReflectionPoll(entryId);
+  const aiStatus = reflection?.status ?? null;
+  const aiStillWaiting = aiLoading || (aiStatus !== null && !AI_REFLECTION_TERMINAL_STATUSES.includes(aiStatus));
 
   useEffect(() => {
     let cancelled = false;
@@ -95,15 +82,13 @@ export default function RecordTagsScreen() {
           router.replace("/(auth)/login");
           return;
         }
-        const [entryTags, tags, status] = await Promise.all([
+        const [entryTags, tags] = await Promise.all([
           getEntryTags(accessToken, entryId),
           getSystemTags(accessToken),
-          getAiReflectionStatus(accessToken, entryId),
         ]);
         if (!cancelled) {
           setAttached(entryTags.filter((t) => t.state !== "REJECTED"));
           setSystemTags(tags);
-          setAiStatus(status);
         }
       } catch (error) {
         logger.error("record.tags", "failed to load tags", {
@@ -123,52 +108,36 @@ export default function RecordTagsScreen() {
     };
   }, [entryId]);
 
-  // AI가 아직 처리 중이면 키워드 후보가 늦게 도착하므로, 끝날 때까지 잠시 이 화면에서 폴링한다.
-  // 기다리지 않고 나가도(아래 "확인했어요") 기록은 이미 저장·발행된 뒤라 안전하다.
+  // AI 정리가 끝나면(useAiReflectionPoll) 그때 만들어진 키워드 후보(SUGGESTED)를 다시 불러온다.
   useEffect(() => {
-    if (loading || !aiStatus || AI_TERMINAL_STATUSES.includes(aiStatus)) {
-      return;
-    }
-    if (pollAttempts.current >= AI_POLL_MAX_ATTEMPTS) {
-      setPollTimedOut(true);
+    if (!aiStatus || !AI_REFLECTION_TERMINAL_STATUSES.includes(aiStatus)) {
       return;
     }
     let cancelled = false;
-    const timer = setTimeout(async () => {
-      pollAttempts.current += 1;
+    (async () => {
       try {
         const accessToken = await getValidAccessToken();
         if (!accessToken || cancelled) {
           return;
         }
-        const status = await getAiReflectionStatus(accessToken, entryId);
-        if (cancelled) {
-          return;
-        }
-        setAiStatus(status);
-        if (status && AI_TERMINAL_STATUSES.includes(status)) {
-          const entryTags = await getEntryTags(accessToken, entryId);
-          if (!cancelled) {
-            setAttached(entryTags.filter((t) => t.state !== "REJECTED"));
-          }
+        const entryTags = await getEntryTags(accessToken, entryId);
+        if (!cancelled) {
+          setAttached(entryTags.filter((t) => t.state !== "REJECTED"));
         }
       } catch (error) {
-        logger.error("record.tags", "failed to poll ai reflection status", {
+        logger.error("record.tags", "failed to refresh tags after ai completion", {
           code: error instanceof ApiError ? error.code : undefined,
         });
       }
-    }, AI_POLL_INTERVAL_MS);
+    })();
     return () => {
       cancelled = true;
-      clearTimeout(timer);
     };
-  }, [loading, aiStatus, entryId]);
+  }, [aiStatus, entryId]);
 
   const attachedTagIds = new Set(attached.map((t) => t.tag.id));
   const suggested = attached.filter((t) => t.state === "SUGGESTED");
   const confirmed = attached.filter((t) => t.state !== "SUGGESTED");
-  const aiWaiting =
-    aiStatus !== null && !AI_TERMINAL_STATUSES.includes(aiStatus);
 
   const handleConfirmSuggestion = async (entryTag: EntryTagSummary) => {
     setAttached((prev) =>
@@ -270,7 +239,7 @@ export default function RecordTagsScreen() {
             />
           ) : (
             <>
-              {(aiWaiting || suggested.length > 0) && (
+              {(aiStillWaiting || suggested.length > 0) && (
                 <View style={styles.section}>
                   <ThemedText type="small" themeColor="textTertiary">
                     나로움이 찾은 키워드

@@ -4,6 +4,198 @@
  */
 
 export interface paths {
+    "/api/v1/lifetime/personal-summaries/current": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getCurrentPersonalSummary"];
+        put: operations["updateCurrentPersonalSummary"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/checkin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getCheckIn"];
+        put: operations["upsertCheckIn"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ai/generation-runs/{generationRunId}/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["submitFeedback"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/record/tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createMyTag"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/record/entries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getEntries"];
+        put?: never;
+        post: operations["createEntry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/record/entries/{entryId}/tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getEntryTags"];
+        put?: never;
+        post: operations["attachEntryTag"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/record/entries/{entryId}/tags/{entryTagId}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["rejectEntryTag"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/record/entries/{entryId}/tags/{entryTagId}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["confirmEntryTag"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/record/entries/{entryId}/reflections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getReflections"];
+        put?: never;
+        post: operations["createReflection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/record/entries/{entryId}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["publishEntry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lifetime/period-reflections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createPeriodReflection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/content/quotes/{quoteId}/save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["saveQuote"];
+        delete: operations["unsaveQuote"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/refresh": {
         parameters: {
             query?: never;
@@ -52,6 +244,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/ai/generation-runs/{generationRunId}/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["reportGenerationRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/account/onboarding/complete": {
         parameters: {
             query?: never;
@@ -68,6 +276,246 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/record/entries/{entryId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getEntry"];
+        put?: never;
+        post?: never;
+        delete: operations["deleteEntry"];
+        options?: never;
+        head?: never;
+        patch: operations["updateEntry"];
+        trace?: never;
+    };
+    "/api/v1/record/entries/{entryId}/reflections/{reflectionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["updateReflection"];
+        trace?: never;
+    };
+    "/api/v1/record/entries/{entryId}/ai-processing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["updateAiProcessing"];
+        trace?: never;
+    };
+    "/api/v1/ai/generation-runs/{generationRunId}/feedback/long-term": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["confirmLongTermApplication"];
+        trace?: never;
+    };
+    "/api/v1/record/tags/system": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getSystemTags"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/record/tags/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getMyTags"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/record/tags/emotion-topics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getEmotionTagTopics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/record/entries/{entryId}/ai-reflection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getAiReflectionStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lifetime/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getTimeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lifetime/personal-summaries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPersonalSummaryHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lifetime/period-reflections/{periodReflectionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPeriodReflection"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lifetime/calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getCalendar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lifetime/analytics/tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getTagDistribution"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lifetime/analytics/tags/{tagId}/entries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getEntriesByTag"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lifetime/analytics/emotion-energy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getEmotionEnergyTrend"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health": {
         parameters: {
             query?: never;
@@ -76,6 +524,102 @@ export interface paths {
             cookie?: never;
         };
         get: operations["health"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/content/topics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getTopics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/content/topics/{topicId}/quotes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getQuotesByTopic"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/content/quotes/{quoteId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getQuote"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/content/quotes/today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getTodayQuote"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/content/quotes/saved": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getSavedQuotes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/checkin/today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getTodayCheckIn"];
         put?: never;
         post?: never;
         delete?: never;
@@ -104,6 +648,219 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        PersonalSummaryUpdateRequest: {
+            content: string;
+        };
+        ApiResponsePersonalSummaryResponse: {
+            data?: components["schemas"]["PersonalSummaryResponse"];
+        };
+        PersonalSummaryResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            scope?: "CURRENT_SELF" | "WEEKLY" | "MONTHLY" | "QUARTERLY" | "EXPERIMENT";
+            content?: string;
+            archived?: boolean;
+            /** Format: date-time */
+            archivedAt?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        CheckInUpsertRequest: {
+            /** Format: date */
+            checkInDate: string;
+            /** Format: int32 */
+            emotionIntensity?: number;
+            /** Format: int32 */
+            energyLevel?: number;
+            memorableEvent?: string;
+            gratitudeNote?: string;
+            currentNeed?: string;
+            freeNote?: string;
+            emotionTagIds?: string[];
+        };
+        ApiResponseCheckInResponse: {
+            data?: components["schemas"]["CheckInResponse"];
+        };
+        CheckInResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            entryId?: string;
+            /** Format: date */
+            checkInDate?: string;
+            /** Format: int32 */
+            emotionIntensity?: number;
+            /** Format: int32 */
+            energyLevel?: number;
+            memorableEvent?: string;
+            gratitudeNote?: string;
+            currentNeed?: string;
+            freeNote?: string;
+            emotions?: components["schemas"]["TagResponse"][];
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            /** Format: int64 */
+            version?: number;
+        };
+        TagResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            scope?: "SYSTEM" | "USER";
+            /** @enum {string} */
+            category?: "EMOTION" | "SITUATION" | "NEED" | "VALUE" | "ACTION" | "RECOVERY" | "CUSTOM";
+            name?: string;
+        };
+        AiFeedbackSubmitRequest: {
+            /** @enum {string} */
+            helpfulness: "HELPFUL" | "SOMEWHAT_UNHELPFUL" | "UNHELPFUL";
+            reasonCode?: string;
+            customReason?: string;
+        };
+        AiFeedbackResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            generationRunId?: string;
+            /** @enum {string} */
+            helpfulness?: "HELPFUL" | "SOMEWHAT_UNHELPFUL" | "UNHELPFUL";
+            reasonCode?: string;
+            customReason?: string;
+            applyLongTerm?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        ApiResponseAiFeedbackResponse: {
+            data?: components["schemas"]["AiFeedbackResponse"];
+        };
+        UserTagCreateRequest: {
+            /** @enum {string} */
+            category: "EMOTION" | "SITUATION" | "NEED" | "VALUE" | "ACTION" | "RECOVERY" | "CUSTOM";
+            name: string;
+        };
+        ApiResponseTagResponse: {
+            data?: components["schemas"]["TagResponse"];
+        };
+        EntryCreateRequest: {
+            /** @enum {string} */
+            entryType: "FREE" | "CHECK_IN" | "GRATITUDE" | "EMOTION" | "PROMPT" | "QUOTE_REFLECTION" | "EXPERIMENT_MISSION" | "EXPERIMENT_REVIEW" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "SELF_SUMMARY";
+            title?: string;
+            body?: string;
+            /** Format: date */
+            recordDate: string;
+            /** Format: uuid */
+            parentEntryId?: string;
+            /** Format: uuid */
+            quoteId?: string;
+            promptSnapshot?: string;
+        };
+        ApiResponseEntryResponse: {
+            data?: components["schemas"]["EntryResponse"];
+        };
+        EntryResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            entryType?: "FREE" | "CHECK_IN" | "GRATITUDE" | "EMOTION" | "PROMPT" | "QUOTE_REFLECTION" | "EXPERIMENT_MISSION" | "EXPERIMENT_REVIEW" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "SELF_SUMMARY";
+            /** @enum {string} */
+            status?: "DRAFT" | "PUBLISHED";
+            title?: string;
+            body?: string;
+            /** Format: date */
+            recordDate?: string;
+            /** Format: uuid */
+            parentEntryId?: string;
+            /** Format: uuid */
+            quoteId?: string;
+            aiProcessingAllowed?: boolean;
+            /** Format: date-time */
+            publishedAt?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            /** Format: int64 */
+            version?: number;
+        };
+        EntryTagAttachRequest: {
+            /** Format: uuid */
+            tagId: string;
+        };
+        ApiResponseEntryTagResponse: {
+            data?: components["schemas"]["EntryTagResponse"];
+        };
+        EntryTagResponse: {
+            /** Format: uuid */
+            id?: string;
+            tag?: components["schemas"]["TagResponse"];
+            /** @enum {string} */
+            source?: "USER" | "AI" | "CHECK_IN" | "REFLECTION" | "EXPERIMENT";
+            /** @enum {string} */
+            state?: "SUGGESTED" | "CONFIRMED" | "REJECTED" | "SYSTEM";
+            /** @enum {string} */
+            initiatedBy?: "USER_SELECTED" | "USER_ENTERED" | "AI_INFERRED";
+        };
+        EntrySelfReflectionRequest: {
+            content: string;
+            /** Format: uuid */
+            aiReflectionId?: string;
+        };
+        ApiResponseEntrySelfReflectionResponse: {
+            data?: components["schemas"]["EntrySelfReflectionResponse"];
+        };
+        EntrySelfReflectionResponse: {
+            /** Format: uuid */
+            id?: string;
+            content?: string;
+            /** Format: uuid */
+            aiReflectionId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        PeriodReflectionCreateRequest: {
+            /** @enum {string} */
+            featureType: "ENTRY_REFLECTION" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "CONVERSATION_REPLY" | "CONVERSATION_SUMMARY";
+        };
+        ApiResponsePeriodReflectionResponse: {
+            data?: components["schemas"]["PeriodReflectionResponse"];
+        };
+        PeriodReflectionInsights: {
+            repeatedEmotionsAndSituations?: string[];
+            difficultMoments?: string[];
+            gratefulMoments?: string[];
+            triedResponses?: string[];
+            helpfulConditions?: string[];
+        };
+        PeriodReflectionResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            featureType?: "ENTRY_REFLECTION" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "CONVERSATION_REPLY" | "CONVERSATION_SUMMARY";
+            /** Format: date */
+            periodStart?: string;
+            /** Format: date */
+            periodEnd?: string;
+            /** Format: int32 */
+            versionNo?: number;
+            /** @enum {string} */
+            status?: "PENDING" | "PROCESSING" | "COMPLETED" | "BLOCKED" | "SAFETY_SUPPORT" | "FAILED";
+            summaryText?: string;
+            insights?: components["schemas"]["PeriodReflectionInsights"];
+            questionText?: string;
+            /** Format: date-time */
+            requestedAt?: string;
+            /** Format: date-time */
+            completedAt?: string;
+        };
         RefreshRequest: {
             refreshToken: string;
             installationKey?: string;
@@ -163,6 +920,23 @@ export interface components {
             /** @enum {string} */
             nextAction?: "COMPLETE_ONBOARDING" | "ENTER_APP";
         };
+        AiFeedbackReportCreateRequest: {
+            reasonCode: string;
+            comment?: string;
+        };
+        AiFeedbackReportResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            generationRunId?: string;
+            reasonCode?: string;
+            comment?: string;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        ApiResponseAiFeedbackReportResponse: {
+            data?: components["schemas"]["AiFeedbackReportResponse"];
+        };
         ConsentRequest: {
             /** @enum {string} */
             type: "TERMS" | "PRIVACY" | "AI_PROCESSING";
@@ -194,11 +968,149 @@ export interface components {
             /** @enum {string} */
             nextAction?: "COMPLETE_ONBOARDING" | "ENTER_APP";
         };
+        EntryUpdateRequest: {
+            title?: string;
+            body?: string;
+            /** Format: int64 */
+            version: number;
+        };
+        EntryAiProcessingUpdateRequest: {
+            allowed: boolean;
+        };
+        AiFeedbackLongTermRequest: {
+            applyLongTerm: boolean;
+        };
+        ApiResponseListTagResponse: {
+            data?: components["schemas"]["TagResponse"][];
+        };
+        ApiResponseListEmotionTagTopicResponse: {
+            data?: components["schemas"]["EmotionTagTopicResponse"][];
+        };
+        EmotionTagTopicResponse: {
+            /** Format: uuid */
+            id?: string;
+            code?: string;
+            name?: string;
+            tags?: components["schemas"]["TagResponse"][];
+        };
+        ApiResponseListEntryResponse: {
+            data?: components["schemas"]["EntryResponse"][];
+        };
+        ApiResponseListEntryTagResponse: {
+            data?: components["schemas"]["EntryTagResponse"][];
+        };
+        ApiResponseListEntrySelfReflectionResponse: {
+            data?: components["schemas"]["EntrySelfReflectionResponse"][];
+        };
+        ApiResponseEntryAiReflectionResponse: {
+            data?: components["schemas"]["EntryAiReflectionResponse"];
+        };
+        EntryAiReflectionResponse: {
+            /** @enum {string} */
+            status?: "PENDING" | "PROCESSING" | "COMPLETED" | "BLOCKED" | "SAFETY_SUPPORT" | "FAILED";
+            /** Format: uuid */
+            generationRunId?: string;
+            reflectionText?: string;
+            reflectionQuestion?: string;
+            /** Format: date-time */
+            completedAt?: string;
+        };
+        ApiResponseListEntryTimelineResponse: {
+            data?: components["schemas"]["EntryTimelineResponse"][];
+        };
+        EntryTimelineResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            entryType?: "FREE" | "CHECK_IN" | "GRATITUDE" | "EMOTION" | "PROMPT" | "QUOTE_REFLECTION" | "EXPERIMENT_MISSION" | "EXPERIMENT_REVIEW" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "SELF_SUMMARY";
+            /** @enum {string} */
+            status?: "DRAFT" | "PUBLISHED";
+            title?: string;
+            body?: string;
+            /** Format: date */
+            recordDate?: string;
+            tags?: components["schemas"]["EntryTagResponse"][];
+            /** @enum {string} */
+            aiStatus?: "PENDING" | "PROCESSING" | "COMPLETED" | "BLOCKED" | "SAFETY_SUPPORT" | "FAILED";
+            hasSelfReflection?: boolean;
+            /** Format: date-time */
+            publishedAt?: string;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        ApiResponseListPersonalSummaryResponse: {
+            data?: components["schemas"]["PersonalSummaryResponse"][];
+        };
+        ApiResponseListCalendarDayResponse: {
+            data?: components["schemas"]["CalendarDayResponse"][];
+        };
+        CalendarDayResponse: {
+            /** Format: date */
+            date?: string;
+            hasEntry?: boolean;
+            hasCheckIn?: boolean;
+        };
+        ApiResponseListTagDistributionResponse: {
+            data?: components["schemas"]["TagDistributionResponse"][];
+        };
+        TagDistributionResponse: {
+            /** Format: uuid */
+            tagId?: string;
+            tagName?: string;
+            /** @enum {string} */
+            category?: "EMOTION" | "SITUATION" | "NEED" | "VALUE" | "ACTION" | "RECOVERY" | "CUSTOM";
+            /** Format: int64 */
+            count?: number;
+        };
+        ApiResponseListEmotionEnergyPointResponse: {
+            data?: components["schemas"]["EmotionEnergyPointResponse"][];
+        };
+        EmotionEnergyPointResponse: {
+            /** Format: date */
+            date?: string;
+            /** Format: int32 */
+            emotionIntensity?: number;
+            /** Format: int32 */
+            energyLevel?: number;
+        };
         ApiResponseHealthResponse: {
             data?: components["schemas"]["HealthResponse"];
         };
         HealthResponse: {
             status?: string;
+        };
+        ApiResponseListQuoteTopicResponse: {
+            data?: components["schemas"]["QuoteTopicResponse"][];
+        };
+        QuoteTopicResponse: {
+            /** Format: uuid */
+            id?: string;
+            code?: string;
+            name?: string;
+        };
+        ApiResponseListQuoteResponse: {
+            data?: components["schemas"]["QuoteResponse"][];
+        };
+        QuoteResponse: {
+            /** Format: uuid */
+            id?: string;
+            text?: string;
+            authorName?: string;
+            sourceName?: string;
+            sourceUrl?: string;
+            topics?: components["schemas"]["QuoteTopicResponse"][];
+            saved?: boolean;
+        };
+        ApiResponseQuoteResponse: {
+            data?: components["schemas"]["QuoteResponse"];
+        };
+        ApiResponseListSavedQuoteResponse: {
+            data?: components["schemas"]["SavedQuoteResponse"][];
+        };
+        SavedQuoteResponse: {
+            quote?: components["schemas"]["QuoteResponse"];
+            /** Format: date-time */
+            savedAt?: string;
         };
         ApiResponseSessionCheckResponse: {
             data?: components["schemas"]["SessionCheckResponse"];
@@ -219,6 +1131,421 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    getCurrentPersonalSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponsePersonalSummaryResponse"];
+                };
+            };
+        };
+    };
+    updateCurrentPersonalSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PersonalSummaryUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponsePersonalSummaryResponse"];
+                };
+            };
+        };
+    };
+    getCheckIn: {
+        parameters: {
+            query: {
+                date: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseCheckInResponse"];
+                };
+            };
+        };
+    };
+    upsertCheckIn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckInUpsertRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseCheckInResponse"];
+                };
+            };
+        };
+    };
+    submitFeedback: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                generationRunId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiFeedbackSubmitRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAiFeedbackResponse"];
+                };
+            };
+        };
+    };
+    createMyTag: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserTagCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTagResponse"];
+                };
+            };
+        };
+    };
+    getEntries: {
+        parameters: {
+            query?: {
+                entryType?: "FREE" | "CHECK_IN" | "GRATITUDE" | "EMOTION" | "PROMPT" | "QUOTE_REFLECTION" | "EXPERIMENT_MISSION" | "EXPERIMENT_REVIEW" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "SELF_SUMMARY";
+                recordDate?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListEntryResponse"];
+                };
+            };
+        };
+    };
+    createEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EntryCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseEntryResponse"];
+                };
+            };
+        };
+    };
+    getEntryTags: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListEntryTagResponse"];
+                };
+            };
+        };
+    };
+    attachEntryTag: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EntryTagAttachRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseEntryTagResponse"];
+                };
+            };
+        };
+    };
+    rejectEntryTag: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entryId: string;
+                entryTagId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseEntryTagResponse"];
+                };
+            };
+        };
+    };
+    confirmEntryTag: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entryId: string;
+                entryTagId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseEntryTagResponse"];
+                };
+            };
+        };
+    };
+    getReflections: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListEntrySelfReflectionResponse"];
+                };
+            };
+        };
+    };
+    createReflection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EntrySelfReflectionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseEntrySelfReflectionResponse"];
+                };
+            };
+        };
+    };
+    publishEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseEntryResponse"];
+                };
+            };
+        };
+    };
+    createPeriodReflection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PeriodReflectionCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponsePeriodReflectionResponse"];
+                };
+            };
+        };
+    };
+    saveQuote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                quoteId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    unsaveQuote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                quoteId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     refresh: {
         parameters: {
             query?: never;
@@ -285,6 +1612,32 @@ export interface operations {
             };
         };
     };
+    reportGenerationRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                generationRunId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiFeedbackReportCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAiFeedbackReportResponse"];
+                };
+            };
+        };
+    };
     completeOnboarding: {
         parameters: {
             query?: never;
@@ -309,6 +1662,390 @@ export interface operations {
             };
         };
     };
+    getEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseEntryResponse"];
+                };
+            };
+        };
+    };
+    deleteEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EntryUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseEntryResponse"];
+                };
+            };
+        };
+    };
+    updateReflection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entryId: string;
+                reflectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EntrySelfReflectionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseEntrySelfReflectionResponse"];
+                };
+            };
+        };
+    };
+    updateAiProcessing: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EntryAiProcessingUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseEntryResponse"];
+                };
+            };
+        };
+    };
+    confirmLongTermApplication: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                generationRunId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiFeedbackLongTermRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAiFeedbackResponse"];
+                };
+            };
+        };
+    };
+    getSystemTags: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListTagResponse"];
+                };
+            };
+        };
+    };
+    getMyTags: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListTagResponse"];
+                };
+            };
+        };
+    };
+    getEmotionTagTopics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListEmotionTagTopicResponse"];
+                };
+            };
+        };
+    };
+    getAiReflectionStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entryId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseEntryAiReflectionResponse"];
+                };
+            };
+        };
+    };
+    getTimeline: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+                entryType?: "FREE" | "CHECK_IN" | "GRATITUDE" | "EMOTION" | "PROMPT" | "QUOTE_REFLECTION" | "EXPERIMENT_MISSION" | "EXPERIMENT_REVIEW" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "SELF_SUMMARY";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListEntryTimelineResponse"];
+                };
+            };
+        };
+    };
+    getPersonalSummaryHistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListPersonalSummaryResponse"];
+                };
+            };
+        };
+    };
+    getPeriodReflection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                periodReflectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponsePeriodReflectionResponse"];
+                };
+            };
+        };
+    };
+    getCalendar: {
+        parameters: {
+            query: {
+                year: number;
+                month: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListCalendarDayResponse"];
+                };
+            };
+        };
+    };
+    getTagDistribution: {
+        parameters: {
+            query?: {
+                category?: "EMOTION" | "SITUATION" | "NEED" | "VALUE" | "ACTION" | "RECOVERY" | "CUSTOM";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListTagDistributionResponse"];
+                };
+            };
+        };
+    };
+    getEntriesByTag: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tagId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListEntryTimelineResponse"];
+                };
+            };
+        };
+    };
+    getEmotionEnergyTrend: {
+        parameters: {
+            query: {
+                range: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListEmotionEnergyPointResponse"];
+                };
+            };
+        };
+    };
     health: {
         parameters: {
             query?: never;
@@ -325,6 +2062,130 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseHealthResponse"];
+                };
+            };
+        };
+    };
+    getTopics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListQuoteTopicResponse"];
+                };
+            };
+        };
+    };
+    getQuotesByTopic: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                topicId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListQuoteResponse"];
+                };
+            };
+        };
+    };
+    getQuote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                quoteId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseQuoteResponse"];
+                };
+            };
+        };
+    };
+    getTodayQuote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseQuoteResponse"];
+                };
+            };
+        };
+    };
+    getSavedQuotes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListSavedQuoteResponse"];
+                };
+            };
+        };
+    };
+    getTodayCheckIn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseCheckInResponse"];
                 };
             };
         };

@@ -27,6 +27,8 @@ export default function RootLayout() {
           <Stack.Screen name="(onboarding)" />
           <Stack.Screen name="(app)" />
           <Stack.Screen name="record" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="checkin" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="day" />
         </Stack>
       </AuthProvider>
     </ThemeProvider>

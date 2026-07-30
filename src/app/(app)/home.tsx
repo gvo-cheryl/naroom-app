@@ -1,18 +1,62 @@
-import { router } from 'expo-router';
-import { ScrollView, StyleSheet } from 'react-native';
+import { useFocusEffect, router } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { getTodayCheckIn, listEntries } from '@/api';
+import { ApiError } from '@/api/errors';
+import type { CheckInSummary, EntrySummary } from '@/api/types';
 import { useAuth } from '@/auth/AuthContext';
+import { getValidAccessToken } from '@/auth/authManager';
+import { LevelBar } from '@/components/level-bar';
+import { NeedSummary } from '@/components/need-summary';
+import { SectionHeading } from '@/components/section-heading';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { AppButton } from '@/components/ui/app-button';
+import { ENERGY_LABELS, INTENSITY_LABELS, levelLabelIndex } from '@/constants/checkin';
+import { VISIBLE_ENTRY_TYPES, entryTypeLabel } from '@/constants/record';
 import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
+import { logger } from '@/lib/logger';
 
-// 프로토타입 H01(홈)의 인사 톤만 가져온 간략 버전이다. 체크인·작은 실험 등은
-// 아직 해당 API가 없어 이번 범위에 넣지 않는다. 기록 작성(R01~)만 연결한다.
+// 프로토타입 H01(홈)의 인사 톤만 가져온 간략 버전이다. 작은 실험 등은
+// 아직 해당 API가 없어 이번 범위에 넣지 않는다. 체크인과 기록 작성(R01~)만 연결한다.
 export default function HomeScreen() {
   const { state, logout } = useAuth();
+  const theme = useTheme();
   const displayName = state.status === 'active' ? state.account.displayName : '';
+
+  const [todayCheckIn, setTodayCheckIn] = useState<CheckInSummary | null>(null);
+  const [latestEntry, setLatestEntry] = useState<EntrySummary | null>(null);
+
+  // 체크인/기록을 마치고 돌아올 때마다 홈에 최신 상태가 보이도록 화면에 다시 포커스될 때마다 새로고침한다.
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+      (async () => {
+        try {
+          const accessToken = await getValidAccessToken();
+          if (!accessToken) {
+            return;
+          }
+          const [checkIn, entries] = await Promise.all([getTodayCheckIn(accessToken), listEntries(accessToken)]);
+          if (cancelled) {
+            return;
+          }
+          setTodayCheckIn(checkIn);
+          setLatestEntry(entries.find((entry) => VISIBLE_ENTRY_TYPES.includes(entry.entryType)) ?? null);
+        } catch (error) {
+          logger.error('home', 'failed to load home summary', {
+            code: error instanceof ApiError ? error.code : undefined,
+          });
+        }
+      })();
+      return () => {
+        cancelled = true;
+      };
+    }, []),
+  );
 
   return (
     <ThemedView style={styles.container}>
@@ -25,14 +69,85 @@ export default function HomeScreen() {
             {displayName ? `${displayName}님,\n` : ''}오늘은 어떤 마음으로{'\n'}시작하고 있나요?
           </ThemedText>
 
-          <ThemedView type="backgroundElement" style={styles.emptyCard}>
-            <ThemedText type="default">아직 기록이 없어요.</ThemedText>
-            <ThemedText type="small" themeColor="textTertiary" style={styles.emptyHint}>
-              한 문장만 남겨도 충분해요.
-            </ThemedText>
+          {todayCheckIn ? (
+            <ThemedView type="backgroundElement" style={[styles.card, styles.cardFilled]}>
+              <SectionHeading icon={{ ios: 'checkmark.circle.fill', android: 'check_circle' }} title="오늘의 체크인" />
+
+              {todayCheckIn.emotions.length > 0 && (
+                <View style={styles.chipsLeft}>
+                  {todayCheckIn.emotions.map((tag) => (
+                    <ThemedView key={tag.id} type="backgroundSelected" style={styles.chip}>
+                      <ThemedText type="small" themeColor="textSecondary">
+                        {tag.name}
+                      </ThemedText>
+                    </ThemedView>
+                  ))}
+                </View>
+              )}
+
+              {todayCheckIn.emotionIntensity !== null && (
+                <LevelBar
+                  label="감정 강도"
+                  value={todayCheckIn.emotionIntensity}
+                  levelLabel={INTENSITY_LABELS[levelLabelIndex(todayCheckIn.emotionIntensity, INTENSITY_LABELS.length)]}
+                  color={theme.text}
+                />
+              )}
+              {todayCheckIn.energyLevel !== null && (
+                <LevelBar
+                  label="오늘의 에너지"
+                  value={todayCheckIn.energyLevel}
+                  levelLabel={ENERGY_LABELS[levelLabelIndex(todayCheckIn.energyLevel, ENERGY_LABELS.length)]}
+                  color={theme.text}
+                />
+              )}
+
+              {todayCheckIn.currentNeed && <NeedSummary need={todayCheckIn.currentNeed} />}
+
+              <AppButton
+                title="체크인 수정하기"
+                variant="ghost"
+                style={styles.cardButton}
+                onPress={() => router.push('/checkin')}
+              />
+            </ThemedView>
+          ) : (
+            <ThemedView type="backgroundElement" style={styles.card}>
+              <ThemedText type="default">오늘의 마음을 확인해 보세요.</ThemedText>
+              <ThemedText type="small" themeColor="textTertiary" style={styles.cardHint}>
+                감정과 에너지를 선택으로 가볍게 남길 수 있어요.
+              </ThemedText>
+              <AppButton
+                title="오늘의 체크인"
+                style={styles.cardButton}
+                onPress={() => router.push('/checkin')}
+              />
+            </ThemedView>
+          )}
+
+          <ThemedView type="backgroundElement" style={styles.card}>
+            {latestEntry ? (
+              <Pressable
+                style={styles.pressableFill}
+                onPress={() => router.push({ pathname: '/day/[date]', params: { date: latestEntry.recordDate } })}>
+                <ThemedText type="small" themeColor="textTertiary">
+                  최근 기록 · {entryTypeLabel(latestEntry.entryType)} · {latestEntry.recordDate}
+                </ThemedText>
+                <ThemedText type="default" style={styles.cardHint} numberOfLines={3}>
+                  {latestEntry.title || latestEntry.body || '내용 없음'}
+                </ThemedText>
+              </Pressable>
+            ) : (
+              <>
+                <ThemedText type="default">아직 기록이 없어요.</ThemedText>
+                <ThemedText type="small" themeColor="textTertiary" style={styles.cardHint}>
+                  한 문장만 남겨도 충분해요.
+                </ThemedText>
+              </>
+            )}
             <AppButton
               title="지금 기록하기"
-              style={styles.recordButton}
+              style={styles.cardButton}
               onPress={() => router.push('/record/type')}
             />
           </ThemedView>
@@ -64,17 +179,43 @@ const styles = StyleSheet.create({
   heading: {
     marginTop: Spacing.one,
   },
-  emptyCard: {
+  card: {
     marginTop: Spacing.four,
     borderRadius: Radius.medium,
     padding: Spacing.four,
     alignItems: 'center',
   },
-  emptyHint: {
-    marginTop: Spacing.one,
+  cardFilled: {
+    alignItems: 'stretch',
   },
-  recordButton: {
+  cardHint: {
+    marginTop: Spacing.one,
+    textAlign: 'center',
+  },
+  pressableFill: {
+    alignSelf: 'stretch',
+    alignItems: 'center',
+  },
+  chips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: Spacing.one,
+    marginTop: Spacing.two,
+  },
+  chipsLeft: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.one,
     marginTop: Spacing.three,
+  },
+  chip: {
+    borderRadius: Radius.full,
+    paddingVertical: Spacing.half,
+    paddingHorizontal: Spacing.two,
+  },
+  cardButton: {
+    marginTop: Spacing.four,
   },
   logout: {
     textAlign: 'center',

@@ -2,11 +2,13 @@ import { apiFetch } from "./client";
 import type { components } from "./generated/openapi.types";
 import {
   requireData,
+  toEmotionTagTopicSummary,
   toEntryAiReflectionSummary,
   toEntrySelfReflectionSummary,
   toEntrySummary,
   toEntryTagSummary,
   toTagSummary,
+  type EmotionTagTopicSummary,
   type EntryAiReflectionSummary,
   type EntrySelfReflectionSummary,
   type EntrySummary,
@@ -36,6 +38,28 @@ export async function createEntry(
     "createEntry",
   );
   return toEntrySummary(data, "createEntry");
+}
+
+export async function listEntries(
+  accessToken: string,
+  params: { entryType?: EntryType; recordDate?: string } = {},
+): Promise<EntrySummary[]> {
+  const query = new URLSearchParams();
+  if (params.entryType) {
+    query.set("entryType", params.entryType);
+  }
+  if (params.recordDate) {
+    query.set("recordDate", params.recordDate);
+  }
+  const queryString = query.toString();
+  const data = requireData(
+    await apiFetch<components["schemas"]["EntryResponse"][]>(
+      `/api/v1/record/entries${queryString ? `?${queryString}` : ""}`,
+      { accessToken },
+    ),
+    "listEntries",
+  );
+  return data.map((item, index) => toEntrySummary(item, `listEntries[${index}]`));
 }
 
 export async function publishEntry(accessToken: string, entryId: string): Promise<EntrySummary> {
@@ -129,6 +153,16 @@ export async function getSystemTags(accessToken: string): Promise<TagSummary[]> 
     "getSystemTags",
   );
   return data.map((item, index) => toTagSummary(item, `getSystemTags[${index}]`));
+}
+
+export async function getEmotionTagTopics(accessToken: string): Promise<EmotionTagTopicSummary[]> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["EmotionTagTopicResponse"][]>("/api/v1/record/tags/emotion-topics", {
+      accessToken,
+    }),
+    "getEmotionTagTopics",
+  );
+  return data.map((item, index) => toEmotionTagTopicSummary(item, `getEmotionTagTopics[${index}]`));
 }
 
 export async function createMyTag(

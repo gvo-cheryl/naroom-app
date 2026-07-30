@@ -122,6 +122,24 @@ export interface EntrySelfReflectionSummary {
   content: string;
 }
 
+export interface EmotionTagTopicSummary {
+  id: string;
+  code: string;
+  name: string;
+  tags: TagSummary[];
+}
+
+export interface CheckInSummary {
+  id: string;
+  checkInDate: string;
+  emotionIntensity: number | null;
+  energyLevel: number | null;
+  memorableEvent: string | null;
+  gratitudeNote: string | null;
+  currentNeed: string | null;
+  emotions: TagSummary[];
+}
+
 // 성공 응답의 data가 계약대로라면 항상 있어야 하는데 비어 있으면, 조용히 넘어가지 않고
 // 바로 알 수 있는 에러로 실패시킨다(뒤에서 undefined 관련 버그로 나타나는 것보다 낫다).
 export function requireData<T>(data: T | undefined, context: string): T {
@@ -252,6 +270,40 @@ export function toEntrySelfReflectionSummary(
   return {
     id: requireField(reflection.id, "reflection.id", context),
     content: requireField(reflection.content, "reflection.content", context),
+  };
+}
+
+export function toEmotionTagTopicSummary(
+  raw: components["schemas"]["EmotionTagTopicResponse"] | undefined,
+  context: string,
+): EmotionTagTopicSummary {
+  const topic = requireField(raw, "topic", context);
+  return {
+    id: requireField(topic.id, "topic.id", context),
+    code: requireField(topic.code, "topic.code", context),
+    name: requireField(topic.name, "topic.name", context),
+    tags: (topic.tags ?? []).map((tag, index) => toTagSummary(tag, `${context}.tags[${index}]`)),
+  };
+}
+
+// 오늘 체크인이 아직 없으면 서버가 {"data": null}을 200으로 돌려준다 - requireData로 다루면
+// 안 되는 유일한 응답이라 별도로 null 허용 매퍼를 둔다.
+export function toCheckInSummary(
+  raw: components["schemas"]["CheckInResponse"] | null | undefined,
+  context: string,
+): CheckInSummary | null {
+  if (raw === null || raw === undefined) {
+    return null;
+  }
+  return {
+    id: requireField(raw.id, "checkIn.id", context),
+    checkInDate: requireField(raw.checkInDate, "checkIn.checkInDate", context),
+    emotionIntensity: raw.emotionIntensity ?? null,
+    energyLevel: raw.energyLevel ?? null,
+    memorableEvent: raw.memorableEvent ?? null,
+    gratitudeNote: raw.gratitudeNote ?? null,
+    currentNeed: raw.currentNeed ?? null,
+    emotions: (raw.emotions ?? []).map((tag, index) => toTagSummary(tag, `${context}.emotions[${index}]`)),
   };
 }
 

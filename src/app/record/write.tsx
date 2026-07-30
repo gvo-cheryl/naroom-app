@@ -10,6 +10,7 @@ import { getValidAccessToken } from '@/auth/authManager';
 import { RecordScreenHeader } from '@/components/record-screen-header';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { AppButton } from '@/components/ui/app-button';
 import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { RECORD_PROMPTS, recordTypeOf } from '@/constants/record';
 import { useTheme } from '@/hooks/use-theme';
@@ -114,17 +115,7 @@ export default function RecordWriteScreen() {
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
-          <RecordScreenHeader
-            title={recordType.name}
-            right={
-              <ThemedText
-                type="smallBold"
-                themeColor={canSave ? 'text' : 'textTertiary'}
-                onPress={handleSave}>
-                저장
-              </ThemedText>
-            }
-          />
+          <RecordScreenHeader title={recordType.name} />
 
           {recordType.id === 'PROMPT' && (
             <ThemedView type="backgroundElement" style={styles.soft}>
@@ -173,6 +164,14 @@ export default function RecordWriteScreen() {
               {errorMessage}
             </ThemedText>
           )}
+
+          <AppButton
+            title="저장하기"
+            style={styles.saveButton}
+            loading={saving}
+            disabled={!canSave}
+            onPress={handleSave}
+          />
         </ScrollView>
       </SafeAreaView>
     </ThemedView>
@@ -214,5 +213,8 @@ const styles = StyleSheet.create({
   error: {
     marginTop: Spacing.two,
     textAlign: 'center',
+  },
+  saveButton: {
+    marginTop: Spacing.four,
   },
 });

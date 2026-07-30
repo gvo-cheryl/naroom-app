@@ -20,11 +20,11 @@ export function RecordScreenHeader({ title, onBack, right }: RecordScreenHeaderP
   return (
     <View style={styles.row}>
       <Pressable onPress={onBack ?? (() => router.back())} hitSlop={12} style={styles.side}>
-        <ThemedText type="default" themeColor="textSecondary">
+        <ThemedText type="default" themeColor="textSecondary" style={styles.closeLabel}>
           닫기
         </ThemedText>
       </Pressable>
-      <ThemedText type="smallBold" style={[styles.title, { color: theme.text }]} numberOfLines={1}>
+      <ThemedText type="default" style={[styles.title, { color: theme.text }]} numberOfLines={1}>
         {title}
       </ThemedText>
       <View style={styles.side}>{right}</View>
@@ -37,13 +37,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: Spacing.two,
+    minHeight: 56,
+    paddingVertical: Spacing.three,
   },
   side: {
-    minWidth: 48,
+    minWidth: 56,
+  },
+  closeLabel: {
+    fontSize: 16,
   },
   title: {
     flex: 1,
     textAlign: 'center',
+    fontSize: 19,
+    fontWeight: '700',
   },
 });

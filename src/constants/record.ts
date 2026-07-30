@@ -31,6 +31,14 @@ export function recordTypeOf(id: string | undefined): RecordTypeOption {
   return RECORD_TYPES.find((t) => t.id === id) ?? RECORD_TYPES[0];
 }
 
+// 체크인 봉투(CHECK_IN)나 AI 회고 등 시스템 생성 기록은 "내가 쓴 기록" 목록/미리보기에서
+// 제외한다 - naroom-api EntryService.USER_CREATABLE_TYPES와 대응한다.
+export const VISIBLE_ENTRY_TYPES: EntryType[] = RECORD_TYPES.map((t) => t.id);
+
+export function entryTypeLabel(entryType: EntryType): string {
+  return RECORD_TYPES.find((t) => t.id === entryType)?.name ?? entryType;
+}
+
 export const RECORD_PROMPTS = [
   '오늘 마음이 가장 크게 움직인 순간은 언제였나요?',
   '지금의 나에게 무엇이 필요하다고 느껴지나요?',

@@ -22,6 +22,7 @@ import { ApiError } from "@/api/errors";
 import type { EntryTagSummary, TagCategory, TagSummary } from "@/api/types";
 import { getValidAccessToken } from "@/auth/authManager";
 import { RecordScreenHeader } from "@/components/record-screen-header";
+import { SectionHeading } from "@/components/section-heading";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { AppButton } from "@/components/ui/app-button";
@@ -241,9 +242,7 @@ export default function RecordTagsScreen() {
             <>
               {(aiStillWaiting || suggested.length > 0) && (
                 <View style={styles.section}>
-                  <ThemedText type="small" themeColor="textTertiary">
-                    나로움이 찾은 키워드
-                  </ThemedText>
+                  <SectionHeading icon={{ ios: 'sparkles', android: 'auto_awesome' }} title="나로움이 찾은 키워드" />
                   {suggested.length === 0 && !pollTimedOut ? (
                     <View style={styles.aiWaitingRow}>
                       <ActivityIndicator
@@ -335,9 +334,11 @@ export default function RecordTagsScreen() {
                 </View>
               ))}
 
-              <ThemedText type="default" style={styles.addHeading}>
-                키워드 추가
-              </ThemedText>
+              <SectionHeading
+                icon={{ ios: 'plus.circle.fill', android: 'add_circle' }}
+                title="키워드 추가"
+                style={styles.addHeading}
+              />
               <View style={styles.row}>
                 <TextInput
                   style={[

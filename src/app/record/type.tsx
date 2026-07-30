@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { RecordScreenHeader } from '@/components/record-screen-header';
@@ -36,12 +36,12 @@ export default function RecordTypeScreen() {
                   { borderColor: theme.border, backgroundColor: theme.backgroundElement },
                   pressed && styles.pressed,
                 ]}>
-                <ThemedView style={styles.optionText}>
+                <View style={styles.optionText}>
                   <ThemedText type="default">{t.name}</ThemedText>
                   <ThemedText type="small" themeColor="textTertiary">
                     {t.desc}
                   </ThemedText>
-                </ThemedView>
+                </View>
               </Pressable>
             ))}
           </ThemedView>

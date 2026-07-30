@@ -4,8 +4,8 @@ import { ThemedText } from '@/components/themed-text';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
-// 프로토타입 .btn / .btn.ghost / .btn.quiet 대응.
-export type AppButtonVariant = 'primary' | 'ghost' | 'quiet';
+// 프로토타입 .btn / .btn.ghost / .btn.quiet / .btn.danger 대응.
+export type AppButtonVariant = 'primary' | 'ghost' | 'quiet' | 'danger';
 
 interface AppButtonProps {
   title: string;
@@ -25,11 +25,19 @@ export function AppButton({ title, onPress, variant = 'primary', disabled, loadi
     variant === 'primary' && { backgroundColor: theme.text },
     variant === 'ghost' && { backgroundColor: 'transparent', borderWidth: 1, borderColor: theme.border },
     variant === 'quiet' && { backgroundColor: 'transparent', paddingVertical: Spacing.two + 3 },
+    variant === 'danger' && { backgroundColor: 'transparent', borderWidth: 1, borderColor: theme.border },
     isDisabled && styles.disabled,
     style,
   ];
 
-  const textColor = variant === 'primary' ? theme.background : variant === 'ghost' ? theme.textSecondary : theme.textTertiary;
+  const textColor =
+    variant === 'primary'
+      ? theme.background
+      : variant === 'ghost'
+        ? theme.textSecondary
+        : variant === 'danger'
+          ? theme.clay
+          : theme.textTertiary;
 
   return (
     <Pressable
@@ -39,7 +47,7 @@ export function AppButton({ title, onPress, variant = 'primary', disabled, loadi
       {loading ? (
         <ActivityIndicator color={textColor} />
       ) : (
-        <ThemedText type={variant === 'ghost' ? 'default' : 'smallBold'} style={{ color: textColor }}>
+        <ThemedText type={variant === 'ghost' || variant === 'danger' ? 'default' : 'smallBold'} style={{ color: textColor }}>
           {title}
         </ThemedText>
       )}

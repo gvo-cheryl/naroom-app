@@ -1,9 +1,10 @@
-import { router } from 'expo-router';
+import { router, usePathname } from 'expo-router';
 import { Pressable, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { BottomTabInset, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { setRecordOriginTab } from '@/lib/record-origin';
 
 // 프로토타입 하단 탭의 중앙 "기록하기" 버튼에 대응한다. NativeTabs(unstable)는 탭을 눌러도
 // 그 탭 화면으로 전환하지 않고 다른 화면으로만 보내는 액션 탭 패턴을 지원하지 않아(onPress 가로채기
@@ -11,10 +12,17 @@ import { useTheme } from '@/hooks/use-theme';
 // 무관하게 눌릴 때마다 유형 선택 화면으로 이동한다.
 export function RecordFab() {
   const theme = useTheme();
+  const pathname = usePathname();
+
+  const handlePress = () => {
+    // 기록 완료 후 이 탭으로 돌아갈 수 있게, 누른 시점의(=기록을 시작한) 탭 경로를 기억해둔다.
+    setRecordOriginTab(pathname);
+    router.push('/record/type');
+  };
 
   return (
     <Pressable
-      onPress={() => router.push('/record/type')}
+      onPress={handlePress}
       style={({ pressed }) => [
         styles.button,
         { backgroundColor: theme.text },

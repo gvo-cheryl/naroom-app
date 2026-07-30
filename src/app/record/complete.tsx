@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -6,6 +6,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { AppButton } from '@/components/ui/app-button';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { getRecordOriginTab } from '@/lib/record-origin';
 
 // 프로토타입 R06(기록 완료)의 축소판. 작은 실험 추천은 챌린지 도메인이 아직 없어 넣지 않고,
 // LifeTime에서 보기도 타임라인 화면이 아직 없어 넣지 않는다(추후 단계에서 추가).
@@ -21,7 +22,7 @@ export default function RecordCompleteScreen() {
             언제든 다시 열어보고, 생각을 더하거나 정리할 수 있어요.
           </ThemedText>
         </ThemedView>
-        <AppButton title="홈으로" onPress={() => router.replace('/(app)/home')} />
+        <AppButton title="닫기" onPress={() => router.replace(getRecordOriginTab() as Href)} />
       </SafeAreaView>
     </ThemedView>
   );

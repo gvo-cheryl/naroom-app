@@ -146,6 +146,70 @@ export interface CheckInSummary {
   emotions: TagSummary[];
 }
 
+export type PeriodReflectionFeatureType = "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION";
+
+export interface PeriodReflectionInsightsSummary {
+  repeatedEmotionsAndSituations: string[];
+  difficultMoments: string[];
+  gratefulMoments: string[];
+  triedResponses: string[];
+  helpfulConditions: string[];
+}
+
+export interface PeriodReflectionSummary {
+  id: string;
+  entryId: string;
+  featureType: PeriodReflectionFeatureType;
+  periodStart: string;
+  periodEnd: string;
+  status: AiJobStatus;
+  summaryText: string | null;
+  insights: PeriodReflectionInsightsSummary | null;
+  questionText: string | null;
+  requestedAt: string;
+}
+
+export interface CalendarDaySummary {
+  date: string;
+  hasEntry: boolean;
+  hasCheckIn: boolean;
+}
+
+export interface PersonalSummarySummary {
+  id: string;
+  content: string;
+  archived: boolean;
+  archivedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EmotionEnergyPointSummary {
+  date: string;
+  emotionIntensity: number | null;
+  energyLevel: number | null;
+}
+
+export interface TagDistributionSummary {
+  tagId: string;
+  tagName: string;
+  category: TagCategory;
+  count: number;
+}
+
+export interface EntryTimelineSummary {
+  id: string;
+  entryType: EntryType;
+  status: EntryStatus;
+  title: string | null;
+  body: string | null;
+  recordDate: string;
+  tags: EntryTagSummary[];
+  aiStatus: AiJobStatus | null;
+  hasSelfReflection: boolean;
+  createdAt: string;
+}
+
 // 성공 응답의 data가 계약대로라면 항상 있어야 하는데 비어 있으면, 조용히 넘어가지 않고
 // 바로 알 수 있는 에러로 실패시킨다(뒤에서 undefined 관련 버그로 나타나는 것보다 낫다).
 export function requireData<T>(data: T | undefined, context: string): T {
@@ -310,6 +374,109 @@ export function toCheckInSummary(
     gratitudeNote: raw.gratitudeNote ?? null,
     currentNeed: raw.currentNeed ?? null,
     emotions: (raw.emotions ?? []).map((tag, index) => toTagSummary(tag, `${context}.emotions[${index}]`)),
+  };
+}
+
+export function toPeriodReflectionSummary(
+  raw: components["schemas"]["PeriodReflectionResponse"] | undefined,
+  context: string,
+): PeriodReflectionSummary {
+  const reflection = requireField(raw, "reflection", context);
+  const insights = reflection.insights;
+  return {
+    id: requireField(reflection.id, "reflection.id", context),
+    entryId: requireField(reflection.entryId, "reflection.entryId", context),
+    featureType: requireField(
+      reflection.featureType,
+      "reflection.featureType",
+      context,
+    ) as PeriodReflectionFeatureType,
+    periodStart: requireField(reflection.periodStart, "reflection.periodStart", context),
+    periodEnd: requireField(reflection.periodEnd, "reflection.periodEnd", context),
+    status: requireField(reflection.status, "reflection.status", context),
+    requestedAt: requireField(reflection.requestedAt, "reflection.requestedAt", context),
+    summaryText: reflection.summaryText ?? null,
+    insights: insights
+      ? {
+          repeatedEmotionsAndSituations: insights.repeatedEmotionsAndSituations ?? [],
+          difficultMoments: insights.difficultMoments ?? [],
+          gratefulMoments: insights.gratefulMoments ?? [],
+          triedResponses: insights.triedResponses ?? [],
+          helpfulConditions: insights.helpfulConditions ?? [],
+        }
+      : null,
+    questionText: reflection.questionText ?? null,
+  };
+}
+
+export function toCalendarDaySummary(
+  raw: components["schemas"]["CalendarDayResponse"] | undefined,
+  context: string,
+): CalendarDaySummary {
+  const day = requireField(raw, "day", context);
+  return {
+    date: requireField(day.date, "day.date", context),
+    hasEntry: day.hasEntry ?? false,
+    hasCheckIn: day.hasCheckIn ?? false,
+  };
+}
+
+export function toPersonalSummarySummary(
+  raw: components["schemas"]["PersonalSummaryResponse"] | undefined,
+  context: string,
+): PersonalSummarySummary {
+  const summary = requireField(raw, "summary", context);
+  return {
+    id: requireField(summary.id, "summary.id", context),
+    content: requireField(summary.content, "summary.content", context),
+    archived: summary.archived ?? false,
+    archivedAt: summary.archivedAt ?? null,
+    createdAt: requireField(summary.createdAt, "summary.createdAt", context),
+    updatedAt: requireField(summary.updatedAt, "summary.updatedAt", context),
+  };
+}
+
+export function toEmotionEnergyPointSummary(
+  raw: components["schemas"]["EmotionEnergyPointResponse"] | undefined,
+  context: string,
+): EmotionEnergyPointSummary {
+  const point = requireField(raw, "point", context);
+  return {
+    date: requireField(point.date, "point.date", context),
+    emotionIntensity: point.emotionIntensity ?? null,
+    energyLevel: point.energyLevel ?? null,
+  };
+}
+
+export function toTagDistributionSummary(
+  raw: components["schemas"]["TagDistributionResponse"] | undefined,
+  context: string,
+): TagDistributionSummary {
+  const distribution = requireField(raw, "distribution", context);
+  return {
+    tagId: requireField(distribution.tagId, "distribution.tagId", context),
+    tagName: requireField(distribution.tagName, "distribution.tagName", context),
+    category: requireField(distribution.category, "distribution.category", context),
+    count: requireField(distribution.count, "distribution.count", context),
+  };
+}
+
+export function toEntryTimelineSummary(
+  raw: components["schemas"]["EntryTimelineResponse"] | undefined,
+  context: string,
+): EntryTimelineSummary {
+  const entry = requireField(raw, "entry", context);
+  return {
+    id: requireField(entry.id, "entry.id", context),
+    entryType: requireField(entry.entryType, "entry.entryType", context),
+    status: requireField(entry.status, "entry.status", context),
+    title: entry.title ?? null,
+    body: entry.body ?? null,
+    recordDate: requireField(entry.recordDate, "entry.recordDate", context),
+    tags: (entry.tags ?? []).map((tag, index) => toEntryTagSummary(tag, `${context}.tags[${index}]`)),
+    aiStatus: entry.aiStatus ?? null,
+    hasSelfReflection: entry.hasSelfReflection ?? false,
+    createdAt: requireField(entry.createdAt, "entry.createdAt", context),
   };
 }
 

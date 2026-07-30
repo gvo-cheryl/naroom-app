@@ -171,7 +171,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["getPeriodReflections"];
         put?: never;
         post: operations["createPeriodReflection"];
         delete?: never;
@@ -843,6 +843,8 @@ export interface components {
         PeriodReflectionResponse: {
             /** Format: uuid */
             id?: string;
+            /** Format: uuid */
+            entryId?: string;
             /** @enum {string} */
             featureType?: "ENTRY_REFLECTION" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "CONVERSATION_REPLY" | "CONVERSATION_SUMMARY";
             /** Format: date */
@@ -1040,6 +1042,9 @@ export interface components {
         };
         ApiResponseListPersonalSummaryResponse: {
             data?: components["schemas"]["PersonalSummaryResponse"][];
+        };
+        ApiResponseListPeriodReflectionResponse: {
+            data?: components["schemas"]["PeriodReflectionResponse"][];
         };
         ApiResponseListCalendarDayResponse: {
             data?: components["schemas"]["CalendarDayResponse"][];
@@ -1478,6 +1483,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseEntryResponse"];
+                };
+            };
+        };
+    };
+    getPeriodReflections: {
+        parameters: {
+            query?: {
+                featureType?: "ENTRY_REFLECTION" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "CONVERSATION_REPLY" | "CONVERSATION_SUMMARY";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListPeriodReflectionResponse"];
                 };
             };
         };
@@ -1984,6 +2011,7 @@ export interface operations {
         parameters: {
             query?: {
                 category?: "EMOTION" | "SITUATION" | "NEED" | "VALUE" | "ACTION" | "RECOVERY" | "CUSTOM";
+                range?: number;
             };
             header?: never;
             path?: never;

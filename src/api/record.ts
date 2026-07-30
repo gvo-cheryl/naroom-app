@@ -73,6 +73,34 @@ export async function publishEntry(accessToken: string, entryId: string): Promis
   return toEntrySummary(data, "publishEntry");
 }
 
+export async function getEntry(accessToken: string, entryId: string): Promise<EntrySummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["EntryResponse"]>(`/api/v1/record/entries/${entryId}`, { accessToken }),
+    "getEntry",
+  );
+  return toEntrySummary(data, "getEntry");
+}
+
+export async function updateEntry(
+  accessToken: string,
+  entryId: string,
+  request: { title?: string; body?: string; version: number },
+): Promise<EntrySummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["EntryResponse"]>(`/api/v1/record/entries/${entryId}`, {
+      method: "PATCH",
+      body: request,
+      accessToken,
+    }),
+    "updateEntry",
+  );
+  return toEntrySummary(data, "updateEntry");
+}
+
+export async function deleteEntry(accessToken: string, entryId: string): Promise<void> {
+  await apiFetch<void>(`/api/v1/record/entries/${entryId}`, { method: "DELETE", accessToken });
+}
+
 export async function getEntryTags(accessToken: string, entryId: string): Promise<EntryTagSummary[]> {
   const data = requireData(
     await apiFetch<components["schemas"]["EntryTagResponse"][]>(`/api/v1/record/entries/${entryId}/tags`, {
@@ -145,6 +173,33 @@ export async function createSelfReflection(
     "createSelfReflection",
   );
   return toEntrySelfReflectionSummary(data, "createSelfReflection");
+}
+
+export async function getSelfReflections(accessToken: string, entryId: string): Promise<EntrySelfReflectionSummary[]> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["EntrySelfReflectionResponse"][]>(
+      `/api/v1/record/entries/${entryId}/reflections`,
+      { accessToken },
+    ),
+    "getSelfReflections",
+  );
+  return data.map((item, index) => toEntrySelfReflectionSummary(item, `getSelfReflections[${index}]`));
+}
+
+export async function updateSelfReflection(
+  accessToken: string,
+  entryId: string,
+  reflectionId: string,
+  request: { content: string },
+): Promise<EntrySelfReflectionSummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["EntrySelfReflectionResponse"]>(
+      `/api/v1/record/entries/${entryId}/reflections/${reflectionId}`,
+      { method: "PATCH", body: request, accessToken },
+    ),
+    "updateSelfReflection",
+  );
+  return toEntrySelfReflectionSummary(data, "updateSelfReflection");
 }
 
 export async function getSystemTags(accessToken: string): Promise<TagSummary[]> {

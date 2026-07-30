@@ -16,6 +16,14 @@ export const Colors = {
     backgroundElement: '#FBFCF9',
     backgroundSelected: '#F1F3EE',
     border: '#DCE0D8',
+    // 프로토타입 --slate/--moss. 체크인한 날/기록이 있는 날을 회색조가 아닌 실제 색상으로 구분할 때 쓴다.
+    slate: '#47597A',
+    moss: '#628A6B',
+    // 프로토타입 --clay(.banner.warn/.btn.danger 등 주의·경고 색상).
+    clay: '#9A6A63',
+    // 프로토타입 --sand/--plum. LifeTime 홈·감정/키워드 분석 화면의 감정 결·태그 카테고리 색상 팔레트.
+    sand: '#A98F62',
+    plum: '#7E6B8F',
   },
   dark: {
     text: '#E8ECE7',
@@ -25,6 +33,11 @@ export const Colors = {
     backgroundElement: '#1C2124',
     backgroundSelected: '#22272A',
     border: '#2A3033',
+    slate: '#93AAC6',
+    moss: '#8FB394',
+    clay: '#C08E86',
+    sand: '#C6AC7C',
+    plum: '#B29FC2',
   },
 } as const;
 

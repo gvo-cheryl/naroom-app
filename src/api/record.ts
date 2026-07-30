@@ -5,6 +5,7 @@ import {
   toEntrySummary,
   toEntryTagSummary,
   toTagSummary,
+  type AiJobStatus,
   type EntrySummary,
   type EntryTagSummary,
   type EntryType,
@@ -71,11 +72,35 @@ export async function attachEntryTag(
   return toEntryTagSummary(data, "attachEntryTag");
 }
 
+export async function confirmEntryTag(
+  accessToken: string,
+  entryId: string,
+  entryTagId: string,
+): Promise<EntryTagSummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["EntryTagResponse"]>(
+      `/api/v1/record/entries/${entryId}/tags/${entryTagId}/confirm`,
+      { method: "POST", accessToken },
+    ),
+    "confirmEntryTag",
+  );
+  return toEntryTagSummary(data, "confirmEntryTag");
+}
+
 export async function rejectEntryTag(accessToken: string, entryId: string, entryTagId: string): Promise<void> {
   await apiFetch<components["schemas"]["EntryTagResponse"]>(
     `/api/v1/record/entries/${entryId}/tags/${entryTagId}/reject`,
     { method: "POST", accessToken },
   );
+}
+
+// 개별 기록 AI 정리(키워드 후보 추출 포함)의 진행 상태만 필요해서 상태만 좁혀 반환한다.
+export async function getAiReflectionStatus(accessToken: string, entryId: string): Promise<AiJobStatus | null> {
+  const data = await apiFetch<components["schemas"]["EntryAiReflectionResponse"]>(
+    `/api/v1/record/entries/${entryId}/ai-reflection`,
+    { accessToken },
+  );
+  return data?.status ?? null;
 }
 
 export async function getSystemTags(accessToken: string): Promise<TagSummary[]> {

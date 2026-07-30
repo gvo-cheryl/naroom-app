@@ -19,6 +19,18 @@ export default function AppTabs() {
           renderingMode="template"
         />
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="lifetime">
+        <NativeTabs.Trigger.Label>LifeTime</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'clock', selected: 'clock.fill' }} md="schedule" />
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="challenge">
+        <NativeTabs.Trigger.Label>작은 실험</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'leaf', selected: 'leaf.fill' }} md="eco" />
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="me">
+        <NativeTabs.Trigger.Label>내 정보</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf={{ default: 'person', selected: 'person.fill' }} md="person" />
+      </NativeTabs.Trigger>
     </NativeTabs>
   );
 }

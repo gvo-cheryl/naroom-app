@@ -11,6 +11,7 @@ export type EntryStatus = components["schemas"]["EntryResponse"]["status"] & str
 export type TagCategory = components["schemas"]["TagResponse"]["category"] & string;
 export type TagScope = components["schemas"]["TagResponse"]["scope"] & string;
 export type EntryTagState = components["schemas"]["EntryTagResponse"]["state"] & string;
+export type AiJobStatus = components["schemas"]["EntryAiReflectionResponse"]["status"] & string;
 
 export interface AccountSummary {
   memberId: string;

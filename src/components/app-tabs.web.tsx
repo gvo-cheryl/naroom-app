@@ -22,6 +22,15 @@ export default function AppTabs() {
           <TabTrigger name="home" href="/(app)/home" asChild>
             <TabButton>홈</TabButton>
           </TabTrigger>
+          <TabTrigger name="lifetime" href="/(app)/lifetime" asChild>
+            <TabButton>LifeTime</TabButton>
+          </TabTrigger>
+          <TabTrigger name="challenge" href="/(app)/challenge" asChild>
+            <TabButton>작은 실험</TabButton>
+          </TabTrigger>
+          <TabTrigger name="me" href="/(app)/me" asChild>
+            <TabButton>내 정보</TabButton>
+          </TabTrigger>
         </CustomTabList>
       </TabList>
     </Tabs>

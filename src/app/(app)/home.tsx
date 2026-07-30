@@ -1,11 +1,12 @@
 import { useFocusEffect, router } from 'expo-router';
+import { SymbolView } from 'expo-symbols';
 import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { getTodayCheckIn, listEntries } from '@/api';
+import { getTodayCheckIn, getTodayQuote, listEntries, saveQuote, unsaveQuote } from '@/api';
 import { ApiError } from '@/api/errors';
-import type { CheckInSummary, EntrySummary } from '@/api/types';
+import type { CheckInSummary, EntrySummary, QuoteSummary } from '@/api/types';
 import { useAuth } from '@/auth/AuthContext';
 import { getValidAccessToken } from '@/auth/authManager';
 import { LevelBar } from '@/components/level-bar';
@@ -29,6 +30,8 @@ export default function HomeScreen() {
 
   const [todayCheckIn, setTodayCheckIn] = useState<CheckInSummary | null>(null);
   const [latestEntry, setLatestEntry] = useState<EntrySummary | null>(null);
+  const [todayQuote, setTodayQuote] = useState<QuoteSummary | null>(null);
+  const [savingQuote, setSavingQuote] = useState(false);
 
   // 체크인/기록을 마치고 돌아올 때마다 홈에 최신 상태가 보이도록 화면에 다시 포커스될 때마다 새로고침한다.
   useFocusEffect(
@@ -40,12 +43,17 @@ export default function HomeScreen() {
           if (!accessToken) {
             return;
           }
-          const [checkIn, entries] = await Promise.all([getTodayCheckIn(accessToken), listEntries(accessToken)]);
+          const [checkIn, entries, quote] = await Promise.all([
+            getTodayCheckIn(accessToken),
+            listEntries(accessToken),
+            getTodayQuote(accessToken),
+          ]);
           if (cancelled) {
             return;
           }
           setTodayCheckIn(checkIn);
           setLatestEntry(entries.find((entry) => VISIBLE_ENTRY_TYPES.includes(entry.entryType)) ?? null);
+          setTodayQuote(quote);
         } catch (error) {
           logger.error('home', 'failed to load home summary', {
             code: error instanceof ApiError ? error.code : undefined,
@@ -58,6 +66,36 @@ export default function HomeScreen() {
     }, []),
   );
 
+  const handleToggleSaveQuote = async () => {
+    if (!todayQuote || savingQuote) {
+      return;
+    }
+    const nextSaved = !todayQuote.saved;
+    setTodayQuote({ ...todayQuote, saved: nextSaved });
+    setSavingQuote(true);
+    try {
+      const accessToken = await getValidAccessToken();
+      if (!accessToken) {
+        return;
+      }
+      if (nextSaved) {
+        await saveQuote(accessToken, todayQuote.id);
+      } else {
+        await unsaveQuote(accessToken, todayQuote.id);
+      }
+      // 낙관적 업데이트만 믿지 않고 서버 상태를 다시 확인해서 실제 저장 여부와 어긋나지 않게 한다.
+      const refreshed = await getTodayQuote(accessToken);
+      setTodayQuote(refreshed);
+    } catch (error) {
+      logger.error('home', 'failed to toggle quote save', {
+        code: error instanceof ApiError ? error.code : undefined,
+      });
+      setTodayQuote((prev) => (prev ? { ...prev, saved: !nextSaved } : prev));
+    } finally {
+      setSavingQuote(false);
+    }
+  };
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -68,6 +106,56 @@ export default function HomeScreen() {
           <ThemedText type="heading" style={styles.heading}>
             {displayName ? `${displayName}님,\n` : ''}오늘은 어떤 마음으로{'\n'}시작하고 있나요?
           </ThemedText>
+
+          {todayQuote && (
+            <ThemedView type="backgroundElement" style={[styles.card, styles.cardFilled]}>
+              <View style={styles.quoteHeader}>
+                <SectionHeading icon={{ ios: 'quote.opening', android: 'format_quote' }} title="오늘의 문장" />
+                <Pressable
+                  onPress={() => router.push('/quotes/saved')}
+                  hitSlop={8}
+                  style={styles.savedQuotesLink}
+                  accessibilityLabel="저장한 문장 모음">
+                  <SymbolView
+                    name={{ ios: 'bookmark', android: 'bookmark_border' }}
+                    size={20}
+                    tintColor={theme.textTertiary}
+                  />
+                </Pressable>
+              </View>
+              <ThemedText type="heading" style={styles.quoteText}>
+                {todayQuote.text}
+              </ThemedText>
+              {todayQuote.authorName && (
+                <ThemedText type="small" themeColor="textTertiary" style={styles.quoteAuthor}>
+                  — {todayQuote.authorName}
+                </ThemedText>
+              )}
+              <View style={styles.quoteActions}>
+                <Pressable
+                  onPress={handleToggleSaveQuote}
+                  disabled={savingQuote}
+                  hitSlop={8}
+                  style={styles.heartButton}
+                  accessibilityLabel={todayQuote.saved ? '저장 취소' : '문장 저장'}>
+                  <SymbolView
+                    name={{
+                      ios: todayQuote.saved ? 'heart.fill' : 'heart',
+                      android: todayQuote.saved ? 'favorite' : 'favorite_border',
+                    }}
+                    size={22}
+                    tintColor={todayQuote.saved ? theme.text : theme.textTertiary}
+                  />
+                </Pressable>
+                <AppButton
+                  title="이 문장으로 기록하기"
+                  variant="ghost"
+                  style={styles.quoteActionButton}
+                  onPress={() => router.push({ pathname: '/record/write', params: { type: 'QUOTE_REFLECTION' } })}
+                />
+              </View>
+            </ThemedView>
+          )}
 
           {todayCheckIn ? (
             <ThemedView type="backgroundElement" style={[styles.card, styles.cardFilled]}>
@@ -187,6 +275,38 @@ const styles = StyleSheet.create({
   },
   cardFilled: {
     alignItems: 'stretch',
+  },
+  quoteHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  savedQuotesLink: {
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quoteText: {
+    marginTop: Spacing.three,
+  },
+  quoteAuthor: {
+    marginTop: Spacing.two,
+  },
+  quoteActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+    marginTop: Spacing.four,
+  },
+  heartButton: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quoteActionButton: {
+    flex: 1,
   },
   cardHint: {
     marginTop: Spacing.one,

@@ -96,6 +96,12 @@ export interface QuoteSummary {
   text: string;
   authorName: string | null;
   sourceName: string | null;
+  saved: boolean;
+}
+
+export interface SavedQuoteSummary {
+  quote: QuoteSummary;
+  savedAt: string;
 }
 
 export interface EntryAiReflectionSummary {
@@ -317,5 +323,17 @@ export function toQuoteSummary(
     text: requireField(quote.text, "quote.text", context),
     authorName: quote.authorName ?? null,
     sourceName: quote.sourceName ?? null,
+    saved: quote.saved ?? false,
+  };
+}
+
+export function toSavedQuoteSummary(
+  raw: components["schemas"]["SavedQuoteResponse"] | undefined,
+  context: string,
+): SavedQuoteSummary {
+  const saved = requireField(raw, "saved", context);
+  return {
+    quote: toQuoteSummary(saved.quote, `${context}.quote`),
+    savedAt: requireField(saved.savedAt, "saved.savedAt", context),
   };
 }

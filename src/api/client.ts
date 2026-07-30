@@ -3,7 +3,7 @@ import { logger } from "@/lib/logger";
 import { ApiError, ApiNetworkError } from "./errors";
 
 interface ApiFetchOptions {
-  method?: "GET" | "POST" | "PUT" | "PATCH";
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
   accessToken?: string;
 }

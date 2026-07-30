@@ -6,6 +6,11 @@ import type { components } from "./generated/openapi.types";
 
 export type AccountStatus = components["schemas"]["AccountSummary"]["status"] & string;
 export type NextAction = components["schemas"]["KakaoLoginResponse"]["nextAction"] & string;
+export type EntryType = components["schemas"]["EntryResponse"]["entryType"] & string;
+export type EntryStatus = components["schemas"]["EntryResponse"]["status"] & string;
+export type TagCategory = components["schemas"]["TagResponse"]["category"] & string;
+export type TagScope = components["schemas"]["TagResponse"]["scope"] & string;
+export type EntryTagState = components["schemas"]["EntryTagResponse"]["state"] & string;
 
 export interface AccountSummary {
   memberId: string;
@@ -58,6 +63,39 @@ export interface OnboardingCompleteResult {
   nextAction: NextAction;
 }
 
+export interface EntrySummary {
+  id: string;
+  entryType: EntryType;
+  status: EntryStatus;
+  title: string | null;
+  body: string | null;
+  recordDate: string;
+  quoteId: string | null;
+  aiProcessingAllowed: boolean;
+  publishedAt: string | null;
+  version: number;
+}
+
+export interface TagSummary {
+  id: string;
+  scope: TagScope;
+  category: TagCategory;
+  name: string;
+}
+
+export interface EntryTagSummary {
+  id: string;
+  tag: TagSummary;
+  state: EntryTagState;
+}
+
+export interface QuoteSummary {
+  id: string;
+  text: string;
+  authorName: string | null;
+  sourceName: string | null;
+}
+
 // 성공 응답의 data가 계약대로라면 항상 있어야 하는데 비어 있으면, 조용히 넘어가지 않고
 // 바로 알 수 있는 에러로 실패시킨다(뒤에서 undefined 관련 버그로 나타나는 것보다 낫다).
 export function requireData<T>(data: T | undefined, context: string): T {
@@ -96,5 +134,59 @@ export function toSessionSummary(
   return {
     id: requireField(session.id, "session.id", context),
     expiresAt: requireField(session.expiresAt, "session.expiresAt", context),
+  };
+}
+
+export function toEntrySummary(
+  raw: components["schemas"]["EntryResponse"] | undefined,
+  context: string,
+): EntrySummary {
+  const entry = requireField(raw, "entry", context);
+  return {
+    id: requireField(entry.id, "entry.id", context),
+    entryType: requireField(entry.entryType, "entry.entryType", context),
+    status: requireField(entry.status, "entry.status", context),
+    title: entry.title ?? null,
+    body: entry.body ?? null,
+    recordDate: requireField(entry.recordDate, "entry.recordDate", context),
+    quoteId: entry.quoteId ?? null,
+    aiProcessingAllowed: requireField(entry.aiProcessingAllowed, "entry.aiProcessingAllowed", context),
+    publishedAt: entry.publishedAt ?? null,
+    version: requireField(entry.version, "entry.version", context),
+  };
+}
+
+export function toTagSummary(raw: components["schemas"]["TagResponse"] | undefined, context: string): TagSummary {
+  const tag = requireField(raw, "tag", context);
+  return {
+    id: requireField(tag.id, "tag.id", context),
+    scope: requireField(tag.scope, "tag.scope", context),
+    category: requireField(tag.category, "tag.category", context),
+    name: requireField(tag.name, "tag.name", context),
+  };
+}
+
+export function toEntryTagSummary(
+  raw: components["schemas"]["EntryTagResponse"] | undefined,
+  context: string,
+): EntryTagSummary {
+  const entryTag = requireField(raw, "entryTag", context);
+  return {
+    id: requireField(entryTag.id, "entryTag.id", context),
+    tag: toTagSummary(entryTag.tag, `${context}.tag`),
+    state: requireField(entryTag.state, "entryTag.state", context),
+  };
+}
+
+export function toQuoteSummary(
+  raw: components["schemas"]["QuoteResponse"] | undefined,
+  context: string,
+): QuoteSummary {
+  const quote = requireField(raw, "quote", context);
+  return {
+    id: requireField(quote.id, "quote.id", context),
+    text: requireField(quote.text, "quote.text", context),
+    authorName: quote.authorName ?? null,
+    sourceName: quote.sourceName ?? null,
   };
 }

@@ -1,13 +1,15 @@
+import { router } from 'expo-router';
 import { ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/auth/AuthContext';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { AppButton } from '@/components/ui/app-button';
 import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 
-// 프로토타입 H01(홈)의 인사 톤만 가져온 간략 버전이다. 체크인·기록·작은 실험 등은
-// 아직 해당 API가 없어 오늘 범위에 넣지 않는다.
+// 프로토타입 H01(홈)의 인사 톤만 가져온 간략 버전이다. 체크인·작은 실험 등은
+// 아직 해당 API가 없어 이번 범위에 넣지 않는다. 기록 작성(R01~)만 연결한다.
 export default function HomeScreen() {
   const { state, logout } = useAuth();
   const displayName = state.status === 'active' ? state.account.displayName : '';
@@ -28,6 +30,11 @@ export default function HomeScreen() {
             <ThemedText type="small" themeColor="textTertiary" style={styles.emptyHint}>
               한 문장만 남겨도 충분해요.
             </ThemedText>
+            <AppButton
+              title="지금 기록하기"
+              style={styles.recordButton}
+              onPress={() => router.push('/record/type')}
+            />
           </ThemedView>
         </ScrollView>
 
@@ -65,6 +72,9 @@ const styles = StyleSheet.create({
   },
   emptyHint: {
     marginTop: Spacing.one,
+  },
+  recordButton: {
+    marginTop: Spacing.three,
   },
   logout: {
     textAlign: 'center',

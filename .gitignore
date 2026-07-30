@@ -61,3 +61,7 @@ CLAUDE.local.md
 
 # Generated documentation previews
 site/
+
+# Personal working notes: open decisions, caveats, things to revisit later.
+# Not part of the approved product/API contract docs, so not committed.
+docs/notes/

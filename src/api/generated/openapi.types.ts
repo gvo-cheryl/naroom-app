@@ -820,6 +820,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/experiments/missions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getMissions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/content/topics": {
         parameters: {
             query?: never;
@@ -1700,6 +1716,21 @@ export interface components {
             /** Format: int32 */
             durationDays?: number;
             missions?: components["schemas"]["ExperimentProgramMissionResponse"][];
+        };
+        ApiResponseListExperimentMissionCatalogResponse: {
+            data?: components["schemas"]["ExperimentMissionCatalogResponse"][];
+        };
+        ExperimentMissionCatalogResponse: {
+            /** Format: uuid */
+            id?: string;
+            code?: string;
+            title?: string;
+            description?: string;
+            topicCode?: string;
+            /** @enum {string} */
+            missionType?: "OBSERVATION" | "QUESTION" | "ACTION" | "RECORD" | "REVIEW";
+            /** Format: int32 */
+            estimatedMinutes?: number;
         };
         ApiResponseListQuoteTopicResponse: {
             data?: components["schemas"]["QuoteTopicResponse"][];
@@ -3126,6 +3157,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseExperimentRandomProgramResponse"];
+                };
+            };
+        };
+    };
+    getMissions: {
+        parameters: {
+            query?: {
+                topicCode?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListExperimentMissionCatalogResponse"];
                 };
             };
         };

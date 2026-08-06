@@ -1044,3 +1044,19 @@ export function toExperimentUserComposedProgramResult(
     missionCount: requireField(result.missionCount, "result.missionCount", context),
   };
 }
+
+export interface ExperimentPauseResult {
+  userExperimentProgramId: string;
+  status: ExperimentProgramStatus;
+}
+
+export function toExperimentPauseResult(
+  raw: components["schemas"]["ExperimentPauseResponse"] | undefined,
+  context: string,
+): ExperimentPauseResult {
+  const result = requireField(raw, "result", context);
+  return {
+    userExperimentProgramId: requireField(result.userExperimentProgramId, "result.userExperimentProgramId", context),
+    status: requireField(result.status, "result.status", context) as ExperimentProgramStatus,
+  };
+}

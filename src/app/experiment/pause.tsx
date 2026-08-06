@@ -7,6 +7,7 @@ import {
   endEarlyExperimentProgram,
   getActiveExperimentProgram,
   getExperimentProgramMissions,
+  pauseExperimentProgram,
   recordExperimentMission,
 } from '@/api';
 import { ApiError } from '@/api/errors';
@@ -27,8 +28,9 @@ function todayIsoDate(): string {
   return `${now.getFullYear()}-${month}-${day}`;
 }
 
-// 프로토타입 E11(쉬기·변경하기)에 대응한다. 며칠 쉬기·나중에 다시 시작하기(PAUSED 전환)는
-// 8-D/8-E에서 이미 범위 밖으로 결정됐다(설계 문서에 상세 스펙 없음).
+// 프로토타입 E11(쉬기·변경하기)에 대응한다. 설계 문서 §11.6(DEC-04)에 따라 "며칠 쉬기"와
+// "나중에 다시 시작하기"는 같은 PAUSED 전환이라 버튼 하나("쉬어가기")로 합쳤다. 재개는 자동이라
+// (DEC-05) 별도의 "다시 시작하기" 버튼은 없다 - 다음에 아무 미션이나 기록하면 자동으로 돌아온다.
 export default function ExperimentPauseScreen() {
   const theme = useTheme();
   const [loading, setLoading] = useState(true);
@@ -111,6 +113,27 @@ export default function ExperimentPauseScreen() {
     }
   };
 
+  const handlePause = async () => {
+    if (!program || submitting) {
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const accessToken = await getValidAccessToken();
+      if (!accessToken) {
+        return;
+      }
+      await pauseExperimentProgram(accessToken, program.userExperimentProgramId);
+      router.replace('/(app)/challenge');
+    } catch (error) {
+      logger.error('experiment.pause', 'failed to pause program', {
+        code: error instanceof ApiError ? error.code : undefined,
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleOpenDayPicker = async () => {
     if (!program || dayPickerLoading) {
       return;
@@ -169,6 +192,10 @@ export default function ExperimentPauseScreen() {
             </ThemedText>
             <View style={styles.stack}>
               <AppButton title="오늘 하루 쉬기" loading={submitting} onPress={handleRestToday} />
+              <AppButton title="며칠 쉬어가기" variant="ghost" loading={submitting} onPress={handlePause} />
+              <ThemedText type="small" themeColor="textTertiary" style={styles.pauseHint}>
+                언제 돌아올지 정하지 않아도 괜찮아요. 다시 기록하면 자동으로 이어져요.
+              </ThemedText>
               <AppButton title="남은 미션 바꾸기" variant="ghost" loading={dayPickerLoading} onPress={handleOpenDayPicker} />
               {dayPickerOpen && (
                 <View style={styles.dayList}>
@@ -228,6 +255,10 @@ const styles = StyleSheet.create({
   stack: {
     gap: Spacing.two,
     marginTop: Spacing.four,
+  },
+  pauseHint: {
+    marginTop: -Spacing.one,
+    marginBottom: Spacing.one,
   },
   dayList: {
     gap: Spacing.two,

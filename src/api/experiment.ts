@@ -9,6 +9,7 @@ import {
   toExperimentMissionReplaceResult,
   toExperimentMissionSummary,
   toExperimentPastProgramSummary,
+  toExperimentPauseResult,
   toExperimentProgramDetailSummary,
   toExperimentProgramMissionsSummary,
   toExperimentProgramSummary,
@@ -27,6 +28,7 @@ import {
   type ExperimentMissionSummary,
   type ExperimentMissionType,
   type ExperimentPastProgramSummary,
+  type ExperimentPauseResult,
   type ExperimentProgramDetailSummary,
   type ExperimentProgramMissionsSummary,
   type ExperimentProgramSummary,
@@ -380,4 +382,18 @@ export async function activateSavedExperimentProgram(
     "activateSavedExperimentProgram",
   );
   return toExperimentStartedProgramSummary(data, "activateSavedExperimentProgram");
+}
+
+export async function pauseExperimentProgram(
+  accessToken: string,
+  userExperimentProgramId: string,
+): Promise<ExperimentPauseResult> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentPauseResponse"]>(
+      `/api/v1/experiments/user-programs/${userExperimentProgramId}/pause`,
+      { method: "POST", accessToken },
+    ),
+    "pauseExperimentProgram",
+  );
+  return toExperimentPauseResult(data, "pauseExperimentProgram");
 }

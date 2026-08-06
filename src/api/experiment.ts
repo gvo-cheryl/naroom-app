@@ -6,6 +6,8 @@ import {
   toExperimentCourseReviewResult,
   toExperimentEndEarlyResult,
   toExperimentMissionRecordResult,
+  toExperimentMissionReplaceResult,
+  toExperimentMissionSummary,
   toExperimentPastProgramSummary,
   toExperimentProgramDetailSummary,
   toExperimentProgramSummary,
@@ -19,6 +21,8 @@ import {
   type ExperimentCourseReviewResult,
   type ExperimentEndEarlyResult,
   type ExperimentMissionRecordResult,
+  type ExperimentMissionReplaceResult,
+  type ExperimentMissionSummary,
   type ExperimentPastProgramSummary,
   type ExperimentProgramDetailSummary,
   type ExperimentProgramSummary,
@@ -132,9 +136,15 @@ export async function getRandomExperimentProgram(
   return toExperimentRandomProgramSummary(data, "getRandomExperimentProgram");
 }
 
+export interface ExperimentMissionOverride {
+  dayNumber: number;
+  missionId: string;
+}
+
 export interface StartOrSaveExperimentProgramOptions {
   recommendationId?: string;
   replaceActiveProgram?: boolean;
+  missionOverrides?: ExperimentMissionOverride[];
 }
 
 export async function startExperimentProgram(
@@ -150,6 +160,7 @@ export async function startExperimentProgram(
         body: {
           recommendationId: options.recommendationId,
           replaceActiveProgram: options.replaceActiveProgram ?? false,
+          missionOverrides: options.missionOverrides,
         },
         accessToken,
       },
@@ -172,6 +183,7 @@ export async function saveExperimentProgram(
         body: {
           recommendationId: options.recommendationId,
           replaceActiveProgram: options.replaceActiveProgram ?? false,
+          missionOverrides: options.missionOverrides,
         },
         accessToken,
       },
@@ -269,4 +281,41 @@ export async function endEarlyExperimentProgram(
     "endEarlyExperimentProgram",
   );
   return toExperimentEndEarlyResult(data, "endEarlyExperimentProgram");
+}
+
+export async function getExperimentMissions(
+  accessToken: string,
+  topicCode?: string,
+): Promise<ExperimentMissionSummary[]> {
+  const query = topicCode ? `?topicCode=${encodeURIComponent(topicCode)}` : "";
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentMissionCatalogResponse"][]>(
+      `/api/v1/experiments/missions${query}`,
+      { accessToken },
+    ),
+    "getExperimentMissions",
+  );
+  return data.map((mission, index) => toExperimentMissionSummary(mission, `getExperimentMissions[${index}]`));
+}
+
+export interface ReplaceExperimentMissionRequest {
+  replacementMissionId: string;
+  reasonCode?: "TOO_HEAVY" | "NOT_RELEVANT" | "NOT_A_FIT" | "WANT_LIGHTER" | "WANT_DIFFERENT_TYPE" | "RANDOM" | "OTHER";
+  reasonNote?: string;
+}
+
+export async function replaceExperimentMission(
+  accessToken: string,
+  userExperimentProgramId: string,
+  userProgramMissionId: string,
+  request: ReplaceExperimentMissionRequest,
+): Promise<ExperimentMissionReplaceResult> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentMissionReplaceResponse"]>(
+      `/api/v1/experiments/user-programs/${userExperimentProgramId}/missions/${userProgramMissionId}/replace`,
+      { method: "POST", body: request, accessToken },
+    ),
+    "replaceExperimentMission",
+  );
+  return toExperimentMissionReplaceResult(data, "replaceExperimentMission");
 }

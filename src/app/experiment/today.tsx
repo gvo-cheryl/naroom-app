@@ -23,8 +23,7 @@ function todayIsoDate(): string {
   return `${now.getFullYear()}-${month}-${day}`;
 }
 
-// 프로토타입 E08(오늘의 작은 실험)에 대응한다. 다른 미션으로 바꾸기(mission:swap)는 대체 미션을
-// 조회할 공개 API가 없어 이번 범위에서 제외한다(E06과 같은 이유).
+// 프로토타입 E08(오늘의 작은 실험)에 대응한다.
 export default function ExperimentTodayMissionScreen() {
   const theme = useTheme();
   const [loading, setLoading] = useState(true);
@@ -134,6 +133,21 @@ export default function ExperimentTodayMissionScreen() {
 
               <View style={styles.actions}>
                 <AppButton title="해보고 기록하기" onPress={() => router.push('/experiment/record')} />
+                <AppButton
+                  title="다른 미션으로 바꾸기"
+                  variant="ghost"
+                  onPress={() =>
+                    router.push({
+                      pathname: '/experiment/swap',
+                      params: {
+                        mode: 'apply',
+                        userExperimentProgramId: program.userExperimentProgramId,
+                        userProgramMissionId: program.todayMission!.userProgramMissionId,
+                        excludeMissionIds: program.todayMission!.missionId,
+                      },
+                    })
+                  }
+                />
                 <AppButton title="오늘은 쉬기" variant="quiet" loading={resting} onPress={handleRestToday} />
               </View>
             </>

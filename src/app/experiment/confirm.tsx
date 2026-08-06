@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -29,11 +29,17 @@ type ConfirmParams = {
   programId?: string;
   durationDays?: string;
   recommendationId?: string;
+  swapDay?: string;
+  swapMissionId?: string;
+  swapMissionCode?: string;
+  swapMissionTitle?: string;
+  swapMissionType?: string;
+  swapMissionMinutes?: string;
 };
 
-// 프로토타입 E05(코스 구성 확인)에 대응한다. 미션 교체(E06)는 대체 미션을 조회할 공개 API가
-// 없어 이번 범위에서는 원본 구성 그대로 시작·저장만 지원한다. mode=random일 때는 미리보기와
-// 실제 시작이 서버에서 각각 새로 무작위 구성되므로 결과가 다를 수 있다(Beta 1 "제한적 랜덤"으로 허용).
+// 프로토타입 E05(코스 구성 확인)에 대응한다. mode=random일 때는 미리보기와 실제 시작이 서버에서
+// 각각 새로 무작위 구성되므로(§startRandomProgram이 missionOverrides를 받지 않음) 결과가 다를 수
+// 있다(Beta 1 "제한적 랜덤"으로 허용) - 그래서 미션 교체는 mode=template에서만 지원한다.
 export default function ExperimentConfirmScreen() {
   const theme = useTheme();
   const params = useLocalSearchParams<ConfirmParams>();
@@ -42,8 +48,10 @@ export default function ExperimentConfirmScreen() {
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState('');
   const [missions, setMissions] = useState<ExperimentCatalogMissionSummary[]>([]);
+  const [overrides, setOverrides] = useState<Record<number, ExperimentCatalogMissionSummary>>({});
   const [submitting, setSubmitting] = useState(false);
   const [conflictOpen, setConflictOpen] = useState(false);
+  const appliedSwapRef = useRef<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -81,6 +89,50 @@ export default function ExperimentConfirmScreen() {
     };
   }, [params.mode, params.programId, durationDays]);
 
+  useEffect(() => {
+    if (!params.swapDay || !params.swapMissionId) {
+      return;
+    }
+    const signature = `${params.swapDay}:${params.swapMissionId}`;
+    if (appliedSwapRef.current === signature) {
+      return;
+    }
+    appliedSwapRef.current = signature;
+    const dayNumber = Number(params.swapDay);
+    setOverrides((prev) => ({
+      ...prev,
+      [dayNumber]: {
+        dayNumber,
+        missionId: params.swapMissionId!,
+        missionCode: params.swapMissionCode ?? '',
+        title: params.swapMissionTitle ?? '',
+        missionType: params.swapMissionType ?? '',
+        estimatedMinutes: params.swapMissionMinutes ? Number(params.swapMissionMinutes) : 0,
+      },
+    }));
+  }, [params.swapDay, params.swapMissionId, params.swapMissionCode, params.swapMissionTitle, params.swapMissionType, params.swapMissionMinutes]);
+
+  const displayMissions = missions.map((mission) => overrides[mission.dayNumber] ?? mission);
+
+  const handleSwapPress = (dayNumber: number) => {
+    const excludeMissionIds = displayMissions
+      .filter((mission) => mission.dayNumber !== dayNumber)
+      .map((mission) => mission.missionId)
+      .join(',');
+    router.push({
+      pathname: '/experiment/swap',
+      params: {
+        mode: 'draft',
+        dayNumber: String(dayNumber),
+        excludeMissionIds,
+        confirmMode: params.mode,
+        programId: params.programId,
+        durationDays: params.durationDays,
+        recommendationId: params.recommendationId,
+      },
+    });
+  };
+
   const startOrSave = async (action: 'start' | 'save', replaceActiveProgram = false) => {
     setSubmitting(true);
     try {
@@ -88,15 +140,21 @@ export default function ExperimentConfirmScreen() {
       if (!accessToken) {
         return;
       }
+      const missionOverrides = Object.values(overrides).map((mission) => ({
+        dayNumber: mission.dayNumber,
+        missionId: mission.missionId,
+      }));
       if (params.mode === 'template' && params.programId) {
         if (action === 'start') {
           await startExperimentProgram(accessToken, params.programId, {
             recommendationId: params.recommendationId,
             replaceActiveProgram,
+            missionOverrides,
           });
         } else {
           await saveExperimentProgram(accessToken, params.programId, {
             recommendationId: params.recommendationId,
+            missionOverrides,
           });
         }
       } else if (params.mode === 'random' && durationDays) {
@@ -131,19 +189,41 @@ export default function ExperimentConfirmScreen() {
               </ThemedText>
               <ThemedText type="small" themeColor="textTertiary" style={styles.lead}>
                 {missions.length}일 동안 이런 순서로 진행돼요.
+                {params.mode === 'template' ? ' 바꾸고 싶은 날을 눌러 다른 미션으로 교체할 수 있어요.' : ''}
               </ThemedText>
 
               <View style={styles.stack}>
-                {missions.map((mission) => (
-                  <ThemedView key={`${mission.dayNumber}-${mission.missionId}`} type="backgroundElement" style={styles.missionCard}>
-                    <ThemedText type="small" themeColor="textTertiary">
-                      Day {mission.dayNumber} · {missionTypeLabel(mission.missionType)}
-                    </ThemedText>
-                    <ThemedText type="default" style={styles.missionTitle}>
-                      {mission.title}
-                    </ThemedText>
-                  </ThemedView>
-                ))}
+                {displayMissions.map((mission) =>
+                  params.mode === 'template' ? (
+                    <Pressable
+                      key={`${mission.dayNumber}-${mission.missionId}`}
+                      onPress={() => handleSwapPress(mission.dayNumber)}
+                      style={[styles.missionCard, { borderColor: theme.border, borderWidth: 1 }]}>
+                      <View style={styles.missionRow}>
+                        <View style={styles.missionInfo}>
+                          <ThemedText type="small" themeColor="textTertiary">
+                            Day {mission.dayNumber} · {missionTypeLabel(mission.missionType)}
+                          </ThemedText>
+                          <ThemedText type="default" style={styles.missionTitle}>
+                            {mission.title}
+                          </ThemedText>
+                        </View>
+                        <ThemedText type="small" themeColor="textTertiary">
+                          바꾸기
+                        </ThemedText>
+                      </View>
+                    </Pressable>
+                  ) : (
+                    <ThemedView key={`${mission.dayNumber}-${mission.missionId}`} type="backgroundElement" style={styles.missionCard}>
+                      <ThemedText type="small" themeColor="textTertiary">
+                        Day {mission.dayNumber} · {missionTypeLabel(mission.missionType)}
+                      </ThemedText>
+                      <ThemedText type="default" style={styles.missionTitle}>
+                        {mission.title}
+                      </ThemedText>
+                    </ThemedView>
+                  ),
+                )}
               </View>
 
               <View style={styles.actions}>
@@ -230,6 +310,15 @@ const styles = StyleSheet.create({
   missionCard: {
     borderRadius: Radius.medium,
     padding: Spacing.four,
+  },
+  missionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.two,
+  },
+  missionInfo: {
+    flex: 1,
   },
   missionTitle: {
     marginTop: Spacing.one,

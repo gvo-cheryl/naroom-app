@@ -892,3 +892,51 @@ export function toExperimentCourseReviewResult(
       : null,
   };
 }
+
+export interface ExperimentMissionSummary {
+  id: string;
+  code: string;
+  title: string;
+  description: string;
+  topicCode: string;
+  missionType: string;
+  estimatedMinutes: number;
+}
+
+export function toExperimentMissionSummary(
+  raw: components["schemas"]["ExperimentMissionCatalogResponse"] | undefined,
+  context: string,
+): ExperimentMissionSummary {
+  const mission = requireField(raw, "mission", context);
+  return {
+    id: requireField(mission.id, "mission.id", context),
+    code: requireField(mission.code, "mission.code", context),
+    title: requireField(mission.title, "mission.title", context),
+    description: requireField(mission.description, "mission.description", context),
+    topicCode: requireField(mission.topicCode, "mission.topicCode", context),
+    missionType: requireField(mission.missionType, "mission.missionType", context),
+    estimatedMinutes: requireField(mission.estimatedMinutes, "mission.estimatedMinutes", context),
+  };
+}
+
+export interface ExperimentMissionReplaceResult {
+  userProgramMissionId: string;
+  dayNumber: number;
+  originalMissionId: string | null;
+  missionId: string;
+  replacementCount: number;
+}
+
+export function toExperimentMissionReplaceResult(
+  raw: components["schemas"]["ExperimentMissionReplaceResponse"] | undefined,
+  context: string,
+): ExperimentMissionReplaceResult {
+  const result = requireField(raw, "result", context);
+  return {
+    userProgramMissionId: requireField(result.userProgramMissionId, "result.userProgramMissionId", context),
+    dayNumber: requireField(result.dayNumber, "result.dayNumber", context),
+    originalMissionId: result.originalMissionId ?? null,
+    missionId: requireField(result.missionId, "result.missionId", context),
+    replacementCount: requireField(result.replacementCount, "result.replacementCount", context),
+  };
+}

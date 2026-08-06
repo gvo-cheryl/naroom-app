@@ -17,8 +17,9 @@ import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/th
 import { useTheme } from '@/hooks/use-theme';
 import { logger } from '@/lib/logger';
 
-// 프로토타입 E01(작은 실험 홈)에 대응한다. 코스 상세(E04)·진행 중 화면(E07/E08)은 이후 단계(9-B/9-C)에서
-// 만들어지므로, 이번 범위에서는 코스 카드와 진행 중 코스 요약을 눌러도 이동하지 않는 읽기 전용으로 둔다.
+// 프로토타입 E01(작은 실험 홈)에 대응한다. 진행 중 코스 화면(E07/E08)은 이후 단계(9-C)에서 만들어지므로,
+// 이번 범위에서는 진행 중 코스 요약 카드를 눌러도 이동하지 않는 읽기 전용으로 둔다. 코스 카드는 코스
+// 상세(E04)로 이동한다.
 export default function ChallengeScreen() {
   const theme = useTheme();
 
@@ -135,7 +136,11 @@ export default function ChallengeScreen() {
               <SectionHeading icon={{ ios: 'sparkles', android: 'auto_awesome' }} title="추천 코스" style={styles.sectionHeading} />
               <View style={styles.stack}>
                 {recommendations.map((recommendation) => (
-                  <ExperimentCourseCard key={recommendation.recommendationId} program={recommendation.program} />
+                  <ExperimentCourseCard
+                    key={recommendation.recommendationId}
+                    program={recommendation.program}
+                    recommendationId={recommendation.recommendationId}
+                  />
                 ))}
               </View>
             </>

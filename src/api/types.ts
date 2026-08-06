@@ -673,3 +673,147 @@ export function toExperimentRecommendationSummary(
     createdAt: requireField(recommendation.createdAt, "recommendation.createdAt", context),
   };
 }
+
+export interface ExperimentCatalogMissionSummary {
+  dayNumber: number;
+  missionId: string;
+  missionCode: string;
+  title: string;
+  missionType: string;
+  estimatedMinutes: number;
+}
+
+export interface ExperimentProgramDetailSummary {
+  id: string;
+  code: string;
+  title: string;
+  description: string;
+  durationDays: number;
+  primaryTopicCode: string;
+  isFeatured: boolean;
+  isBeginner: boolean;
+  estimatedMinutesMin: number;
+  estimatedMinutesMax: number;
+  missions: ExperimentCatalogMissionSummary[];
+}
+
+export interface ExperimentRandomProgramSummary {
+  durationDays: number;
+  missions: ExperimentCatalogMissionSummary[];
+}
+
+export interface ExperimentStartedProgramSummary {
+  userExperimentProgramId: string;
+  status: ExperimentProgramStatus;
+  title: string;
+  durationDays: number;
+  currentDay: number;
+  lookedAtMissionCount: number;
+  restedDateCount: number;
+  todayMission: ExperimentTodayMissionSummary | null;
+}
+
+export interface ExperimentSavedProgramSummary {
+  userExperimentProgramId: string;
+  status: ExperimentProgramStatus;
+  title: string;
+  durationDays: number;
+}
+
+function toExperimentCatalogMissionSummary(
+  raw: components["schemas"]["ExperimentProgramMissionResponse"] | undefined,
+  context: string,
+): ExperimentCatalogMissionSummary {
+  const mission = requireField(raw, "mission", context);
+  return {
+    dayNumber: requireField(mission.dayNumber, "mission.dayNumber", context),
+    missionId: requireField(mission.missionId, "mission.missionId", context),
+    missionCode: requireField(mission.missionCode, "mission.missionCode", context),
+    title: requireField(mission.title, "mission.title", context),
+    missionType: requireField(mission.missionType, "mission.missionType", context),
+    estimatedMinutes: requireField(mission.estimatedMinutes, "mission.estimatedMinutes", context),
+  };
+}
+
+export function toExperimentProgramDetailSummary(
+  raw: components["schemas"]["ExperimentProgramDetailResponse"] | undefined,
+  context: string,
+): ExperimentProgramDetailSummary {
+  const program = requireField(raw, "program", context);
+  return {
+    id: requireField(program.id, "program.id", context),
+    code: requireField(program.code, "program.code", context),
+    title: requireField(program.title, "program.title", context),
+    description: requireField(program.description, "program.description", context),
+    durationDays: requireField(program.durationDays, "program.durationDays", context),
+    primaryTopicCode: requireField(program.primaryTopicCode, "program.primaryTopicCode", context),
+    isFeatured: program.isFeatured ?? false,
+    isBeginner: program.isBeginner ?? false,
+    estimatedMinutesMin: requireField(program.estimatedMinutesMin, "program.estimatedMinutesMin", context),
+    estimatedMinutesMax: requireField(program.estimatedMinutesMax, "program.estimatedMinutesMax", context),
+    missions: (program.missions ?? []).map((mission, index) =>
+      toExperimentCatalogMissionSummary(mission, `${context}.missions[${index}]`),
+    ),
+  };
+}
+
+export function toExperimentRandomProgramSummary(
+  raw: components["schemas"]["ExperimentRandomProgramResponse"] | undefined,
+  context: string,
+): ExperimentRandomProgramSummary {
+  const random = requireField(raw, "random", context);
+  return {
+    durationDays: requireField(random.durationDays, "random.durationDays", context),
+    missions: (random.missions ?? []).map((mission, index) =>
+      toExperimentCatalogMissionSummary(mission, `${context}.missions[${index}]`),
+    ),
+  };
+}
+
+export function toExperimentStartedProgramSummary(
+  raw: components["schemas"]["ExperimentProgramStartResponse"] | undefined,
+  context: string,
+): ExperimentStartedProgramSummary {
+  const program = requireField(raw, "program", context);
+  return {
+    userExperimentProgramId: requireField(program.userExperimentProgramId, "program.userExperimentProgramId", context),
+    status: requireField(program.status, "program.status", context) as ExperimentProgramStatus,
+    title: requireField(program.title, "program.title", context),
+    durationDays: requireField(program.durationDays, "program.durationDays", context),
+    currentDay: requireField(program.currentDay, "program.currentDay", context),
+    lookedAtMissionCount: requireField(program.lookedAtMissionCount, "program.lookedAtMissionCount", context),
+    restedDateCount: requireField(program.restedDateCount, "program.restedDateCount", context),
+    todayMission: program.todayMission
+      ? {
+          dayNumber: requireField(program.todayMission.dayNumber, "program.todayMission.dayNumber", context),
+          missionId: requireField(program.todayMission.missionId, "program.todayMission.missionId", context),
+          missionCode: requireField(program.todayMission.missionCode, "program.todayMission.missionCode", context),
+          title: requireField(program.todayMission.title, "program.todayMission.title", context),
+          missionType: requireField(program.todayMission.missionType, "program.todayMission.missionType", context),
+          estimatedMinutes: requireField(
+            program.todayMission.estimatedMinutes,
+            "program.todayMission.estimatedMinutes",
+            context,
+          ),
+          userProgramMissionId: requireField(
+            program.todayMission.userProgramMissionId,
+            "program.todayMission.userProgramMissionId",
+            context,
+          ),
+        }
+      : null,
+  };
+}
+
+export function toExperimentSavedProgramSummary(
+  raw: components["schemas"]["ExperimentProgramSaveResponse"] | undefined,
+  context: string,
+): ExperimentSavedProgramSummary {
+  const program = requireField(raw, "program", context);
+  return {
+    userExperimentProgramId: requireField(program.userExperimentProgramId, "program.userExperimentProgramId", context),
+    status: requireField(program.status, "program.status", context) as ExperimentProgramStatus,
+    title: requireField(program.title, "program.title", context),
+    durationDays: requireField(program.durationDays, "program.durationDays", context),
+  };
+}

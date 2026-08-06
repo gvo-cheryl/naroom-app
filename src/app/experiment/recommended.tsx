@@ -16,8 +16,7 @@ import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { logger } from '@/lib/logger';
 
-// 프로토타입 E02(추천 코스)에 대응한다. "코스 추천받기"(랜덤 코스 시작, go:E05)는 9-B에서
-// 시작 플로우가 만들어진 뒤 연결한다 - 이번 범위에서는 실제 추천 목록만 보여준다.
+// 프로토타입 E02(추천 코스)에 대응한다.
 export default function RecommendedCoursesScreen() {
   const theme = useTheme();
   const [loading, setLoading] = useState(true);
@@ -61,7 +60,10 @@ export default function RecommendedCoursesScreen() {
             <View style={styles.stack}>
               {recommendations.map((recommendation) => (
                 <View key={recommendation.recommendationId}>
-                  <ExperimentCourseCard program={recommendation.program} />
+                  <ExperimentCourseCard
+                    program={recommendation.program}
+                    recommendationId={recommendation.recommendationId}
+                  />
                   <ThemedText type="small" themeColor="textTertiary" style={styles.reason}>
                     {recommendation.reasonText}
                   </ThemedText>
@@ -85,6 +87,27 @@ export default function RecommendedCoursesScreen() {
           <ThemedText type="small" themeColor="textTertiary" style={styles.note}>
             추천은 제안일 뿐이에요. 넘어가도 아무 일도 일어나지 않아요.
           </ThemedText>
+
+          <ThemedView type="backgroundElement" style={styles.randomCard}>
+            <ThemedText type="default">지금의 나를 가볍게 알아볼 코스를 대신 골라드릴까요?</ThemedText>
+            <ThemedText type="small" themeColor="textTertiary" style={styles.randomHint}>
+              같은 유형이 연속되지 않고, 첫날은 가볍게, 마지막 날은 회고로 구성돼요.
+            </ThemedText>
+            <View style={styles.randomButtons}>
+              <AppButton
+                title="3일 코스 받기"
+                variant="ghost"
+                style={styles.randomButton}
+                onPress={() => router.push('/experiment/confirm?mode=random&durationDays=3')}
+              />
+              <AppButton
+                title="7일 코스 받기"
+                variant="ghost"
+                style={styles.randomButton}
+                onPress={() => router.push('/experiment/confirm?mode=random&durationDays=7')}
+              />
+            </View>
+          </ThemedView>
         </ScrollView>
       </SafeAreaView>
     </ThemedView>
@@ -131,5 +154,21 @@ const styles = StyleSheet.create({
   note: {
     marginTop: Spacing.four,
     textAlign: 'center',
+  },
+  randomCard: {
+    marginTop: Spacing.four,
+    borderRadius: Radius.medium,
+    padding: Spacing.four,
+  },
+  randomHint: {
+    marginTop: Spacing.two,
+  },
+  randomButtons: {
+    flexDirection: 'row',
+    gap: Spacing.two,
+    marginTop: Spacing.three,
+  },
+  randomButton: {
+    flex: 1,
   },
 });

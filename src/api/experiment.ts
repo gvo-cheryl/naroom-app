@@ -4,13 +4,21 @@ import {
   requireData,
   toExperimentActiveProgramSummary,
   toExperimentPastProgramSummary,
+  toExperimentProgramDetailSummary,
   toExperimentProgramSummary,
+  toExperimentRandomProgramSummary,
   toExperimentRecommendationSummary,
+  toExperimentSavedProgramSummary,
+  toExperimentStartedProgramSummary,
   toExperimentTopicSummary,
   type ExperimentActiveProgramSummary,
   type ExperimentPastProgramSummary,
+  type ExperimentProgramDetailSummary,
   type ExperimentProgramSummary,
+  type ExperimentRandomProgramSummary,
   type ExperimentRecommendationSummary,
+  type ExperimentSavedProgramSummary,
+  type ExperimentStartedProgramSummary,
   type ExperimentTopicSummary,
 } from "./types";
 
@@ -87,4 +95,100 @@ export async function getExperimentRecommendations(accessToken: string): Promise
   return data.map((recommendation, index) =>
     toExperimentRecommendationSummary(recommendation, `getExperimentRecommendations[${index}]`),
   );
+}
+
+export async function getExperimentProgramDetail(
+  accessToken: string,
+  programId: string,
+): Promise<ExperimentProgramDetailSummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentProgramDetailResponse"]>(
+      `/api/v1/experiments/programs/${programId}`,
+      { accessToken },
+    ),
+    "getExperimentProgramDetail",
+  );
+  return toExperimentProgramDetailSummary(data, "getExperimentProgramDetail");
+}
+
+export async function getRandomExperimentProgram(
+  accessToken: string,
+  durationDays: number,
+): Promise<ExperimentRandomProgramSummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentRandomProgramResponse"]>(
+      `/api/v1/experiments/programs/random?days=${durationDays}`,
+      { accessToken },
+    ),
+    "getRandomExperimentProgram",
+  );
+  return toExperimentRandomProgramSummary(data, "getRandomExperimentProgram");
+}
+
+export interface StartOrSaveExperimentProgramOptions {
+  recommendationId?: string;
+  replaceActiveProgram?: boolean;
+}
+
+export async function startExperimentProgram(
+  accessToken: string,
+  programId: string,
+  options: StartOrSaveExperimentProgramOptions = {},
+): Promise<ExperimentStartedProgramSummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentProgramStartResponse"]>(
+      `/api/v1/experiments/programs/${programId}/start`,
+      {
+        method: "POST",
+        body: {
+          recommendationId: options.recommendationId,
+          replaceActiveProgram: options.replaceActiveProgram ?? false,
+        },
+        accessToken,
+      },
+    ),
+    "startExperimentProgram",
+  );
+  return toExperimentStartedProgramSummary(data, "startExperimentProgram");
+}
+
+export async function saveExperimentProgram(
+  accessToken: string,
+  programId: string,
+  options: StartOrSaveExperimentProgramOptions = {},
+): Promise<ExperimentSavedProgramSummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentProgramSaveResponse"]>(
+      `/api/v1/experiments/programs/${programId}/save`,
+      {
+        method: "POST",
+        body: {
+          recommendationId: options.recommendationId,
+          replaceActiveProgram: options.replaceActiveProgram ?? false,
+        },
+        accessToken,
+      },
+    ),
+    "saveExperimentProgram",
+  );
+  return toExperimentSavedProgramSummary(data, "saveExperimentProgram");
+}
+
+export async function startRandomExperimentProgram(
+  accessToken: string,
+  durationDays: number,
+  replaceActiveProgram = false,
+): Promise<ExperimentStartedProgramSummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentProgramStartResponse"]>(
+      "/api/v1/experiments/programs/random/start",
+      {
+        method: "POST",
+        body: { durationDays, replaceActiveProgram },
+        accessToken,
+      },
+    ),
+    "startRandomExperimentProgram",
+  );
+  return toExperimentStartedProgramSummary(data, "startRandomExperimentProgram");
 }

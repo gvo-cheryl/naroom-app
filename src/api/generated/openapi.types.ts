@@ -180,6 +180,182 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/experiments/user-programs/{userExperimentProgramId}/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["completeReview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/user-programs/{userExperimentProgramId}/missions/{userProgramMissionId}/replace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["replaceMission"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/user-programs/{userExperimentProgramId}/missions/{userProgramMissionId}/record": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["recordMission"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/user-programs/{userExperimentProgramId}/end-early": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["endEarly"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/user-programs/{userExperimentProgramId}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["activateSavedProgram"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/recommendations/{recommendationId}/view": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["viewRecommendation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/recommendations/{recommendationId}/dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["dismissRecommendation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/programs/{programId}/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["startProgram"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/programs/{programId}/save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["saveProgram"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/programs/user-composed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createUserComposedProgram"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/programs/random/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["startRandomProgram"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/content/quotes/{quoteId}/save": {
         parameters: {
             query?: never;
@@ -532,7 +708,39 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/content/topics": {
+    "/api/v1/experiments/user-programs/past": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPastPrograms"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/user-programs/active": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getActiveProgram"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/topics": {
         parameters: {
             query?: never;
             header?: never;
@@ -540,6 +748,86 @@ export interface paths {
             cookie?: never;
         };
         get: operations["getTopics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/recommendations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getRecommendations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/programs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPrograms"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/programs/{programId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getProgram"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/experiments/programs/random": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getRandomProgram"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/content/topics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getTopics_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -863,6 +1151,228 @@ export interface components {
             /** Format: date-time */
             completedAt?: string;
         };
+        ExperimentCourseReviewRequest: {
+            /** Format: int32 */
+            mostMemorableDay?: number;
+            /** Format: int32 */
+            leastBurdensomeDay?: number;
+            /** Format: int32 */
+            notFitDay?: number;
+            helpfulConditions?: string[];
+            difficultConditions?: string[];
+            discovery?: string;
+            continueAction?: string;
+            userSummary?: string;
+            requestAiReflection?: boolean;
+        };
+        ApiResponseExperimentCourseReviewResponse: {
+            data?: components["schemas"]["ExperimentCourseReviewResponse"];
+        };
+        ExperimentAiJobSummary: {
+            /** @enum {string} */
+            featureType?: "ENTRY_REFLECTION" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "CONVERSATION_REPLY" | "CONVERSATION_SUMMARY";
+            /** @enum {string} */
+            status?: "PENDING" | "PROCESSING" | "COMPLETED" | "BLOCKED" | "SAFETY_SUPPORT" | "FAILED";
+            note?: string;
+        };
+        ExperimentCourseReviewResponse: {
+            /** @enum {string} */
+            status?: "READY" | "IN_PROGRESS" | "PAUSED" | "AWAITING_REVIEW" | "COMPLETED" | "ENDED_EARLY";
+            lifeTimeEntryCreated?: boolean;
+            aiJob?: components["schemas"]["ExperimentAiJobSummary"];
+        };
+        ExperimentMissionReplaceRequest: {
+            /** Format: uuid */
+            replacementMissionId: string;
+            /** @enum {string} */
+            reasonCode?: "TOO_HEAVY" | "NOT_RELEVANT" | "NOT_A_FIT" | "WANT_LIGHTER" | "WANT_DIFFERENT_TYPE" | "RANDOM" | "OTHER";
+            reasonNote?: string;
+        };
+        ApiResponseExperimentMissionReplaceResponse: {
+            data?: components["schemas"]["ExperimentMissionReplaceResponse"];
+        };
+        ExperimentMissionReplaceResponse: {
+            /** Format: uuid */
+            userProgramMissionId?: string;
+            /** Format: int32 */
+            dayNumber?: number;
+            /** Format: uuid */
+            originalMissionId?: string;
+            /** Format: uuid */
+            missionId?: string;
+            /** Format: int32 */
+            replacementCount?: number;
+        };
+        ExperimentMissionRecordRequest: {
+            /** @enum {string} */
+            attemptStatus: "DONE" | "PARTIALLY_DONE" | "RESTED" | "TRIED_DIFFERENTLY" | "NOT_A_FIT" | "RECORD_ONLY";
+            /** Format: date */
+            recordDate: string;
+            responseText?: string;
+            responseData?: unknown;
+            emotionTagIds?: string[];
+            /** Format: int32 */
+            energyLevel?: number;
+            reflection?: string;
+            createLifeTimeEntry?: boolean;
+        };
+        ApiResponseExperimentMissionRecordResponse: {
+            data?: components["schemas"]["ExperimentMissionRecordResponse"];
+        };
+        ExperimentMissionRecordResponse: {
+            /** @enum {string} */
+            attemptStatus?: "DONE" | "PARTIALLY_DONE" | "RESTED" | "TRIED_DIFFERENTLY" | "NOT_A_FIT" | "RECORD_ONLY";
+            missionConsumed?: boolean;
+            /** @enum {string} */
+            status?: "READY" | "IN_PROGRESS" | "PAUSED" | "AWAITING_REVIEW" | "COMPLETED" | "ENDED_EARLY";
+            /** Format: int32 */
+            currentDay?: number;
+            sameMissionRemains?: boolean;
+            /** Format: int32 */
+            lookedAtMissionCount?: number;
+            /** Format: int32 */
+            restedDateCount?: number;
+        };
+        ApiResponseExperimentEndEarlyResponse: {
+            data?: components["schemas"]["ExperimentEndEarlyResponse"];
+        };
+        ExperimentEndEarlyResponse: {
+            /** Format: uuid */
+            userExperimentProgramId?: string;
+            /** @enum {string} */
+            status?: "READY" | "IN_PROGRESS" | "PAUSED" | "AWAITING_REVIEW" | "COMPLETED" | "ENDED_EARLY";
+        };
+        ApiResponseExperimentProgramStartResponse: {
+            data?: components["schemas"]["ExperimentProgramStartResponse"];
+        };
+        ExperimentProgramStartResponse: {
+            /** Format: uuid */
+            userExperimentProgramId?: string;
+            /** @enum {string} */
+            status?: "READY" | "IN_PROGRESS" | "PAUSED" | "AWAITING_REVIEW" | "COMPLETED" | "ENDED_EARLY";
+            title?: string;
+            /** Format: int32 */
+            durationDays?: number;
+            /** Format: int32 */
+            currentDay?: number;
+            /** Format: int32 */
+            lookedAtMissionCount?: number;
+            /** Format: int32 */
+            restedDateCount?: number;
+            todayMission?: components["schemas"]["ExperimentUserProgramMissionResponse"];
+        };
+        ExperimentUserProgramMissionResponse: {
+            /** Format: int32 */
+            dayNumber?: number;
+            /** Format: uuid */
+            missionId?: string;
+            missionCode?: string;
+            title?: string;
+            /** @enum {string} */
+            missionType?: "OBSERVATION" | "QUESTION" | "ACTION" | "RECORD" | "REVIEW";
+            /** Format: int32 */
+            estimatedMinutes?: number;
+            /** Format: uuid */
+            userProgramMissionId?: string;
+        };
+        ApiResponseExperimentRecommendationResponse: {
+            data?: components["schemas"]["ExperimentRecommendationResponse"];
+        };
+        EstimatedMinutesRange: {
+            /** Format: int32 */
+            min?: number;
+            /** Format: int32 */
+            max?: number;
+        };
+        ExperimentProgramSummaryResponse: {
+            /** Format: uuid */
+            programId?: string;
+            code?: string;
+            title?: string;
+            /** Format: int32 */
+            durationDays?: number;
+            topicCode?: string;
+            description?: string;
+            estimatedMinutes?: components["schemas"]["EstimatedMinutesRange"];
+            /** Format: int32 */
+            missionCount?: number;
+        };
+        ExperimentRecommendationResponse: {
+            /** Format: uuid */
+            recommendationId?: string;
+            program?: components["schemas"]["ExperimentProgramSummaryResponse"];
+            /** @enum {string} */
+            sourceType?: "BROWSE" | "RECORD" | "CHECK_IN" | "WEEKLY_REFLECTION" | "RULE" | "RANDOM" | "AI";
+            reasonText?: string;
+            /** @enum {string} */
+            status?: "SHOWN" | "VIEWED" | "ACCEPTED" | "DISMISSED" | "EXPIRED";
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        ExperimentMissionOverride: {
+            /** Format: int32 */
+            dayNumber?: number;
+            /** Format: uuid */
+            missionId: string;
+        };
+        ExperimentProgramStartRequest: {
+            /** Format: int32 */
+            expectedContentVersion?: number;
+            missionOverrides?: components["schemas"]["ExperimentMissionOverride"][];
+            /** Format: uuid */
+            recommendationId?: string;
+            replaceActiveProgram?: boolean;
+        };
+        ApiResponseExperimentProgramSaveResponse: {
+            data?: components["schemas"]["ExperimentProgramSaveResponse"];
+        };
+        ExperimentProgramSaveResponse: {
+            /** Format: uuid */
+            userExperimentProgramId?: string;
+            /** @enum {string} */
+            status?: "READY" | "IN_PROGRESS" | "PAUSED" | "AWAITING_REVIEW" | "COMPLETED" | "ENDED_EARLY";
+            title?: string;
+            /** Format: int32 */
+            durationDays?: number;
+        };
+        ExperimentUserComposedMissionRequest: {
+            /** Format: int32 */
+            dayNumber?: number;
+            title: string;
+            instruction: string;
+            /** @enum {string} */
+            missionType: "OBSERVATION" | "QUESTION" | "ACTION" | "RECORD" | "REVIEW";
+            /** Format: int32 */
+            estimatedMinutes?: number;
+        };
+        ExperimentUserComposedProgramRequest: {
+            title: string;
+            /** Format: int32 */
+            durationDays?: number;
+            missions: components["schemas"]["ExperimentUserComposedMissionRequest"][];
+        };
+        ApiResponseExperimentUserComposedProgramResponse: {
+            data?: components["schemas"]["ExperimentUserComposedProgramResponse"];
+        };
+        ExperimentUserComposedProgramResponse: {
+            /** Format: uuid */
+            userExperimentProgramId?: string;
+            /** Format: uuid */
+            programId?: string;
+            /** @enum {string} */
+            configurationSource?: "TEMPLATE" | "RANDOM" | "AI_RECOMMENDED" | "USER_COMPOSED";
+            /** @enum {string} */
+            status?: "READY" | "IN_PROGRESS" | "PAUSED" | "AWAITING_REVIEW" | "COMPLETED" | "ENDED_EARLY";
+            /** Format: int32 */
+            durationDays?: number;
+            /** Format: int32 */
+            missionCount?: number;
+        };
+        ExperimentRandomProgramStartRequest: {
+            /** Format: int32 */
+            durationDays?: number;
+            replaceActiveProgram?: boolean;
+        };
         RefreshRequest: {
             refreshToken: string;
             installationKey?: string;
@@ -1083,6 +1593,111 @@ export interface components {
         };
         HealthResponse: {
             status?: string;
+        };
+        ApiResponseListExperimentPastProgramResponse: {
+            data?: components["schemas"]["ExperimentPastProgramResponse"][];
+        };
+        ExperimentPastProgramResponse: {
+            /** Format: uuid */
+            userExperimentProgramId?: string;
+            /** @enum {string} */
+            status?: "READY" | "IN_PROGRESS" | "PAUSED" | "AWAITING_REVIEW" | "COMPLETED" | "ENDED_EARLY";
+            title?: string;
+            /** Format: int32 */
+            durationDays?: number;
+            /** Format: int32 */
+            currentDay?: number;
+            /** Format: date-time */
+            startedAt?: string;
+            /** Format: date-time */
+            completedAt?: string;
+            /** Format: date-time */
+            endedEarlyAt?: string;
+        };
+        ApiResponseExperimentActiveProgramResponse: {
+            data?: components["schemas"]["ExperimentActiveProgramResponse"];
+        };
+        ExperimentActiveProgramResponse: {
+            /** Format: uuid */
+            userExperimentProgramId?: string;
+            /** @enum {string} */
+            status?: "READY" | "IN_PROGRESS" | "PAUSED" | "AWAITING_REVIEW" | "COMPLETED" | "ENDED_EARLY";
+            title?: string;
+            /** Format: int32 */
+            durationDays?: number;
+            /** Format: int32 */
+            currentDay?: number;
+            /** Format: int32 */
+            lookedAtMissionCount?: number;
+            /** Format: int32 */
+            restedDateCount?: number;
+            todayMission?: components["schemas"]["ExperimentUserProgramMissionResponse"];
+        };
+        ApiResponseListExperimentTopicResponse: {
+            data?: components["schemas"]["ExperimentTopicResponse"][];
+        };
+        ExperimentTopicResponse: {
+            /** Format: uuid */
+            id?: string;
+            code?: string;
+            name?: string;
+            description?: string;
+            /** Format: int32 */
+            displayOrder?: number;
+        };
+        ApiResponseListExperimentRecommendationResponse: {
+            data?: components["schemas"]["ExperimentRecommendationResponse"][];
+        };
+        ApiResponseListExperimentProgramSummaryResponse: {
+            data?: components["schemas"]["ExperimentProgramSummaryResponse"][];
+        };
+        ApiResponseExperimentProgramDetailResponse: {
+            data?: components["schemas"]["ExperimentProgramDetailResponse"];
+        };
+        ExperimentProgramDetailResponse: {
+            /** Format: uuid */
+            id?: string;
+            code?: string;
+            /** Format: int32 */
+            contentVersion?: number;
+            title?: string;
+            description?: string;
+            /** Format: int32 */
+            durationDays?: number;
+            primaryTopicCode?: string;
+            /** @enum {string} */
+            sourceType?: "TEMPLATE" | "RANDOM" | "AI_RECOMMENDED" | "USER_COMPOSED";
+            /** @enum {string} */
+            status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+            isFeatured?: boolean;
+            isBeginner?: boolean;
+            /** Format: int32 */
+            estimatedMinutesMin?: number;
+            /** Format: int32 */
+            estimatedMinutesMax?: number;
+            /** Format: int32 */
+            displayOrder?: number;
+            missions?: components["schemas"]["ExperimentProgramMissionResponse"][];
+        };
+        ExperimentProgramMissionResponse: {
+            /** Format: int32 */
+            dayNumber?: number;
+            /** Format: uuid */
+            missionId?: string;
+            missionCode?: string;
+            title?: string;
+            /** @enum {string} */
+            missionType?: "OBSERVATION" | "QUESTION" | "ACTION" | "RECORD" | "REVIEW";
+            /** Format: int32 */
+            estimatedMinutes?: number;
+        };
+        ApiResponseExperimentRandomProgramResponse: {
+            data?: components["schemas"]["ExperimentRandomProgramResponse"];
+        };
+        ExperimentRandomProgramResponse: {
+            /** Format: int32 */
+            durationDays?: number;
+            missions?: components["schemas"]["ExperimentProgramMissionResponse"][];
         };
         ApiResponseListQuoteTopicResponse: {
             data?: components["schemas"]["QuoteTopicResponse"][];
@@ -1529,6 +2144,276 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponsePeriodReflectionResponse"];
+                };
+            };
+        };
+    };
+    completeReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userExperimentProgramId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExperimentCourseReviewRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentCourseReviewResponse"];
+                };
+            };
+        };
+    };
+    replaceMission: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userExperimentProgramId: string;
+                userProgramMissionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExperimentMissionReplaceRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentMissionReplaceResponse"];
+                };
+            };
+        };
+    };
+    recordMission: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userExperimentProgramId: string;
+                userProgramMissionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExperimentMissionRecordRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentMissionRecordResponse"];
+                };
+            };
+        };
+    };
+    endEarly: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userExperimentProgramId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentEndEarlyResponse"];
+                };
+            };
+        };
+    };
+    activateSavedProgram: {
+        parameters: {
+            query?: {
+                replaceActiveProgram?: boolean;
+            };
+            header?: never;
+            path: {
+                userExperimentProgramId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentProgramStartResponse"];
+                };
+            };
+        };
+    };
+    viewRecommendation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                recommendationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentRecommendationResponse"];
+                };
+            };
+        };
+    };
+    dismissRecommendation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                recommendationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentRecommendationResponse"];
+                };
+            };
+        };
+    };
+    startProgram: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                programId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ExperimentProgramStartRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentProgramStartResponse"];
+                };
+            };
+        };
+    };
+    saveProgram: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                programId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ExperimentProgramStartRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentProgramSaveResponse"];
+                };
+            };
+        };
+    };
+    createUserComposedProgram: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExperimentUserComposedProgramRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentUserComposedProgramResponse"];
+                };
+            };
+        };
+    };
+    startRandomProgram: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExperimentRandomProgramStartRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentProgramStartResponse"];
                 };
             };
         };
@@ -2094,7 +2979,156 @@ export interface operations {
             };
         };
     };
+    getPastPrograms: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListExperimentPastProgramResponse"];
+                };
+            };
+        };
+    };
+    getActiveProgram: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentActiveProgramResponse"];
+                };
+            };
+        };
+    };
     getTopics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListExperimentTopicResponse"];
+                };
+            };
+        };
+    };
+    getRecommendations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListExperimentRecommendationResponse"];
+                };
+            };
+        };
+    };
+    getPrograms: {
+        parameters: {
+            query?: {
+                durationDays?: number;
+                topicCode?: string;
+                featured?: boolean;
+                beginner?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListExperimentProgramSummaryResponse"];
+                };
+            };
+        };
+    };
+    getProgram: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                programId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentProgramDetailResponse"];
+                };
+            };
+        };
+    };
+    getRandomProgram: {
+        parameters: {
+            query: {
+                days: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentRandomProgramResponse"];
+                };
+            };
+        };
+    };
+    getTopics_1: {
         parameters: {
             query?: never;
             header?: never;

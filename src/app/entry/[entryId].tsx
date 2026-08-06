@@ -270,6 +270,29 @@ export default function EntryDetailScreen() {
                 </ThemedView>
               )}
 
+              {entry.relatedExperimentProgramId && (
+                <ThemedView type="backgroundElement" style={styles.card}>
+                  <SectionHeading icon={{ ios: 'leaf', android: 'eco' }} title="작은 실험 기록" />
+                  <ThemedText type="small" themeColor="textTertiary" style={styles.experimentNote}>
+                    이 기록은 진행했던 작은 실험 코스에서 남긴 기록이에요.
+                  </ThemedText>
+                  <AppButton
+                    title="코스 전체 보기"
+                    variant="ghost"
+                    style={styles.experimentButton}
+                    onPress={() =>
+                      router.push({
+                        pathname: '/experiment/progress',
+                        params: {
+                          userExperimentProgramId: entry.relatedExperimentProgramId!,
+                          active: 'false',
+                        },
+                      })
+                    }
+                  />
+                </ThemedView>
+              )}
+
               {aiReflection?.reflectionText && (
                 <ThemedView type="backgroundElement" style={styles.card}>
                   <SectionHeading icon={{ ios: 'sparkles', android: 'auto_awesome' }} title="AI 정리" />
@@ -415,6 +438,12 @@ const styles = StyleSheet.create({
     borderRadius: Radius.full,
     paddingVertical: Spacing.half,
     paddingHorizontal: Spacing.two,
+  },
+  experimentNote: {
+    marginTop: Spacing.two,
+  },
+  experimentButton: {
+    marginTop: Spacing.three,
   },
   aiText: {
     marginTop: Spacing.two,

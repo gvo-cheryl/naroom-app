@@ -73,6 +73,7 @@ export interface EntrySummary {
   body: string | null;
   recordDate: string;
   quoteId: string | null;
+  relatedExperimentProgramId: string | null;
   aiProcessingAllowed: boolean;
   publishedAt: string | null;
   version: number;
@@ -264,6 +265,7 @@ export function toEntrySummary(
     body: entry.body ?? null,
     recordDate: requireField(entry.recordDate, "entry.recordDate", context),
     quoteId: entry.quoteId ?? null,
+    relatedExperimentProgramId: entry.relatedExperimentProgramId ?? null,
     aiProcessingAllowed: requireField(entry.aiProcessingAllowed, "entry.aiProcessingAllowed", context),
     publishedAt: entry.publishedAt ?? null,
     version: requireField(entry.version, "entry.version", context),

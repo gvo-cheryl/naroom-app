@@ -108,6 +108,21 @@ export default function ExperimentActiveProgramScreen() {
                 ) : (
                   <>
                     <AppButton title="오늘의 작은 실험 보기" onPress={() => router.push('/experiment/today')} />
+                    <AppButton
+                      title="전체 진행 보기"
+                      variant="ghost"
+                      onPress={() =>
+                        router.push({
+                          pathname: '/experiment/progress',
+                          params: {
+                            userExperimentProgramId: program.userExperimentProgramId,
+                            title: program.title,
+                            durationDays: String(program.durationDays),
+                            active: 'true',
+                          },
+                        })
+                      }
+                    />
                     <AppButton title="쉬기 · 변경하기" variant="ghost" onPress={() => router.push('/experiment/pause')} />
                   </>
                 )}

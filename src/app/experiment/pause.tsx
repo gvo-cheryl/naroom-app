@@ -1,11 +1,16 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { endEarlyExperimentProgram, getActiveExperimentProgram, recordExperimentMission } from '@/api';
+import {
+  endEarlyExperimentProgram,
+  getActiveExperimentProgram,
+  getExperimentProgramMissions,
+  recordExperimentMission,
+} from '@/api';
 import { ApiError } from '@/api/errors';
-import type { ExperimentActiveProgramSummary } from '@/api/types';
+import type { ExperimentActiveProgramSummary, ExperimentProgramDaySummary } from '@/api/types';
 import { getValidAccessToken } from '@/auth/authManager';
 import { RecordScreenHeader } from '@/components/record-screen-header';
 import { ThemedText } from '@/components/themed-text';
@@ -23,13 +28,16 @@ function todayIsoDate(): string {
 }
 
 // 프로토타입 E11(쉬기·변경하기)에 대응한다. 며칠 쉬기·나중에 다시 시작하기(PAUSED 전환)는
-// 8-D/8-E에서 이미 범위 밖으로 결정됐고(설계 문서에 상세 스펙 없음), 남은 미션 바꾸기는 대체
-// 미션 카탈로그 API가 없어 이번 범위에서 제외한다.
+// 8-D/8-E에서 이미 범위 밖으로 결정됐다(설계 문서에 상세 스펙 없음).
 export default function ExperimentPauseScreen() {
   const theme = useTheme();
   const [loading, setLoading] = useState(true);
   const [program, setProgram] = useState<ExperimentActiveProgramSummary | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const [dayPickerOpen, setDayPickerOpen] = useState(false);
+  const [dayPickerLoading, setDayPickerLoading] = useState(false);
+  const [swappableDays, setSwappableDays] = useState<ExperimentProgramDaySummary[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -103,6 +111,47 @@ export default function ExperimentPauseScreen() {
     }
   };
 
+  const handleOpenDayPicker = async () => {
+    if (!program || dayPickerLoading) {
+      return;
+    }
+    if (dayPickerOpen) {
+      setDayPickerOpen(false);
+      return;
+    }
+    setDayPickerLoading(true);
+    try {
+      const accessToken = await getValidAccessToken();
+      if (!accessToken) {
+        return;
+      }
+      const missions = await getExperimentProgramMissions(accessToken, program.userExperimentProgramId);
+      setSwappableDays(missions.days.filter((day) => day.slotStatus !== 'RECORDED'));
+      setDayPickerOpen(true);
+    } catch (error) {
+      logger.error('experiment.pause', 'failed to load program missions', {
+        code: error instanceof ApiError ? error.code : undefined,
+      });
+    } finally {
+      setDayPickerLoading(false);
+    }
+  };
+
+  const handlePickDay = (day: ExperimentProgramDaySummary) => {
+    if (!program) {
+      return;
+    }
+    router.push({
+      pathname: '/experiment/swap',
+      params: {
+        mode: 'apply',
+        userExperimentProgramId: program.userExperimentProgramId,
+        userProgramMissionId: day.userProgramMissionId,
+        excludeMissionIds: day.missionId,
+      },
+    });
+  };
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -120,6 +169,22 @@ export default function ExperimentPauseScreen() {
             </ThemedText>
             <View style={styles.stack}>
               <AppButton title="오늘 하루 쉬기" loading={submitting} onPress={handleRestToday} />
+              <AppButton title="남은 미션 바꾸기" variant="ghost" loading={dayPickerLoading} onPress={handleOpenDayPicker} />
+              {dayPickerOpen && (
+                <View style={styles.dayList}>
+                  {swappableDays.map((day) => (
+                    <Pressable
+                      key={day.dayNumber}
+                      onPress={() => handlePickDay(day)}
+                      style={[styles.dayOption, { borderColor: theme.border }]}>
+                      <ThemedText type="small" themeColor="textTertiary">
+                        Day {day.dayNumber}
+                      </ThemedText>
+                      <ThemedText type="default">{day.title}</ThemedText>
+                    </Pressable>
+                  ))}
+                </View>
+              )}
               <AppButton
                 title="지금까지 기록하고 마무리하기"
                 variant="ghost"
@@ -163,6 +228,14 @@ const styles = StyleSheet.create({
   stack: {
     gap: Spacing.two,
     marginTop: Spacing.four,
+  },
+  dayList: {
+    gap: Spacing.two,
+  },
+  dayOption: {
+    borderWidth: 1,
+    borderRadius: Radius.medium,
+    padding: Spacing.three,
   },
   note: {
     marginTop: Spacing.four,

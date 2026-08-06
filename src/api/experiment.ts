@@ -10,6 +10,7 @@ import {
   toExperimentMissionSummary,
   toExperimentPastProgramSummary,
   toExperimentProgramDetailSummary,
+  toExperimentProgramMissionsSummary,
   toExperimentProgramSummary,
   toExperimentRandomProgramSummary,
   toExperimentRecommendationSummary,
@@ -25,6 +26,7 @@ import {
   type ExperimentMissionSummary,
   type ExperimentPastProgramSummary,
   type ExperimentProgramDetailSummary,
+  type ExperimentProgramMissionsSummary,
   type ExperimentProgramSummary,
   type ExperimentRandomProgramSummary,
   type ExperimentRecommendationSummary,
@@ -318,4 +320,18 @@ export async function replaceExperimentMission(
     "replaceExperimentMission",
   );
   return toExperimentMissionReplaceResult(data, "replaceExperimentMission");
+}
+
+export async function getExperimentProgramMissions(
+  accessToken: string,
+  userExperimentProgramId: string,
+): Promise<ExperimentProgramMissionsSummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentProgramMissionsResponse"]>(
+      `/api/v1/experiments/user-programs/${userExperimentProgramId}/missions`,
+      { accessToken },
+    ),
+    "getExperimentProgramMissions",
+  );
+  return toExperimentProgramMissionsSummary(data, "getExperimentProgramMissions");
 }

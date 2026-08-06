@@ -1,5 +1,6 @@
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { getPastExperimentPrograms } from '@/api';
@@ -17,8 +18,9 @@ function statusLabel(status: ExperimentPastProgramSummary['status']): string {
   return status === 'COMPLETED' ? '완료' : '중단';
 }
 
-// 프로토타입 E13(지난 작은 실험)에 대응한다. 다시 보기(E12)·일부 다시 해보기(E04)는
-// 아직 없는 화면이라 이번 범위에서는 목록만 읽기 전용으로 보여준다.
+// 프로토타입 E13(지난 작은 실험)에 대응한다. "다시 보기"는 전체 진행 보기(E10)로 연결한다.
+// "일부 다시 해보기"(코스 상세 E04로 이동)는 지난 코스의 programId를 내려주는 API가 없어 이번
+// 범위에서 제외한다.
 export default function PastExperimentsScreen() {
   const theme = useTheme();
   const [loading, setLoading] = useState(true);
@@ -61,21 +63,35 @@ export default function PastExperimentsScreen() {
           ) : pastPrograms.length > 0 ? (
             <View style={styles.stack}>
               {pastPrograms.map((program) => (
-                <ThemedView key={program.userExperimentProgramId} type="backgroundElement" style={styles.card}>
-                  <View style={styles.between}>
-                    <ThemedText type="smallBold" style={styles.title}>
-                      {program.title}
-                    </ThemedText>
-                    <ThemedView type="backgroundSelected" style={styles.pill}>
-                      <ThemedText type="small" themeColor="textSecondary">
-                        {program.durationDays}일
+                <Pressable
+                  key={program.userExperimentProgramId}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/experiment/progress',
+                      params: {
+                        userExperimentProgramId: program.userExperimentProgramId,
+                        title: program.title,
+                        durationDays: String(program.durationDays),
+                        active: 'false',
+                      },
+                    })
+                  }>
+                  <ThemedView type="backgroundElement" style={styles.card}>
+                    <View style={styles.between}>
+                      <ThemedText type="smallBold" style={styles.title}>
+                        {program.title}
                       </ThemedText>
-                    </ThemedView>
-                  </View>
-                  <ThemedText type="small" themeColor="textTertiary" style={styles.meta}>
-                    {statusLabel(program.status)} · {program.currentDay}일차까지 진행
-                  </ThemedText>
-                </ThemedView>
+                      <ThemedView type="backgroundSelected" style={styles.pill}>
+                        <ThemedText type="small" themeColor="textSecondary">
+                          {program.durationDays}일
+                        </ThemedText>
+                      </ThemedView>
+                    </View>
+                    <ThemedText type="small" themeColor="textTertiary" style={styles.meta}>
+                      {statusLabel(program.status)} · {program.currentDay}일차까지 진행
+                    </ThemedText>
+                  </ThemedView>
+                </Pressable>
               ))}
             </View>
           ) : (

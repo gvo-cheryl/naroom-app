@@ -940,3 +940,83 @@ export function toExperimentMissionReplaceResult(
     replacementCount: requireField(result.replacementCount, "result.replacementCount", context),
   };
 }
+
+export type ExperimentSlotStatus = "PENDING" | "CURRENT" | "RECORDED";
+
+export interface ExperimentDayRecordSummary {
+  attemptStatus: ExperimentAttemptStatus;
+  recordDate: string;
+  responseText: string | null;
+  reflection: string | null;
+}
+
+export interface ExperimentProgramDaySummary {
+  dayNumber: number;
+  userProgramMissionId: string;
+  missionId: string;
+  missionCode: string;
+  title: string;
+  missionType: string;
+  estimatedMinutes: number;
+  slotStatus: ExperimentSlotStatus;
+  replaced: boolean;
+  record: ExperimentDayRecordSummary | null;
+}
+
+export interface ExperimentRestedDateSummary {
+  recordDate: string;
+  dayNumber: number;
+  missionTitle: string;
+}
+
+export interface ExperimentProgramMissionsSummary {
+  days: ExperimentProgramDaySummary[];
+  restedDates: ExperimentRestedDateSummary[];
+}
+
+function toExperimentDayRecordSummary(
+  raw: components["schemas"]["ExperimentDayRecordResponse"] | undefined,
+  context: string,
+): ExperimentDayRecordSummary | null {
+  if (!raw) {
+    return null;
+  }
+  return {
+    attemptStatus: requireField(raw.attemptStatus, "record.attemptStatus", context) as ExperimentAttemptStatus,
+    recordDate: requireField(raw.recordDate, "record.recordDate", context),
+    responseText: raw.responseText ?? null,
+    reflection: raw.reflection ?? null,
+  };
+}
+
+export function toExperimentProgramMissionsSummary(
+  raw: components["schemas"]["ExperimentProgramMissionsResponse"] | undefined,
+  context: string,
+): ExperimentProgramMissionsSummary {
+  const result = requireField(raw, "result", context);
+  return {
+    days: (result.days ?? []).map((day, index) => {
+      const dayContext = `${context}.days[${index}]`;
+      return {
+        dayNumber: requireField(day.dayNumber, "day.dayNumber", dayContext),
+        userProgramMissionId: requireField(day.userProgramMissionId, "day.userProgramMissionId", dayContext),
+        missionId: requireField(day.missionId, "day.missionId", dayContext),
+        missionCode: requireField(day.missionCode, "day.missionCode", dayContext),
+        title: requireField(day.title, "day.title", dayContext),
+        missionType: requireField(day.missionType, "day.missionType", dayContext),
+        estimatedMinutes: requireField(day.estimatedMinutes, "day.estimatedMinutes", dayContext),
+        slotStatus: requireField(day.slotStatus, "day.slotStatus", dayContext) as ExperimentSlotStatus,
+        replaced: day.replaced ?? false,
+        record: toExperimentDayRecordSummary(day.record, dayContext),
+      };
+    }),
+    restedDates: (result.restedDates ?? []).map((rested, index) => {
+      const restContext = `${context}.restedDates[${index}]`;
+      return {
+        recordDate: requireField(rested.recordDate, "rested.recordDate", restContext),
+        dayNumber: requireField(rested.dayNumber, "rested.dayNumber", restContext),
+        missionTitle: requireField(rested.missionTitle, "rested.missionTitle", restContext),
+      };
+    }),
+  };
+}

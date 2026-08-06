@@ -1099,6 +1099,8 @@ export interface components {
             parentEntryId?: string;
             /** Format: uuid */
             quoteId?: string;
+            /** Format: uuid */
+            relatedExperimentProgramId?: string;
             aiProcessingAllowed?: boolean;
             /** Format: date-time */
             publishedAt?: string;

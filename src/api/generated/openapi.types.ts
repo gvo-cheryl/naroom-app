@@ -196,6 +196,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/experiments/user-programs/{userExperimentProgramId}/pause": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["pauseProgram"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/experiments/user-programs/{userExperimentProgramId}/missions/{userProgramMissionId}/replace": {
         parameters: {
             query?: never;
@@ -1214,6 +1230,15 @@ export interface components {
             status?: "READY" | "IN_PROGRESS" | "PAUSED" | "AWAITING_REVIEW" | "COMPLETED" | "ENDED_EARLY";
             lifeTimeEntryCreated?: boolean;
             aiJob?: components["schemas"]["ExperimentAiJobSummary"];
+        };
+        ApiResponseExperimentPauseResponse: {
+            data?: components["schemas"]["ExperimentPauseResponse"];
+        };
+        ExperimentPauseResponse: {
+            /** Format: uuid */
+            userExperimentProgramId?: string;
+            /** @enum {string} */
+            status?: "READY" | "IN_PROGRESS" | "PAUSED" | "AWAITING_REVIEW" | "COMPLETED" | "ENDED_EARLY";
         };
         ExperimentMissionReplaceRequest: {
             /** Format: uuid */
@@ -2261,6 +2286,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseExperimentCourseReviewResponse"];
+                };
+            };
+        };
+    };
+    pauseProgram: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userExperimentProgramId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentPauseResponse"];
                 };
             };
         };

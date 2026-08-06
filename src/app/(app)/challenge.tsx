@@ -17,9 +17,7 @@ import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/th
 import { useTheme } from '@/hooks/use-theme';
 import { logger } from '@/lib/logger';
 
-// 프로토타입 E01(작은 실험 홈)에 대응한다. 진행 중 코스 화면(E07/E08)은 이후 단계(9-C)에서 만들어지므로,
-// 이번 범위에서는 진행 중 코스 요약 카드를 눌러도 이동하지 않는 읽기 전용으로 둔다. 코스 카드는 코스
-// 상세(E04)로 이동한다.
+// 프로토타입 E01(작은 실험 홈)에 대응한다.
 export default function ChallengeScreen() {
   const theme = useTheme();
 
@@ -121,6 +119,19 @@ export default function ChallengeScreen() {
                   </ThemedText>
                 </>
               )}
+              <View style={styles.activeActions}>
+                <AppButton
+                  title="오늘 살펴보기"
+                  style={styles.activeActionButton}
+                  onPress={() => router.push('/experiment/today')}
+                />
+                <AppButton
+                  title="코스 보기"
+                  variant="ghost"
+                  style={styles.activeActionButton}
+                  onPress={() => router.push('/experiment/active')}
+                />
+              </View>
             </ThemedView>
           ) : loading ? null : (
             <ThemedView type="backgroundElement" style={styles.card}>
@@ -255,6 +266,14 @@ const styles = StyleSheet.create({
   },
   todayMissionTitle: {
     marginTop: Spacing.one,
+  },
+  activeActions: {
+    flexDirection: 'row',
+    gap: Spacing.two,
+    marginTop: Spacing.four,
+  },
+  activeActionButton: {
+    flex: 1,
   },
   emptyHint: {
     marginTop: Spacing.one,

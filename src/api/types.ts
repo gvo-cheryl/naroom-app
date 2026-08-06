@@ -536,8 +536,10 @@ export interface ExperimentTodayMissionSummary {
   missionId: string;
   missionCode: string;
   title: string;
+  instruction: string;
   missionType: string;
   estimatedMinutes: number;
+  reflectionQuestions: string[];
   userProgramMissionId: string;
 }
 
@@ -620,25 +622,27 @@ export function toExperimentActiveProgramSummary(
     currentDay: requireField(raw.currentDay, "program.currentDay", context),
     lookedAtMissionCount: requireField(raw.lookedAtMissionCount, "program.lookedAtMissionCount", context),
     restedDateCount: requireField(raw.restedDateCount, "program.restedDateCount", context),
-    todayMission: raw.todayMission
-      ? {
-          dayNumber: requireField(raw.todayMission.dayNumber, "program.todayMission.dayNumber", context),
-          missionId: requireField(raw.todayMission.missionId, "program.todayMission.missionId", context),
-          missionCode: requireField(raw.todayMission.missionCode, "program.todayMission.missionCode", context),
-          title: requireField(raw.todayMission.title, "program.todayMission.title", context),
-          missionType: requireField(raw.todayMission.missionType, "program.todayMission.missionType", context),
-          estimatedMinutes: requireField(
-            raw.todayMission.estimatedMinutes,
-            "program.todayMission.estimatedMinutes",
-            context,
-          ),
-          userProgramMissionId: requireField(
-            raw.todayMission.userProgramMissionId,
-            "program.todayMission.userProgramMissionId",
-            context,
-          ),
-        }
-      : null,
+    todayMission: toExperimentTodayMissionSummary(raw.todayMission, `${context}.todayMission`),
+  };
+}
+
+function toExperimentTodayMissionSummary(
+  raw: components["schemas"]["ExperimentUserProgramMissionResponse"] | undefined,
+  context: string,
+): ExperimentTodayMissionSummary | null {
+  if (!raw) {
+    return null;
+  }
+  return {
+    dayNumber: requireField(raw.dayNumber, "todayMission.dayNumber", context),
+    missionId: requireField(raw.missionId, "todayMission.missionId", context),
+    missionCode: requireField(raw.missionCode, "todayMission.missionCode", context),
+    title: requireField(raw.title, "todayMission.title", context),
+    instruction: requireField(raw.instruction, "todayMission.instruction", context),
+    missionType: requireField(raw.missionType, "todayMission.missionType", context),
+    estimatedMinutes: requireField(raw.estimatedMinutes, "todayMission.estimatedMinutes", context),
+    reflectionQuestions: raw.reflectionQuestions ?? [],
+    userProgramMissionId: requireField(raw.userProgramMissionId, "todayMission.userProgramMissionId", context),
   };
 }
 
@@ -783,25 +787,7 @@ export function toExperimentStartedProgramSummary(
     currentDay: requireField(program.currentDay, "program.currentDay", context),
     lookedAtMissionCount: requireField(program.lookedAtMissionCount, "program.lookedAtMissionCount", context),
     restedDateCount: requireField(program.restedDateCount, "program.restedDateCount", context),
-    todayMission: program.todayMission
-      ? {
-          dayNumber: requireField(program.todayMission.dayNumber, "program.todayMission.dayNumber", context),
-          missionId: requireField(program.todayMission.missionId, "program.todayMission.missionId", context),
-          missionCode: requireField(program.todayMission.missionCode, "program.todayMission.missionCode", context),
-          title: requireField(program.todayMission.title, "program.todayMission.title", context),
-          missionType: requireField(program.todayMission.missionType, "program.todayMission.missionType", context),
-          estimatedMinutes: requireField(
-            program.todayMission.estimatedMinutes,
-            "program.todayMission.estimatedMinutes",
-            context,
-          ),
-          userProgramMissionId: requireField(
-            program.todayMission.userProgramMissionId,
-            "program.todayMission.userProgramMissionId",
-            context,
-          ),
-        }
-      : null,
+    todayMission: toExperimentTodayMissionSummary(program.todayMission, `${context}.todayMission`),
   };
 }
 
@@ -815,5 +801,55 @@ export function toExperimentSavedProgramSummary(
     status: requireField(program.status, "program.status", context) as ExperimentProgramStatus,
     title: requireField(program.title, "program.title", context),
     durationDays: requireField(program.durationDays, "program.durationDays", context),
+  };
+}
+
+export type ExperimentAttemptStatus =
+  | "DONE"
+  | "PARTIALLY_DONE"
+  | "RESTED"
+  | "TRIED_DIFFERENTLY"
+  | "NOT_A_FIT"
+  | "RECORD_ONLY";
+
+export interface ExperimentMissionRecordResult {
+  attemptStatus: ExperimentAttemptStatus;
+  missionConsumed: boolean;
+  status: ExperimentProgramStatus;
+  currentDay: number;
+  sameMissionRemains: boolean;
+  lookedAtMissionCount: number;
+  restedDateCount: number;
+}
+
+export interface ExperimentEndEarlyResult {
+  userExperimentProgramId: string;
+  status: ExperimentProgramStatus;
+}
+
+export function toExperimentEndEarlyResult(
+  raw: components["schemas"]["ExperimentEndEarlyResponse"] | undefined,
+  context: string,
+): ExperimentEndEarlyResult {
+  const result = requireField(raw, "result", context);
+  return {
+    userExperimentProgramId: requireField(result.userExperimentProgramId, "result.userExperimentProgramId", context),
+    status: requireField(result.status, "result.status", context) as ExperimentProgramStatus,
+  };
+}
+
+export function toExperimentMissionRecordResult(
+  raw: components["schemas"]["ExperimentMissionRecordResponse"] | undefined,
+  context: string,
+): ExperimentMissionRecordResult {
+  const result = requireField(raw, "result", context);
+  return {
+    attemptStatus: requireField(result.attemptStatus, "result.attemptStatus", context) as ExperimentAttemptStatus,
+    missionConsumed: result.missionConsumed ?? false,
+    status: requireField(result.status, "result.status", context) as ExperimentProgramStatus,
+    currentDay: requireField(result.currentDay, "result.currentDay", context),
+    sameMissionRemains: result.sameMissionRemains ?? false,
+    lookedAtMissionCount: requireField(result.lookedAtMissionCount, "result.lookedAtMissionCount", context),
+    restedDateCount: requireField(result.restedDateCount, "result.restedDateCount", context),
   };
 }

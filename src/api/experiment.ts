@@ -3,6 +3,8 @@ import type { components } from "./generated/openapi.types";
 import {
   requireData,
   toExperimentActiveProgramSummary,
+  toExperimentEndEarlyResult,
+  toExperimentMissionRecordResult,
   toExperimentPastProgramSummary,
   toExperimentProgramDetailSummary,
   toExperimentProgramSummary,
@@ -12,6 +14,9 @@ import {
   toExperimentStartedProgramSummary,
   toExperimentTopicSummary,
   type ExperimentActiveProgramSummary,
+  type ExperimentAttemptStatus,
+  type ExperimentEndEarlyResult,
+  type ExperimentMissionRecordResult,
   type ExperimentPastProgramSummary,
   type ExperimentProgramDetailSummary,
   type ExperimentProgramSummary,
@@ -191,4 +196,48 @@ export async function startRandomExperimentProgram(
     "startRandomExperimentProgram",
   );
   return toExperimentStartedProgramSummary(data, "startRandomExperimentProgram");
+}
+
+export interface RecordExperimentMissionRequest {
+  attemptStatus: ExperimentAttemptStatus;
+  recordDate: string;
+  responseText?: string;
+  reflection?: string;
+  emotionTagIds?: string[];
+  energyLevel?: number;
+  createLifeTimeEntry?: boolean;
+}
+
+export async function recordExperimentMission(
+  accessToken: string,
+  userExperimentProgramId: string,
+  userProgramMissionId: string,
+  request: RecordExperimentMissionRequest,
+): Promise<ExperimentMissionRecordResult> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentMissionRecordResponse"]>(
+      `/api/v1/experiments/user-programs/${userExperimentProgramId}/missions/${userProgramMissionId}/record`,
+      {
+        method: "POST",
+        body: request,
+        accessToken,
+      },
+    ),
+    "recordExperimentMission",
+  );
+  return toExperimentMissionRecordResult(data, "recordExperimentMission");
+}
+
+export async function endEarlyExperimentProgram(
+  accessToken: string,
+  userExperimentProgramId: string,
+): Promise<ExperimentEndEarlyResult> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentEndEarlyResponse"]>(
+      `/api/v1/experiments/user-programs/${userExperimentProgramId}/end-early`,
+      { method: "POST", accessToken },
+    ),
+    "endEarlyExperimentProgram",
+  );
+  return toExperimentEndEarlyResult(data, "endEarlyExperimentProgram");
 }

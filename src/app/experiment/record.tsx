@@ -108,23 +108,22 @@ export default function ExperimentRecordMissionScreen() {
         return;
       }
       const trimmedBody = body.trim();
-      if (attempt === 'RESTED') {
-        await recordExperimentMission(accessToken, program.userExperimentProgramId, program.todayMission.userProgramMissionId, {
-          attemptStatus: 'RESTED',
-          recordDate: todayIsoDate(),
-          reflection: trimmedBody.length > 0 ? trimmedBody : undefined,
-        });
-      } else {
-        await recordExperimentMission(accessToken, program.userExperimentProgramId, program.todayMission.userProgramMissionId, {
-          attemptStatus: attempt,
-          recordDate: todayIsoDate(),
-          responseText: trimmedBody.length > 0 ? trimmedBody : undefined,
-          emotionTagIds: Array.from(selectedEmotionIds),
-          energyLevel: energy ?? undefined,
-          createLifeTimeEntry: true,
-        });
-      }
-      router.replace('/(app)/challenge');
+      const result =
+        attempt === 'RESTED'
+          ? await recordExperimentMission(accessToken, program.userExperimentProgramId, program.todayMission.userProgramMissionId, {
+              attemptStatus: 'RESTED',
+              recordDate: todayIsoDate(),
+              reflection: trimmedBody.length > 0 ? trimmedBody : undefined,
+            })
+          : await recordExperimentMission(accessToken, program.userExperimentProgramId, program.todayMission.userProgramMissionId, {
+              attemptStatus: attempt,
+              recordDate: todayIsoDate(),
+              responseText: trimmedBody.length > 0 ? trimmedBody : undefined,
+              emotionTagIds: Array.from(selectedEmotionIds),
+              energyLevel: energy ?? undefined,
+              createLifeTimeEntry: true,
+            });
+      router.replace(result.status === 'AWAITING_REVIEW' ? '/experiment/review' : '/(app)/challenge');
     } catch (error) {
       logger.error('experiment.record', 'failed to save mission record', {
         code: error instanceof ApiError ? error.code : undefined,

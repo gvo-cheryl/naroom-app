@@ -1,7 +1,6 @@
 import type { EntryType, TagCategory } from '@/api/types';
 
 // naroom_beta1_prototype.html RECORD_TYPES/PROMPTS/TAG_KINDS를 그대로 옮긴다(승인된 카피).
-// EXPERIMENT_MISSION은 작은 실험 도메인이 아직 없어 제외한다.
 export interface RecordTypeOption {
   id: EntryType;
   name: string;
@@ -32,11 +31,21 @@ export function recordTypeOf(id: string | undefined): RecordTypeOption {
 }
 
 // 체크인 봉투(CHECK_IN)나 AI 회고 등 시스템 생성 기록은 "내가 쓴 기록" 목록/미리보기에서
-// 제외한다 - naroom-api EntryService.USER_CREATABLE_TYPES와 대응한다.
-export const VISIBLE_ENTRY_TYPES: EntryType[] = RECORD_TYPES.map((t) => t.id);
+// 제외한다 - naroom-api EntryService.USER_CREATABLE_TYPES와 대응한다. 작은 실험 기록·돌아보기는
+// 사용자가 직접 고르는 기록 유형(RECORD_TYPES)은 아니지만 LifeTime에서는 보여야 해서 별도로 더한다.
+export const VISIBLE_ENTRY_TYPES: EntryType[] = [
+  ...RECORD_TYPES.map((t) => t.id),
+  'EXPERIMENT_MISSION',
+  'EXPERIMENT_REVIEW',
+];
+
+const EXTRA_ENTRY_TYPE_LABELS: Partial<Record<EntryType, string>> = {
+  EXPERIMENT_MISSION: '작은 실험',
+  EXPERIMENT_REVIEW: '작은 실험 돌아보기',
+};
 
 export function entryTypeLabel(entryType: EntryType): string {
-  return RECORD_TYPES.find((t) => t.id === entryType)?.name ?? entryType;
+  return RECORD_TYPES.find((t) => t.id === entryType)?.name ?? EXTRA_ENTRY_TYPE_LABELS[entryType] ?? entryType;
 }
 
 export const RECORD_PROMPTS = [

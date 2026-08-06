@@ -120,17 +120,27 @@ export default function ChallengeScreen() {
                 </>
               )}
               <View style={styles.activeActions}>
-                <AppButton
-                  title="오늘 살펴보기"
-                  style={styles.activeActionButton}
-                  onPress={() => router.push('/experiment/today')}
-                />
-                <AppButton
-                  title="코스 보기"
-                  variant="ghost"
-                  style={styles.activeActionButton}
-                  onPress={() => router.push('/experiment/active')}
-                />
+                {activeProgram.status === 'AWAITING_REVIEW' ? (
+                  <AppButton
+                    title="코스 돌아보기"
+                    style={styles.activeActionButton}
+                    onPress={() => router.push('/experiment/review')}
+                  />
+                ) : (
+                  <>
+                    <AppButton
+                      title="오늘 살펴보기"
+                      style={styles.activeActionButton}
+                      onPress={() => router.push('/experiment/today')}
+                    />
+                    <AppButton
+                      title="코스 보기"
+                      variant="ghost"
+                      style={styles.activeActionButton}
+                      onPress={() => router.push('/experiment/active')}
+                    />
+                  </>
+                )}
               </View>
             </ThemedView>
           ) : loading ? null : (

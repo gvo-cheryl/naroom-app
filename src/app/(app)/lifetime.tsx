@@ -69,6 +69,8 @@ const ENTRY_TYPE_COLOR_KEY: Record<string, ThemeColor> = {
   GRATITUDE: "sand",
   PROMPT: "plum",
   QUOTE_REFLECTION: "clay",
+  EXPERIMENT_MISSION: "moss",
+  EXPERIMENT_REVIEW: "moss",
 };
 
 const LIFETIME_INSUFFICIENT_RECORDS_CODE =
@@ -113,6 +115,8 @@ const TIMELINE_TYPE_FILTERS: { id: TimelineTypeFilter; label: string }[] = [
   { id: "GRATITUDE", label: "감사·다행" },
   { id: "PROMPT", label: "질문형" },
   { id: "QUOTE_REFLECTION", label: "문장" },
+  { id: "EXPERIMENT_MISSION", label: "작은 실험" },
+  { id: "EXPERIMENT_REVIEW", label: "작은 실험 돌아보기" },
   { id: "REFLECTION", label: "회고" },
   { id: "SELF_SUMMARY", label: "나의 정리" },
 ];

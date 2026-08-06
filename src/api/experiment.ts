@@ -3,6 +3,7 @@ import type { components } from "./generated/openapi.types";
 import {
   requireData,
   toExperimentActiveProgramSummary,
+  toExperimentCourseReviewResult,
   toExperimentEndEarlyResult,
   toExperimentMissionRecordResult,
   toExperimentPastProgramSummary,
@@ -15,6 +16,7 @@ import {
   toExperimentTopicSummary,
   type ExperimentActiveProgramSummary,
   type ExperimentAttemptStatus,
+  type ExperimentCourseReviewResult,
   type ExperimentEndEarlyResult,
   type ExperimentMissionRecordResult,
   type ExperimentPastProgramSummary,
@@ -226,6 +228,33 @@ export async function recordExperimentMission(
     "recordExperimentMission",
   );
   return toExperimentMissionRecordResult(data, "recordExperimentMission");
+}
+
+export interface CompleteExperimentCourseReviewRequest {
+  mostMemorableDay?: number;
+  leastBurdensomeDay?: number;
+  notFitDay?: number;
+  helpfulConditions?: string[];
+  difficultConditions?: string[];
+  discovery?: string;
+  continueAction?: string;
+  userSummary?: string;
+  requestAiReflection?: boolean;
+}
+
+export async function completeExperimentCourseReview(
+  accessToken: string,
+  userExperimentProgramId: string,
+  request: CompleteExperimentCourseReviewRequest,
+): Promise<ExperimentCourseReviewResult> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentCourseReviewResponse"]>(
+      `/api/v1/experiments/user-programs/${userExperimentProgramId}/review`,
+      { method: "POST", body: request, accessToken },
+    ),
+    "completeExperimentCourseReview",
+  );
+  return toExperimentCourseReviewResult(data, "completeExperimentCourseReview");
 }
 
 export async function endEarlyExperimentProgram(

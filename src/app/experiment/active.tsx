@@ -103,8 +103,14 @@ export default function ExperimentActiveProgramScreen() {
               </ThemedView>
 
               <View style={styles.actions}>
-                <AppButton title="오늘의 작은 실험 보기" onPress={() => router.push('/experiment/today')} />
-                <AppButton title="쉬기 · 변경하기" variant="ghost" onPress={() => router.push('/experiment/pause')} />
+                {program.status === 'AWAITING_REVIEW' ? (
+                  <AppButton title="코스 돌아보기" onPress={() => router.push('/experiment/review')} />
+                ) : (
+                  <>
+                    <AppButton title="오늘의 작은 실험 보기" onPress={() => router.push('/experiment/today')} />
+                    <AppButton title="쉬기 · 변경하기" variant="ghost" onPress={() => router.push('/experiment/pause')} />
+                  </>
+                )}
               </View>
 
               <ThemedText type="small" themeColor="textTertiary" style={styles.footnote}>

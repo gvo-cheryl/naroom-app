@@ -853,3 +853,42 @@ export function toExperimentMissionRecordResult(
     restedDateCount: requireField(result.restedDateCount, "result.restedDateCount", context),
   };
 }
+
+export type ExperimentAiFeatureType =
+  | "ENTRY_REFLECTION"
+  | "THREE_DAY_REFLECTION"
+  | "WEEKLY_REFLECTION"
+  | "CONVERSATION_REPLY"
+  | "CONVERSATION_SUMMARY";
+
+export type ExperimentAiJobStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "BLOCKED" | "SAFETY_SUPPORT" | "FAILED";
+
+export interface ExperimentAiJobSummary {
+  featureType: ExperimentAiFeatureType | null;
+  status: ExperimentAiJobStatus | null;
+  note: string | null;
+}
+
+export interface ExperimentCourseReviewResult {
+  status: ExperimentProgramStatus;
+  lifeTimeEntryCreated: boolean;
+  aiJob: ExperimentAiJobSummary | null;
+}
+
+export function toExperimentCourseReviewResult(
+  raw: components["schemas"]["ExperimentCourseReviewResponse"] | undefined,
+  context: string,
+): ExperimentCourseReviewResult {
+  const result = requireField(raw, "result", context);
+  return {
+    status: requireField(result.status, "result.status", context) as ExperimentProgramStatus,
+    lifeTimeEntryCreated: result.lifeTimeEntryCreated ?? false,
+    aiJob: result.aiJob
+      ? {
+          featureType: result.aiJob.featureType ?? null,
+          status: result.aiJob.status ?? null,
+          note: result.aiJob.note ?? null,
+        }
+      : null,
+  };
+}

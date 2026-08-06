@@ -17,6 +17,7 @@ import {
   toExperimentSavedProgramSummary,
   toExperimentStartedProgramSummary,
   toExperimentTopicSummary,
+  toExperimentUserComposedProgramResult,
   type ExperimentActiveProgramSummary,
   type ExperimentAttemptStatus,
   type ExperimentCourseReviewResult,
@@ -24,6 +25,7 @@ import {
   type ExperimentMissionRecordResult,
   type ExperimentMissionReplaceResult,
   type ExperimentMissionSummary,
+  type ExperimentMissionType,
   type ExperimentPastProgramSummary,
   type ExperimentProgramDetailSummary,
   type ExperimentProgramMissionsSummary,
@@ -33,6 +35,7 @@ import {
   type ExperimentSavedProgramSummary,
   type ExperimentStartedProgramSummary,
   type ExperimentTopicSummary,
+  type ExperimentUserComposedProgramResult,
 } from "./types";
 
 export async function getExperimentTopics(accessToken: string): Promise<ExperimentTopicSummary[]> {
@@ -334,4 +337,47 @@ export async function getExperimentProgramMissions(
     "getExperimentProgramMissions",
   );
   return toExperimentProgramMissionsSummary(data, "getExperimentProgramMissions");
+}
+
+export interface ComposeExperimentMissionInput {
+  dayNumber: number;
+  title: string;
+  instruction: string;
+  missionType: ExperimentMissionType;
+  estimatedMinutes?: number;
+}
+
+export interface CreateUserComposedExperimentProgramRequest {
+  title: string;
+  durationDays: number;
+  missions: ComposeExperimentMissionInput[];
+}
+
+export async function createUserComposedExperimentProgram(
+  accessToken: string,
+  request: CreateUserComposedExperimentProgramRequest,
+): Promise<ExperimentUserComposedProgramResult> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentUserComposedProgramResponse"]>(
+      "/api/v1/experiments/programs/user-composed",
+      { method: "POST", body: request, accessToken },
+    ),
+    "createUserComposedExperimentProgram",
+  );
+  return toExperimentUserComposedProgramResult(data, "createUserComposedExperimentProgram");
+}
+
+export async function activateSavedExperimentProgram(
+  accessToken: string,
+  userExperimentProgramId: string,
+  replaceActiveProgram = false,
+): Promise<ExperimentStartedProgramSummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentProgramStartResponse"]>(
+      `/api/v1/experiments/user-programs/${userExperimentProgramId}/activate?replaceActiveProgram=${replaceActiveProgram}`,
+      { method: "POST", accessToken },
+    ),
+    "activateSavedExperimentProgram",
+  );
+  return toExperimentStartedProgramSummary(data, "activateSavedExperimentProgram");
 }

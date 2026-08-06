@@ -1022,3 +1022,25 @@ export function toExperimentProgramMissionsSummary(
     }),
   };
 }
+
+export type ExperimentMissionType = "OBSERVATION" | "QUESTION" | "ACTION" | "RECORD" | "REVIEW";
+
+export interface ExperimentUserComposedProgramResult {
+  userExperimentProgramId: string;
+  status: ExperimentProgramStatus;
+  durationDays: number;
+  missionCount: number;
+}
+
+export function toExperimentUserComposedProgramResult(
+  raw: components["schemas"]["ExperimentUserComposedProgramResponse"] | undefined,
+  context: string,
+): ExperimentUserComposedProgramResult {
+  const result = requireField(raw, "result", context);
+  return {
+    userExperimentProgramId: requireField(result.userExperimentProgramId, "result.userExperimentProgramId", context),
+    status: requireField(result.status, "result.status", context) as ExperimentProgramStatus,
+    durationDays: requireField(result.durationDays, "result.durationDays", context),
+    missionCount: requireField(result.missionCount, "result.missionCount", context),
+  };
+}

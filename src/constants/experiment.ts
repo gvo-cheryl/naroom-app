@@ -1,3 +1,5 @@
+import type { ExperimentMissionType } from '@/api/types';
+
 // 프로토타입 missionTypeName()에 대응한다.
 const MISSION_TYPE_LABELS: Record<string, string> = {
   OBSERVATION: '관찰형',
@@ -10,6 +12,15 @@ const MISSION_TYPE_LABELS: Record<string, string> = {
 export function missionTypeLabel(missionType: string): string {
   return MISSION_TYPE_LABELS[missionType] ?? missionType;
 }
+
+// 직접 만들기(사용자 구성 코스)의 미션 유형 선택지.
+export const MISSION_TYPE_OPTIONS: { id: ExperimentMissionType; label: string }[] = [
+  { id: 'OBSERVATION', label: '관찰형' },
+  { id: 'QUESTION', label: '질문형' },
+  { id: 'ACTION', label: '행동형' },
+  { id: 'RECORD', label: '기록형' },
+  { id: 'REVIEW', label: '되돌아보기형' },
+];
 
 // 프로토타입 ATTEMPTS에 대응한다.
 const ATTEMPT_STATUS_LABELS: Record<string, string> = {

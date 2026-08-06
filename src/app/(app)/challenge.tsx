@@ -180,6 +180,12 @@ export default function ChallengeScreen() {
               onPress={() => router.push('/experiment/topics')}
             />
           </View>
+          <AppButton
+            title="코스 직접 만들기"
+            variant="quiet"
+            style={styles.composeButton}
+            onPress={() => router.push('/experiment/compose')}
+          />
 
           {threeDayPrograms.length > 0 && (
             <>
@@ -302,6 +308,9 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     flex: 1,
+  },
+  composeButton: {
+    marginTop: Spacing.two,
   },
   pastButton: {
     marginTop: Spacing.five,

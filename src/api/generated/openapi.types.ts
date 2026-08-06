@@ -1268,10 +1268,12 @@ export interface components {
             missionId?: string;
             missionCode?: string;
             title?: string;
+            instruction?: string;
             /** @enum {string} */
             missionType?: "OBSERVATION" | "QUESTION" | "ACTION" | "RECORD" | "REVIEW";
             /** Format: int32 */
             estimatedMinutes?: number;
+            reflectionQuestions?: string[];
             /** Format: uuid */
             userProgramMissionId?: string;
         };

@@ -708,6 +708,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/experiments/user-programs/{userExperimentProgramId}/missions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getProgramMissions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/experiments/user-programs/past": {
         parameters: {
             query?: never;
@@ -1611,6 +1627,44 @@ export interface components {
         };
         HealthResponse: {
             status?: string;
+        };
+        ApiResponseExperimentProgramMissionsResponse: {
+            data?: components["schemas"]["ExperimentProgramMissionsResponse"];
+        };
+        ExperimentDayRecordResponse: {
+            /** @enum {string} */
+            attemptStatus?: "DONE" | "PARTIALLY_DONE" | "RESTED" | "TRIED_DIFFERENTLY" | "NOT_A_FIT" | "RECORD_ONLY";
+            /** Format: date */
+            recordDate?: string;
+            responseText?: string;
+            reflection?: string;
+        };
+        ExperimentProgramDayResponse: {
+            /** Format: int32 */
+            dayNumber?: number;
+            /** Format: uuid */
+            missionId?: string;
+            missionCode?: string;
+            title?: string;
+            /** @enum {string} */
+            missionType?: "OBSERVATION" | "QUESTION" | "ACTION" | "RECORD" | "REVIEW";
+            /** Format: int32 */
+            estimatedMinutes?: number;
+            /** @enum {string} */
+            slotStatus?: "PENDING" | "CURRENT" | "RECORDED";
+            replaced?: boolean;
+            record?: components["schemas"]["ExperimentDayRecordResponse"];
+        };
+        ExperimentProgramMissionsResponse: {
+            days?: components["schemas"]["ExperimentProgramDayResponse"][];
+            restedDates?: components["schemas"]["ExperimentRestedDateResponse"][];
+        };
+        ExperimentRestedDateResponse: {
+            /** Format: date */
+            recordDate?: string;
+            /** Format: int32 */
+            dayNumber?: number;
+            missionTitle?: string;
         };
         ApiResponseListExperimentPastProgramResponse: {
             data?: components["schemas"]["ExperimentPastProgramResponse"][];
@@ -3008,6 +3062,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseHealthResponse"];
+                };
+            };
+        };
+    };
+    getProgramMissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userExperimentProgramId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentProgramMissionsResponse"];
                 };
             };
         };

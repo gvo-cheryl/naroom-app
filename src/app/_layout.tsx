@@ -30,6 +30,7 @@ export default function RootLayout() {
           <Stack.Screen name="checkin" options={{ presentation: 'modal' }} />
           <Stack.Screen name="day" />
           <Stack.Screen name="quotes" />
+          <Stack.Screen name="experiment" />
           <Stack.Screen name="period-reflection" />
           <Stack.Screen name="entry" />
           <Stack.Screen name="personal-summary" />

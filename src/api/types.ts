@@ -504,3 +504,172 @@ export function toSavedQuoteSummary(
     savedAt: requireField(saved.savedAt, "saved.savedAt", context),
   };
 }
+
+// 작은 실험(Experiment) 도메인. 홈·탐색(9-A)에서 필요한 범위만 좁힌다.
+
+export type ExperimentProgramStatus = components["schemas"]["ExperimentPastProgramResponse"]["status"] & string;
+export type ExperimentRecommendationSourceType = components["schemas"]["ExperimentRecommendationResponse"]["sourceType"] & string;
+export type ExperimentRecommendationStatus = "SHOWN" | "VIEWED" | "ACCEPTED" | "DISMISSED" | "EXPIRED";
+
+export interface ExperimentTopicSummary {
+  id: string;
+  code: string;
+  name: string;
+  description: string;
+  displayOrder: number;
+}
+
+export interface ExperimentProgramSummary {
+  programId: string;
+  code: string;
+  title: string;
+  durationDays: number;
+  topicCode: string;
+  description: string;
+  estimatedMinutesMin: number;
+  estimatedMinutesMax: number;
+  missionCount: number;
+}
+
+export interface ExperimentTodayMissionSummary {
+  dayNumber: number;
+  missionId: string;
+  missionCode: string;
+  title: string;
+  missionType: string;
+  estimatedMinutes: number;
+  userProgramMissionId: string;
+}
+
+export interface ExperimentActiveProgramSummary {
+  userExperimentProgramId: string;
+  status: ExperimentProgramStatus;
+  title: string;
+  durationDays: number;
+  currentDay: number;
+  lookedAtMissionCount: number;
+  restedDateCount: number;
+  todayMission: ExperimentTodayMissionSummary | null;
+}
+
+export interface ExperimentPastProgramSummary {
+  userExperimentProgramId: string;
+  status: ExperimentProgramStatus;
+  title: string;
+  durationDays: number;
+  currentDay: number;
+  startedAt: string | null;
+  completedAt: string | null;
+  endedEarlyAt: string | null;
+}
+
+export interface ExperimentRecommendationSummary {
+  recommendationId: string;
+  program: ExperimentProgramSummary;
+  sourceType: ExperimentRecommendationSourceType;
+  reasonText: string;
+  status: ExperimentRecommendationStatus;
+  createdAt: string;
+}
+
+export function toExperimentTopicSummary(
+  raw: components["schemas"]["ExperimentTopicResponse"] | undefined,
+  context: string,
+): ExperimentTopicSummary {
+  const topic = requireField(raw, "topic", context);
+  return {
+    id: requireField(topic.id, "topic.id", context),
+    code: requireField(topic.code, "topic.code", context),
+    name: requireField(topic.name, "topic.name", context),
+    description: requireField(topic.description, "topic.description", context),
+    displayOrder: requireField(topic.displayOrder, "topic.displayOrder", context),
+  };
+}
+
+export function toExperimentProgramSummary(
+  raw: components["schemas"]["ExperimentProgramSummaryResponse"] | undefined,
+  context: string,
+): ExperimentProgramSummary {
+  const program = requireField(raw, "program", context);
+  const estimatedMinutes = requireField(program.estimatedMinutes, "program.estimatedMinutes", context);
+  return {
+    programId: requireField(program.programId, "program.programId", context),
+    code: requireField(program.code, "program.code", context),
+    title: requireField(program.title, "program.title", context),
+    durationDays: requireField(program.durationDays, "program.durationDays", context),
+    topicCode: requireField(program.topicCode, "program.topicCode", context),
+    description: requireField(program.description, "program.description", context),
+    estimatedMinutesMin: requireField(estimatedMinutes.min, "program.estimatedMinutes.min", context),
+    estimatedMinutesMax: requireField(estimatedMinutes.max, "program.estimatedMinutes.max", context),
+    missionCount: requireField(program.missionCount, "program.missionCount", context),
+  };
+}
+
+export function toExperimentActiveProgramSummary(
+  raw: components["schemas"]["ExperimentActiveProgramResponse"] | null | undefined,
+  context: string,
+): ExperimentActiveProgramSummary | null {
+  if (raw === null || raw === undefined) {
+    return null;
+  }
+  return {
+    userExperimentProgramId: requireField(raw.userExperimentProgramId, "program.userExperimentProgramId", context),
+    status: requireField(raw.status, "program.status", context) as ExperimentProgramStatus,
+    title: requireField(raw.title, "program.title", context),
+    durationDays: requireField(raw.durationDays, "program.durationDays", context),
+    currentDay: requireField(raw.currentDay, "program.currentDay", context),
+    lookedAtMissionCount: requireField(raw.lookedAtMissionCount, "program.lookedAtMissionCount", context),
+    restedDateCount: requireField(raw.restedDateCount, "program.restedDateCount", context),
+    todayMission: raw.todayMission
+      ? {
+          dayNumber: requireField(raw.todayMission.dayNumber, "program.todayMission.dayNumber", context),
+          missionId: requireField(raw.todayMission.missionId, "program.todayMission.missionId", context),
+          missionCode: requireField(raw.todayMission.missionCode, "program.todayMission.missionCode", context),
+          title: requireField(raw.todayMission.title, "program.todayMission.title", context),
+          missionType: requireField(raw.todayMission.missionType, "program.todayMission.missionType", context),
+          estimatedMinutes: requireField(
+            raw.todayMission.estimatedMinutes,
+            "program.todayMission.estimatedMinutes",
+            context,
+          ),
+          userProgramMissionId: requireField(
+            raw.todayMission.userProgramMissionId,
+            "program.todayMission.userProgramMissionId",
+            context,
+          ),
+        }
+      : null,
+  };
+}
+
+export function toExperimentPastProgramSummary(
+  raw: components["schemas"]["ExperimentPastProgramResponse"] | undefined,
+  context: string,
+): ExperimentPastProgramSummary {
+  const program = requireField(raw, "program", context);
+  return {
+    userExperimentProgramId: requireField(program.userExperimentProgramId, "program.userExperimentProgramId", context),
+    status: requireField(program.status, "program.status", context) as ExperimentProgramStatus,
+    title: requireField(program.title, "program.title", context),
+    durationDays: requireField(program.durationDays, "program.durationDays", context),
+    currentDay: requireField(program.currentDay, "program.currentDay", context),
+    startedAt: program.startedAt ?? null,
+    completedAt: program.completedAt ?? null,
+    endedEarlyAt: program.endedEarlyAt ?? null,
+  };
+}
+
+export function toExperimentRecommendationSummary(
+  raw: components["schemas"]["ExperimentRecommendationResponse"] | undefined,
+  context: string,
+): ExperimentRecommendationSummary {
+  const recommendation = requireField(raw, "recommendation", context);
+  return {
+    recommendationId: requireField(recommendation.recommendationId, "recommendation.recommendationId", context),
+    program: toExperimentProgramSummary(recommendation.program, `${context}.program`),
+    sourceType: requireField(recommendation.sourceType, "recommendation.sourceType", context) as ExperimentRecommendationSourceType,
+    reasonText: requireField(recommendation.reasonText, "recommendation.reasonText", context),
+    status: requireField(recommendation.status, "recommendation.status", context) as ExperimentRecommendationStatus,
+    createdAt: requireField(recommendation.createdAt, "recommendation.createdAt", context),
+  };
+}

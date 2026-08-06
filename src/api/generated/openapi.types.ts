@@ -1643,6 +1643,8 @@ export interface components {
             /** Format: int32 */
             dayNumber?: number;
             /** Format: uuid */
+            userProgramMissionId?: string;
+            /** Format: uuid */
             missionId?: string;
             missionCode?: string;
             title?: string;

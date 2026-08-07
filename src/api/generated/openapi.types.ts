@@ -964,6 +964,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/badges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getEarnedBadges"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/session": {
         parameters: {
             query?: never;
@@ -1847,6 +1863,21 @@ export interface components {
             quote?: components["schemas"]["QuoteResponse"];
             /** Format: date-time */
             savedAt?: string;
+        };
+        ApiResponseListMemberBadgeResponse: {
+            data?: components["schemas"]["MemberBadgeResponse"][];
+        };
+        MemberBadgeResponse: {
+            /** Format: uuid */
+            badgeDefinitionId?: string;
+            /** @enum {string} */
+            code?: "FIRST_ENTRY" | "FIRST_CHECKIN" | "FIRST_EXPERIMENT_START" | "FIRST_WEEKLY_REFLECTION" | "FIRST_EXPERIMENT_REVIEW" | "FIRST_PERSONAL_SUMMARY" | "RETURN_AFTER_GAP" | "RESUME_PAUSED_EXPERIMENT" | "FIRST_SELF_REFLECTION" | "SELF_REFLECTION_5";
+            /** @enum {string} */
+            category?: "TRIAL" | "DISCOVERY" | "RETURN" | "SELF_ORGANIZATION";
+            title?: string;
+            description?: string;
+            /** Format: date-time */
+            earnedAt?: string;
         };
         ApiResponseSessionCheckResponse: {
             data?: components["schemas"]["SessionCheckResponse"];
@@ -3430,6 +3461,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseCheckInResponse"];
+                };
+            };
+        };
+    };
+    getEarnedBadges: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListMemberBadgeResponse"];
                 };
             };
         };

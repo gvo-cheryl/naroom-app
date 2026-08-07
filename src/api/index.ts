@@ -1,3 +1,4 @@
+export * from "./account";
 export * from "./ai";
 export * from "./auth";
 export * from "./badge";

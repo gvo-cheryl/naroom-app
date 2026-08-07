@@ -14,6 +14,7 @@ import {
 import { getDevicePlatform, getOrCreateInstallationKey } from "@/auth/deviceIdentity";
 import { requestKakaoProviderAccessToken } from "@/auth/kakaoNativeLogin";
 import { logger } from "@/lib/logger";
+import { registerForPushNotificationsAsync } from "@/notifications/pushRegistration";
 
 // authentication.md "앱 시작 판정 순서"의 4단계 분기와 1:1로 대응한다.
 export type AuthState =
@@ -88,6 +89,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       cancelled = true;
     };
   }, [retryToken]);
+
+  // 로그인 직후가 아니라 정말로 앱을 쓸 수 있는 상태(온보딩까지 끝남)가 됐을 때만 권한을 물어본다 -
+  // 첫 화면부터 권한 팝업을 띄우지 않기 위함(IA §17 알림 표현 원칙).
+  useEffect(() => {
+    if (state.status !== "active") {
+      return;
+    }
+    (async () => {
+      const accessToken = await getValidAccessToken();
+      if (accessToken) {
+        await registerForPushNotificationsAsync(accessToken);
+      }
+    })();
+  }, [state.status]);
 
   const handleLoginWithKakao = useCallback(async () => {
     try {

@@ -35,11 +35,19 @@
           "imageWidth": 76
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3b7b1f91-3ea7-44fc-ac37-998d276760b3"
+      }
+    },
+    "owner": "naroom"
   }
 }

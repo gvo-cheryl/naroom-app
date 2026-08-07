@@ -536,6 +536,30 @@ export function toMemberBadgeSummary(
   };
 }
 
+// 알림(Notification) 설정. Account 도메인 API를 쓰지만 화면 성격(M2 알림)이 달라 별도로 둔다.
+
+export type NotificationType = NonNullable<components["schemas"]["NotificationPreferenceResponse"]["type"]>;
+
+export interface NotificationPreferenceSummary {
+  type: NotificationType;
+  enabled: boolean;
+  localTime: string | null;
+  dayOfWeek: number | null;
+}
+
+export function toNotificationPreferenceSummary(
+  raw: components["schemas"]["NotificationPreferenceResponse"] | undefined,
+  context: string,
+): NotificationPreferenceSummary {
+  const preference = requireField(raw, "preference", context);
+  return {
+    type: requireField(preference.type, "preference.type", context),
+    enabled: preference.enabled ?? false,
+    localTime: preference.localTime ?? null,
+    dayOfWeek: preference.dayOfWeek ?? null,
+  };
+}
+
 // 작은 실험(Experiment) 도메인. 홈·탐색(9-A)에서 필요한 범위만 좁힌다.
 
 export type ExperimentProgramStatus = components["schemas"]["ExperimentPastProgramResponse"]["status"] & string;

@@ -1,5 +1,6 @@
 export * from "./ai";
 export * from "./auth";
+export * from "./badge";
 export * from "./checkin";
 export * from "./content";
 export * from "./errors";

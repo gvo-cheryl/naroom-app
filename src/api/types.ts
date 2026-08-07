@@ -507,6 +507,35 @@ export function toSavedQuoteSummary(
   };
 }
 
+// 뱃지(Badge) 도메인.
+
+export type BadgeCode = NonNullable<components["schemas"]["MemberBadgeResponse"]["code"]>;
+export type BadgeCategory = NonNullable<components["schemas"]["MemberBadgeResponse"]["category"]>;
+
+export interface MemberBadgeSummary {
+  badgeDefinitionId: string;
+  code: BadgeCode;
+  category: BadgeCategory;
+  title: string;
+  description: string;
+  earnedAt: string;
+}
+
+export function toMemberBadgeSummary(
+  raw: components["schemas"]["MemberBadgeResponse"] | undefined,
+  context: string,
+): MemberBadgeSummary {
+  const badge = requireField(raw, "badge", context);
+  return {
+    badgeDefinitionId: requireField(badge.badgeDefinitionId, "badge.badgeDefinitionId", context),
+    code: requireField(badge.code, "badge.code", context),
+    category: requireField(badge.category, "badge.category", context),
+    title: requireField(badge.title, "badge.title", context),
+    description: requireField(badge.description, "badge.description", context),
+    earnedAt: requireField(badge.earnedAt, "badge.earnedAt", context),
+  };
+}
+
 // 작은 실험(Experiment) 도메인. 홈·탐색(9-A)에서 필요한 범위만 좁힌다.
 
 export type ExperimentProgramStatus = components["schemas"]["ExperimentPastProgramResponse"]["status"] & string;

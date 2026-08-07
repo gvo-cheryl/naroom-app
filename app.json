@@ -9,7 +9,10 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon",
-      "bundleIdentifier": "io.naroom.app"
+      "bundleIdentifier": "io.naroom.app",
+      "entitlements": {
+        "com.apple.security.application-groups": ["group.io.naroom.app"]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -36,7 +39,35 @@
         }
       ],
       "expo-secure-store",
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "react-native-android-widget",
+        {
+          "widgets": [
+            {
+              "name": "TodayQuote",
+              "label": "오늘의 문장",
+              "description": "오늘의 문장을 홈 화면에서 바로 봐요.",
+              "minWidth": "180dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 3,
+              "targetCellHeight": 2,
+              "updatePeriodMillis": 1800000
+            },
+            {
+              "name": "QuickRecord",
+              "label": "빠른 기록",
+              "description": "바로 기록을 시작해요.",
+              "minWidth": "110dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 2,
+              "targetCellHeight": 2,
+              "updatePeriodMillis": 0
+            }
+          ]
+        }
+      ],
+      "@bacons/apple-targets"
     ],
     "experiments": {
       "typedRoutes": true,

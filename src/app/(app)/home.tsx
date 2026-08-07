@@ -20,6 +20,7 @@ import { VISIBLE_ENTRY_TYPES, entryTypeLabel } from '@/constants/record';
 import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { logger } from '@/lib/logger';
+import { syncTodayQuoteToWidget } from '@/widgets/iosWidgetSync';
 
 // 프로토타입 H01(홈)의 인사 톤만 가져온 간략 버전이다. 작은 실험 등은
 // 아직 해당 API가 없어 이번 범위에 넣지 않는다. 체크인과 기록 작성(R01~)만 연결한다.
@@ -54,6 +55,7 @@ export default function HomeScreen() {
           setTodayCheckIn(checkIn);
           setLatestEntry(entries.find((entry) => VISIBLE_ENTRY_TYPES.includes(entry.entryType)) ?? null);
           setTodayQuote(quote);
+          syncTodayQuoteToWidget(quote);
         } catch (error) {
           logger.error('home', 'failed to load home summary', {
             code: error instanceof ApiError ? error.code : undefined,

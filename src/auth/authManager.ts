@@ -1,4 +1,9 @@
-import { kakaoLogin, logout as logoutRequest, refreshToken as refreshTokenRequest } from "@/api/auth";
+import {
+  kakaoLogin,
+  logout as logoutRequest,
+  refreshToken as refreshTokenRequest,
+  restoreAccount as restoreAccountRequest,
+} from "@/api/auth";
 import type { DeviceInfo, KakaoLoginResult } from "@/api/types";
 import { getOrCreateInstallationKey } from "@/auth/deviceIdentity";
 import { clearSession, loadSession, saveSession, type StoredSession } from "@/auth/tokenStorage";
@@ -20,6 +25,16 @@ export async function loginWithKakao(
   device: DeviceInfo,
 ): Promise<KakaoLoginResult> {
   const result = await kakaoLogin({ providerAccessToken, device });
+  await saveSession(toStoredSession(result));
+  return result;
+}
+
+// 탈퇴 유예 상태에서 사용자가 "복구하기"를 명시적으로 눌렀을 때만 호출된다.
+export async function restoreAccount(
+  providerAccessToken: string,
+  device: DeviceInfo,
+): Promise<KakaoLoginResult> {
+  const result = await restoreAccountRequest({ providerAccessToken, device });
   await saveSession(toStoredSession(result));
   return result;
 }

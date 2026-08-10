@@ -9,23 +9,33 @@ import { BrandColors, Radius, Spacing } from "@/constants/theme";
 
 // 프로토타입 A02(로그인)에 대응한다. Beta 1 승인 범위가 카카오 로그인뿐이라 Google 버튼은 넣지 않는다.
 export default function LoginScreen() {
-  const { state, loginWithKakao } = useAuth();
+  const { state, loginWithKakao, restoreAccount } = useAuth();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const isPendingDeletion = state.status === "account_pending_deletion";
 
   const handlePress = async () => {
     setErrorMessage(null);
     setIsLoggingIn(true);
     try {
-      await loginWithKakao();
+      if (isPendingDeletion) {
+        await restoreAccount();
+      } else {
+        await loginWithKakao();
+      }
     } catch {
-      setErrorMessage("로그인에 실패했어요. 잠시 후 다시 시도해 주세요.");
+      setErrorMessage(
+        isPendingDeletion
+          ? "복구에 실패했어요. 잠시 후 다시 시도해 주세요."
+          : "로그인에 실패했어요. 잠시 후 다시 시도해 주세요.",
+      );
     } finally {
       setIsLoggingIn(false);
     }
   };
 
-  const notice = noticeFor(state.status) ?? errorMessage;
+  const notice = noticeFor(state) ?? errorMessage;
 
   return (
     <ThemedView style={styles.container}>
@@ -53,7 +63,13 @@ export default function LoginScreen() {
               pressed && !isLoggingIn && styles.pressed,
             ]}>
             <ThemedText type="smallBold" style={styles.kakaoButtonText}>
-              {isLoggingIn ? "로그인 중…" : "카카오로 시작하기"}
+              {isLoggingIn
+                ? isPendingDeletion
+                  ? "복구하는 중…"
+                  : "로그인 중…"
+                : isPendingDeletion
+                  ? "카카오로 본인 확인 후 계정 복구하기"
+                  : "카카오로 시작하기"}
             </ThemedText>
           </Pressable>
 
@@ -66,12 +82,16 @@ export default function LoginScreen() {
   );
 }
 
-function noticeFor(status: string): string | null {
-  switch (status) {
+function noticeFor(state: { status: string; scheduledDeletionAt?: string }): string | null {
+  switch (state.status) {
     case "account_locked":
       return "계정이 잠겨 있어요. 고객센터로 문의해 주세요.";
-    case "account_pending_deletion":
-      return "삭제 대기 중인 계정이에요. 다시 로그인하면 복구할 수 있어요.";
+    case "account_pending_deletion": {
+      const date = state.scheduledDeletionAt ? state.scheduledDeletionAt.slice(0, 10) : null;
+      return date
+        ? `삭제 대기 중인 계정이에요. ${date}까지 복구할 수 있어요.`
+        : "삭제 대기 중인 계정이에요. 유예 기간 안에는 복구할 수 있어요.";
+    }
     case "check_failed":
       return "네트워크 상태를 확인해 주세요.";
     default:

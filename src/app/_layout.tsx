@@ -41,6 +41,7 @@ export default function RootLayout() {
           <Stack.Screen name="analytics" />
           <Stack.Screen name="badges" />
           <Stack.Screen name="notification-settings" />
+          <Stack.Screen name="account-withdrawal" />
         </Stack>
       </AuthProvider>
     </ThemeProvider>

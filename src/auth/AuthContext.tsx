@@ -10,6 +10,7 @@ import {
   getValidAccessToken,
   loginWithKakao,
   logout as logoutSession,
+  restoreAccount as restoreAccountSession,
 } from "@/auth/authManager";
 import { getDevicePlatform, getOrCreateInstallationKey } from "@/auth/deviceIdentity";
 import { requestKakaoProviderAccessToken } from "@/auth/kakaoNativeLogin";
@@ -34,6 +35,7 @@ interface AuthContextValue {
     request: components["schemas"]["OnboardingCompleteRequest"],
   ) => Promise<void>;
   logout: () => Promise<void>;
+  restoreAccount: () => Promise<void>;
   retry: () => void;
 }
 
@@ -74,6 +76,14 @@ async function resolveEntryState(): Promise<AuthState> {
   }
 }
 
+async function currentDeviceInfo(): Promise<DeviceInfo> {
+  return {
+    installationKey: await getOrCreateInstallationKey(),
+    platform: getDevicePlatform(),
+    appVersion: Constants.expoConfig?.version ?? "0.0.0",
+  };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({ status: "loading" });
   const [retryToken, setRetryToken] = useState(0);
@@ -107,11 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const handleLoginWithKakao = useCallback(async () => {
     try {
       const providerAccessToken = await requestKakaoProviderAccessToken();
-      const device: DeviceInfo = {
-        installationKey: await getOrCreateInstallationKey(),
-        platform: getDevicePlatform(),
-        appVersion: Constants.expoConfig?.version ?? "0.0.0",
-      };
+      const device = await currentDeviceInfo();
       const result = await loginWithKakao(providerAccessToken, device);
       logger.debug("auth.login", "kakao login succeeded", { nextAction: result.nextAction });
       setState(
@@ -120,7 +126,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           : { status: "active", account: result.account },
       );
     } catch (error) {
+      // 탈퇴 유예 계정은 오류로 끝내지 않고 복구 확인 화면으로 보낸다 - 로그인만으로 자동 복구하지는
+      // 않는다(Account Deletion Rules). "복구하기"를 명시적으로 눌러야 handleRestoreAccount가 호출된다.
+      if (error instanceof ApiError && error.code === "ACCOUNT_PENDING_DELETION") {
+        logger.debug("auth.login", "account pending deletion; showing restore confirmation");
+        setState({
+          status: "account_pending_deletion",
+          scheduledDeletionAt: error.context?.scheduledDeletionAt as string | undefined,
+        });
+        return;
+      }
       logger.error("auth.login", "kakao login failed", {
+        code: error instanceof ApiError ? error.code : undefined,
+        name: error instanceof Error ? error.name : undefined,
+      });
+      throw error;
+    }
+  }, []);
+
+  const handleRestoreAccount = useCallback(async () => {
+    try {
+      const providerAccessToken = await requestKakaoProviderAccessToken();
+      const device = await currentDeviceInfo();
+      const result = await restoreAccountSession(providerAccessToken, device);
+      logger.debug("auth.restore", "account restored", { nextAction: result.nextAction });
+      setState(
+        result.nextAction === "COMPLETE_ONBOARDING"
+          ? { status: "onboarding_required", account: result.account }
+          : { status: "active", account: result.account },
+      );
+    } catch (error) {
+      logger.error("auth.restore", "account restore failed", {
         code: error instanceof ApiError ? error.code : undefined,
         name: error instanceof Error ? error.name : undefined,
       });
@@ -165,9 +201,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loginWithKakao: handleLoginWithKakao,
       completeOnboarding: handleCompleteOnboarding,
       logout: handleLogout,
+      restoreAccount: handleRestoreAccount,
       retry,
     }),
-    [state, handleLoginWithKakao, handleCompleteOnboarding, handleLogout, retry],
+    [state, handleLoginWithKakao, handleCompleteOnboarding, handleLogout, handleRestoreAccount, retry],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

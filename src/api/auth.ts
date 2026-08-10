@@ -34,6 +34,31 @@ export async function kakaoLogin(request: {
   };
 }
 
+// PENDING_DELETION 상태에서 카카오 재인증으로 명시적 복구를 확인하는 전용 엔드포인트다.
+// kakaoLogin과 요청·응답 계약은 같지만, 로그인만으로 자동 복구되지 않도록 별도 경로로 분리했다.
+export async function restoreAccount(request: {
+  providerAccessToken: string;
+  device: DeviceInfo;
+}): Promise<KakaoLoginResult> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["KakaoLoginResponse"]>("/api/v1/auth/restore", {
+      method: "POST",
+      body: request,
+    }),
+    "restoreAccount",
+  );
+  return {
+    tokenType: data.tokenType ?? "Bearer",
+    accessToken: requireDefined(data.accessToken, "restoreAccount.accessToken"),
+    accessTokenExpiresAt: requireDefined(data.accessTokenExpiresAt, "restoreAccount.accessTokenExpiresAt"),
+    refreshToken: requireDefined(data.refreshToken, "restoreAccount.refreshToken"),
+    refreshTokenExpiresAt: requireDefined(data.refreshTokenExpiresAt, "restoreAccount.refreshTokenExpiresAt"),
+    session: toSessionSummary(data.session, "restoreAccount.session"),
+    account: toAccountSummary(data.account, "restoreAccount.account"),
+    nextAction: requireDefined(data.nextAction, "restoreAccount.nextAction"),
+  };
+}
+
 export async function refreshToken(request: {
   refreshToken: string;
   installationKey?: string;

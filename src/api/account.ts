@@ -30,6 +30,20 @@ export async function getNotificationPreferences(accessToken: string): Promise<N
   return data.map((item, index) => toNotificationPreferenceSummary(item, `getNotificationPreferences[${index}]`));
 }
 
+export async function requestAccountWithdrawal(accessToken: string): Promise<string> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["AccountWithdrawalResponse"]>("/api/v1/account/withdrawal", {
+      method: "POST",
+      accessToken,
+    }),
+    "requestAccountWithdrawal",
+  );
+  if (!data.scheduledDeletionAt) {
+    throw new Error("requestAccountWithdrawal: response body is missing \"scheduledDeletionAt\"");
+  }
+  return data.scheduledDeletionAt;
+}
+
 export async function updateNotificationPreference(
   accessToken: string,
   type: NotificationType,

@@ -1,8 +1,9 @@
 import { router, type Href } from 'expo-router';
 import { SymbolView, type SymbolViewProps } from 'expo-symbols';
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useAuth } from '@/auth/AuthContext';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
@@ -27,9 +28,37 @@ function MenuRow({ icon, label, href }: MenuRowProps) {
   );
 }
 
-// 내 정보 탭은 아직 대부분 자리표시자다(계정·개인정보 설정은 각자의 이슈에서 채운다).
-// 지금은 나의 뱃지함(#20), 알림 설정(#21) 진입점만 연결한다.
+interface ActionRowProps {
+  icon: SymbolViewProps['name'];
+  label: string;
+  onPress: () => void;
+  destructive?: boolean;
+}
+
+function ActionRow({ icon, label, onPress, destructive }: ActionRowProps) {
+  const theme = useTheme();
+  return (
+    <Pressable onPress={onPress} style={[styles.row, { backgroundColor: theme.backgroundElement }]}>
+      <SymbolView name={icon} size={20} tintColor={destructive ? theme.clay : theme.textSecondary} />
+      <ThemedText type="default" themeColor={destructive ? 'clay' : undefined} style={styles.rowLabel}>
+        {label}
+      </ThemedText>
+    </Pressable>
+  );
+}
+
+// 내 정보 탭은 아직 대부분 자리표시자다(계정 정보 표시 등은 이후 이슈에서 채운다).
+// 지금은 나의 뱃지함(#20), 알림 설정(#21), 로그아웃, 계정과 기록 삭제 진입점만 연결한다.
 export default function MeScreen() {
+  const { logout } = useAuth();
+
+  const handleLogoutPress = () => {
+    Alert.alert('로그아웃할까요?', '', [
+      { text: '취소', style: 'cancel' },
+      { text: '로그아웃', style: 'destructive', onPress: () => logout() },
+    ]);
+  };
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -43,6 +72,12 @@ export default function MeScreen() {
             icon={{ ios: 'bell', android: 'notifications' }}
             label="알림 설정"
             href="/notification-settings"
+          />
+          <ActionRow icon={{ ios: 'rectangle.portrait.and.arrow.right', android: 'logout' }} label="로그아웃" onPress={handleLogoutPress} />
+          <MenuRow
+            icon={{ ios: 'person.crop.circle.badge.minus', android: 'person_remove' }}
+            label="계정과 기록 삭제"
+            href="/account-withdrawal"
           />
         </ScrollView>
       </SafeAreaView>

@@ -516,6 +516,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/account/inquiries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["submitInquiry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/record/entries/{entryId}": {
         parameters: {
             query?: never;
@@ -1660,6 +1676,18 @@ export interface components {
             account?: components["schemas"]["AccountSummary"];
             /** @enum {string} */
             nextAction?: "COMPLETE_ONBOARDING" | "ENTER_APP";
+        };
+        InquiryCreateRequest: {
+            content: string;
+        };
+        ApiResponseInquiryResponse: {
+            data?: components["schemas"]["InquiryResponse"];
+        };
+        InquiryResponse: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: date-time */
+            createdAt?: string;
         };
         EntryUpdateRequest: {
             title?: string;
@@ -2920,6 +2948,30 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseOnboardingCompleteResponse"];
+                };
+            };
+        };
+    };
+    submitInquiry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InquiryCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseInquiryResponse"];
                 };
             };
         };

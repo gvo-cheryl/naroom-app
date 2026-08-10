@@ -404,6 +404,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/refresh": {
         parameters: {
             query?: never;
@@ -462,6 +478,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["reportGenerationRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/account/withdrawal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["requestWithdrawal"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1515,29 +1547,6 @@ export interface components {
             durationDays?: number;
             replaceActiveProgram?: boolean;
         };
-        RefreshRequest: {
-            refreshToken: string;
-            installationKey?: string;
-        };
-        ApiResponseRefreshResponse: {
-            data?: components["schemas"]["RefreshResponse"];
-        };
-        RefreshResponse: {
-            tokenType?: string;
-            accessToken?: string;
-            /** Format: date-time */
-            accessTokenExpiresAt?: string;
-            refreshToken?: string;
-            /** Format: date-time */
-            refreshTokenExpiresAt?: string;
-            session?: components["schemas"]["SessionSummary"];
-        };
-        SessionSummary: {
-            /** Format: uuid */
-            id?: string;
-            /** Format: date-time */
-            expiresAt?: string;
-        };
         DeviceInfo: {
             installationKey?: string;
             platform?: string;
@@ -1574,6 +1583,29 @@ export interface components {
             /** @enum {string} */
             nextAction?: "COMPLETE_ONBOARDING" | "ENTER_APP";
         };
+        SessionSummary: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+        };
+        RefreshRequest: {
+            refreshToken: string;
+            installationKey?: string;
+        };
+        ApiResponseRefreshResponse: {
+            data?: components["schemas"]["RefreshResponse"];
+        };
+        RefreshResponse: {
+            tokenType?: string;
+            accessToken?: string;
+            /** Format: date-time */
+            accessTokenExpiresAt?: string;
+            refreshToken?: string;
+            /** Format: date-time */
+            refreshTokenExpiresAt?: string;
+            session?: components["schemas"]["SessionSummary"];
+        };
         AiFeedbackReportCreateRequest: {
             reasonCode: string;
             comment?: string;
@@ -1590,6 +1622,13 @@ export interface components {
         };
         ApiResponseAiFeedbackReportResponse: {
             data?: components["schemas"]["AiFeedbackReportResponse"];
+        };
+        AccountWithdrawalResponse: {
+            /** Format: date-time */
+            scheduledDeletionAt?: string;
+        };
+        ApiResponseAccountWithdrawalResponse: {
+            data?: components["schemas"]["AccountWithdrawalResponse"];
         };
         ConsentRequest: {
             /** @enum {string} */
@@ -2725,6 +2764,30 @@ export interface operations {
             };
         };
     };
+    restore: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["KakaoLoginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseKakaoLoginResponse"];
+                };
+            };
+        };
+    };
     refresh: {
         parameters: {
             query?: never;
@@ -2813,6 +2876,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseAiFeedbackReportResponse"];
+                };
+            };
+        };
+    };
+    requestWithdrawal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAccountWithdrawalResponse"];
                 };
             };
         };

@@ -44,6 +44,21 @@ export async function requestAccountWithdrawal(accessToken: string): Promise<str
   return data.scheduledDeletionAt;
 }
 
+export async function submitInquiry(accessToken: string, content: string): Promise<string> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["InquiryResponse"]>("/api/v1/account/inquiries", {
+      method: "POST",
+      accessToken,
+      body: { content } satisfies components["schemas"]["InquiryCreateRequest"],
+    }),
+    "submitInquiry",
+  );
+  if (!data.id) {
+    throw new Error("submitInquiry: response body is missing \"id\"");
+  }
+  return data.id;
+}
+
 export async function updateNotificationPreference(
   accessToken: string,
   type: NotificationType,

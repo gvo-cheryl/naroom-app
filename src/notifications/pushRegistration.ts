@@ -38,6 +38,7 @@ export async function registerForPushNotificationsAsync(accessToken: string): Pr
   } catch (error) {
     logger.error('notifications.register', 'failed to register for push notifications', {
       name: error instanceof Error ? error.name : undefined,
+      message: error instanceof Error ? error.message : String(error),
     });
   }
 }

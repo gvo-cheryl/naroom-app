@@ -3,15 +3,14 @@ import { useFonts } from 'expo-font';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
 
 import { AuthProvider } from '@/auth/AuthContext';
 import { registerNotificationResponseHandler } from '@/notifications/deepLink';
+import { ThemePreferenceProvider, useThemePreference } from '@/settings/ThemePreferenceContext';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [fontsLoaded] = useFonts({ NanumMyeongjo_400Regular, NanumMyeongjo_700Bold });
 
   useEffect(() => registerNotificationResponseHandler(), []);
@@ -23,28 +22,41 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemePreferenceProvider>
       <AuthProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(onboarding)" />
-          <Stack.Screen name="(app)" />
-          <Stack.Screen name="record" options={{ presentation: 'modal' }} />
-          <Stack.Screen name="checkin" options={{ presentation: 'modal' }} />
-          <Stack.Screen name="day" />
-          <Stack.Screen name="quotes" />
-          <Stack.Screen name="experiment" />
-          <Stack.Screen name="period-reflection" />
-          <Stack.Screen name="entry" />
-          <Stack.Screen name="personal-summary" />
-          <Stack.Screen name="analytics" />
-          <Stack.Screen name="badges" />
-          <Stack.Screen name="notification-settings" />
-          <Stack.Screen name="account-withdrawal" />
-          <Stack.Screen name="inquiry" />
-        </Stack>
+        <RootNavigation />
       </AuthProvider>
+    </ThemePreferenceProvider>
+  );
+}
+
+// React Navigation 자체 크롬(헤더·배경 등)도 앱 화면과 같은 resolvedScheme을 따르도록
+// ThemePreferenceProvider 안쪽에서 별도 컴포넌트로 분리한다.
+function RootNavigation() {
+  const { resolvedScheme } = useThemePreference();
+
+  return (
+    <ThemeProvider value={resolvedScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(onboarding)" />
+        <Stack.Screen name="(app)" />
+        <Stack.Screen name="record" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="checkin" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="day" />
+        <Stack.Screen name="quotes" />
+        <Stack.Screen name="experiment" />
+        <Stack.Screen name="period-reflection" />
+        <Stack.Screen name="entry" />
+        <Stack.Screen name="personal-summary" />
+        <Stack.Screen name="analytics" />
+        <Stack.Screen name="badges" />
+        <Stack.Screen name="notification-settings" />
+        <Stack.Screen name="account-withdrawal" />
+        <Stack.Screen name="inquiry" />
+        <Stack.Screen name="appearance" />
+      </Stack>
     </ThemeProvider>
   );
 }

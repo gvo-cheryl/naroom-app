@@ -48,7 +48,7 @@ function ActionRow({ icon, label, onPress, destructive }: ActionRowProps) {
 }
 
 // 내 정보 탭은 아직 대부분 자리표시자다(계정 정보 표시 등은 이후 이슈에서 채운다).
-// 지금은 나의 뱃지함(#20), 알림 설정(#21), 문의하기, 로그아웃, 계정과 기록 삭제 진입점만 연결한다.
+// 지금은 나의 뱃지함(#20), 알림 설정(#21), 화면 테마, 문의하기, 로그아웃, 계정과 기록 삭제 진입점만 연결한다.
 export default function MeScreen() {
   const { logout } = useAuth();
 
@@ -73,6 +73,7 @@ export default function MeScreen() {
             label="알림 설정"
             href="/notification-settings"
           />
+          <MenuRow icon={{ ios: 'circle.lefthalf.filled', android: 'brightness_6' }} label="화면 테마" href="/appearance" />
           <MenuRow icon={{ ios: 'questionmark.circle', android: 'help' }} label="문의하기" href="/inquiry" />
           <ActionRow icon={{ ios: 'rectangle.portrait.and.arrow.right', android: 'logout' }} label="로그아웃" onPress={handleLogoutPress} />
           <MenuRow

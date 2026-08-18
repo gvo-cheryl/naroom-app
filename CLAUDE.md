@@ -233,9 +233,9 @@ Do not begin application API implementation by guessing request or response fiel
 
 ## Authentication Rules
 
-- Beta 1 social login scope is Kakao login.
-- Do not implement Google login, account linking, or account merging without a separate request.
-- Kakao authentication is used to pass verified external identity to the backend.
+- Beta 1 social login scope is Kakao, Google, and Apple login (confirmed 2026-08-12; see naroom-api `docs/instruction/0812_Naroom_Beta1_P1_Complementary_Plan.md`). Google and Apple were reinstated after being deferred out of an earlier version of this document, not a new scope expansion.
+- Do not implement account merging across two already-separate members, or general login-method linking beyond adding Google/Apple, without a separate request.
+- Kakao/Google/Apple authentication is used to pass verified external identity to the backend.
 - Naroom API sessions use Naroom-issued Access Tokens and Refresh Tokens.
 - Do not use Kakao tokens as Naroom application session tokens.
 - Store Naroom credentials only in an approved secure store.

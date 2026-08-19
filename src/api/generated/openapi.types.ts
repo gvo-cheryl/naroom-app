@@ -468,6 +468,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/google/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["googleRestore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/google/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["googleLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/apple/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["appleRestore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/apple/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["appleLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/ai/generation-runs/{generationRunId}/reports": {
         parameters: {
             query?: never;
@@ -1583,10 +1647,16 @@ export interface components {
             /** Format: int64 */
             version?: number;
         };
-        ApiResponseKakaoLoginResponse: {
-            data?: components["schemas"]["KakaoLoginResponse"];
+        ApiResponseSocialLoginResponse: {
+            data?: components["schemas"]["SocialLoginResponse"];
         };
-        KakaoLoginResponse: {
+        SessionSummary: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+        };
+        SocialLoginResponse: {
             tokenType?: string;
             accessToken?: string;
             /** Format: date-time */
@@ -1598,12 +1668,6 @@ export interface components {
             account?: components["schemas"]["AccountSummary"];
             /** @enum {string} */
             nextAction?: "COMPLETE_ONBOARDING" | "ENTER_APP";
-        };
-        SessionSummary: {
-            /** Format: uuid */
-            id?: string;
-            /** Format: date-time */
-            expiresAt?: string;
         };
         RefreshRequest: {
             refreshToken: string;
@@ -1621,6 +1685,16 @@ export interface components {
             /** Format: date-time */
             refreshTokenExpiresAt?: string;
             session?: components["schemas"]["SessionSummary"];
+        };
+        GoogleLoginRequest: {
+            idToken: string;
+            device: components["schemas"]["DeviceInfo"];
+        };
+        AppleLoginRequest: {
+            identityToken: string;
+            rawNonce: string;
+            fullName?: string;
+            device: components["schemas"]["DeviceInfo"];
         };
         AiFeedbackReportCreateRequest: {
             reasonCode: string;
@@ -1648,7 +1722,7 @@ export interface components {
         };
         ConsentRequest: {
             /** @enum {string} */
-            type: "TERMS" | "PRIVACY" | "AI_PROCESSING";
+            type: "TERMS" | "PRIVACY" | "AI_PROCESSING" | "AGE_18_PLUS";
             documentVersion: string;
             agreed: boolean;
         };
@@ -2811,7 +2885,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseKakaoLoginResponse"];
+                    "*/*": components["schemas"]["ApiResponseSocialLoginResponse"];
                 };
             };
         };
@@ -2877,7 +2951,103 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseKakaoLoginResponse"];
+                    "*/*": components["schemas"]["ApiResponseSocialLoginResponse"];
+                };
+            };
+        };
+    };
+    googleRestore: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLoginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseSocialLoginResponse"];
+                };
+            };
+        };
+    };
+    googleLogin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLoginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseSocialLoginResponse"];
+                };
+            };
+        };
+    };
+    appleRestore: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AppleLoginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseSocialLoginResponse"];
+                };
+            };
+        };
+    };
+    appleLogin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AppleLoginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseSocialLoginResponse"];
                 };
             };
         };

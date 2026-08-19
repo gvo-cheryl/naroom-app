@@ -5,7 +5,7 @@ import type { components } from "./generated/openapi.types";
 // 변환 함수를 둔다. 생성 파일(src/api/generated)은 직접 수정하지 않는다.
 
 export type AccountStatus = components["schemas"]["AccountSummary"]["status"] & string;
-export type NextAction = components["schemas"]["KakaoLoginResponse"]["nextAction"] & string;
+export type NextAction = components["schemas"]["SocialLoginResponse"]["nextAction"] & string;
 export type EntryType = components["schemas"]["EntryResponse"]["entryType"] & string;
 export type EntryStatus = components["schemas"]["EntryResponse"]["status"] & string;
 export type TagCategory = components["schemas"]["TagResponse"]["category"] & string;
@@ -33,7 +33,8 @@ export interface DeviceInfo {
   appVersion: string;
 }
 
-export interface KakaoLoginResult {
+// 카카오·Google·Apple 로그인·복구 응답 모두 같은 형태(SocialLoginResponse)를 쓴다.
+export interface SocialLoginResult {
   tokenType: string;
   accessToken: string;
   accessTokenExpiresAt: string;

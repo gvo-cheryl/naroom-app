@@ -4,15 +4,21 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { completeOnboarding, getSession, type AccountSummary } from "@/api";
 import { ApiError } from "@/api/errors";
 import type { components } from "@/api/generated/openapi.types";
-import type { DeviceInfo } from "@/api/types";
+import type { DeviceInfo, SocialLoginResult } from "@/api/types";
+import { requestAppleCredential } from "@/auth/appleNativeLogin";
 import {
   clearInvalidSession,
   getValidAccessToken,
+  loginWithApple,
+  loginWithGoogle,
   loginWithKakao,
   logout as logoutSession,
   restoreAccount as restoreAccountSession,
+  restoreAccountWithApple,
+  restoreAccountWithGoogle,
 } from "@/auth/authManager";
 import { getDevicePlatform, getOrCreateInstallationKey } from "@/auth/deviceIdentity";
+import { requestGoogleIdToken } from "@/auth/googleNativeLogin";
 import { requestKakaoProviderAccessToken } from "@/auth/kakaoNativeLogin";
 import { logger } from "@/lib/logger";
 import { registerForPushNotificationsAsync } from "@/notifications/pushRegistration";
@@ -31,11 +37,15 @@ export type AuthState =
 interface AuthContextValue {
   state: AuthState;
   loginWithKakao: () => Promise<void>;
+  restoreWithKakao: () => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
+  restoreWithGoogle: () => Promise<void>;
+  loginWithApple: () => Promise<void>;
+  restoreWithApple: () => Promise<void>;
   completeOnboarding: (
     request: components["schemas"]["OnboardingCompleteRequest"],
   ) => Promise<void>;
   logout: () => Promise<void>;
-  restoreAccount: () => Promise<void>;
   retry: () => void;
 }
 
@@ -74,6 +84,24 @@ async function resolveEntryState(): Promise<AuthState> {
     logger.error("auth.entry", "session check failed with a non-API error (offline?)");
     return { status: "check_failed" };
   }
+}
+
+function applyLoginResult(result: SocialLoginResult): AuthState {
+  return result.nextAction === "COMPLETE_ONBOARDING"
+    ? { status: "onboarding_required", account: result.account }
+    : { status: "active", account: result.account };
+}
+
+// 탈퇴 유예 계정은 오류로 끝내지 않고 복구 확인 화면으로 보낸다 - 로그인만으로 자동 복구하지는
+// 않는다(Account Deletion Rules). "복구하기"를 명시적으로 눌러야 restoreWith*가 호출된다.
+function pendingDeletionStateFrom(error: unknown): AuthState | null {
+  if (error instanceof ApiError && error.code === "ACCOUNT_PENDING_DELETION") {
+    return {
+      status: "account_pending_deletion",
+      scheduledDeletionAt: error.context?.scheduledDeletionAt as string | undefined,
+    };
+  }
+  return null;
 }
 
 async function currentDeviceInfo(): Promise<DeviceInfo> {
@@ -120,20 +148,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const device = await currentDeviceInfo();
       const result = await loginWithKakao(providerAccessToken, device);
       logger.debug("auth.login", "kakao login succeeded", { nextAction: result.nextAction });
-      setState(
-        result.nextAction === "COMPLETE_ONBOARDING"
-          ? { status: "onboarding_required", account: result.account }
-          : { status: "active", account: result.account },
-      );
+      setState(applyLoginResult(result));
     } catch (error) {
-      // 탈퇴 유예 계정은 오류로 끝내지 않고 복구 확인 화면으로 보낸다 - 로그인만으로 자동 복구하지는
-      // 않는다(Account Deletion Rules). "복구하기"를 명시적으로 눌러야 handleRestoreAccount가 호출된다.
-      if (error instanceof ApiError && error.code === "ACCOUNT_PENDING_DELETION") {
+      const pending = pendingDeletionStateFrom(error);
+      if (pending) {
         logger.debug("auth.login", "account pending deletion; showing restore confirmation");
-        setState({
-          status: "account_pending_deletion",
-          scheduledDeletionAt: error.context?.scheduledDeletionAt as string | undefined,
-        });
+        setState(pending);
         return;
       }
       logger.error("auth.login", "kakao login failed", {
@@ -144,19 +164,110 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const handleRestoreAccount = useCallback(async () => {
+  const handleRestoreWithKakao = useCallback(async () => {
     try {
       const providerAccessToken = await requestKakaoProviderAccessToken();
       const device = await currentDeviceInfo();
       const result = await restoreAccountSession(providerAccessToken, device);
       logger.debug("auth.restore", "account restored", { nextAction: result.nextAction });
-      setState(
-        result.nextAction === "COMPLETE_ONBOARDING"
-          ? { status: "onboarding_required", account: result.account }
-          : { status: "active", account: result.account },
-      );
+      setState(applyLoginResult(result));
     } catch (error) {
-      logger.error("auth.restore", "account restore failed", {
+      logger.error("auth.restore", "kakao account restore failed", {
+        code: error instanceof ApiError ? error.code : undefined,
+        name: error instanceof Error ? error.name : undefined,
+      });
+      throw error;
+    }
+  }, []);
+
+  // Google/Apple SDK는 사용자가 계정 선택 화면을 닫으면 에러 대신 null을 돌려준다(각 native login 모듈
+  // 참고) - 그 경우 에러 토스트 없이 조용히 로그인 화면을 유지한다.
+  const handleLoginWithGoogle = useCallback(async () => {
+    try {
+      const idToken = await requestGoogleIdToken();
+      if (!idToken) {
+        return;
+      }
+      const device = await currentDeviceInfo();
+      const result = await loginWithGoogle(idToken, device);
+      logger.debug("auth.login", "google login succeeded", { nextAction: result.nextAction });
+      setState(applyLoginResult(result));
+    } catch (error) {
+      const pending = pendingDeletionStateFrom(error);
+      if (pending) {
+        logger.debug("auth.login", "account pending deletion; showing restore confirmation");
+        setState(pending);
+        return;
+      }
+      logger.error("auth.login", "google login failed", {
+        code: error instanceof ApiError ? error.code : undefined,
+        name: error instanceof Error ? error.name : undefined,
+      });
+      throw error;
+    }
+  }, []);
+
+  const handleRestoreWithGoogle = useCallback(async () => {
+    try {
+      const idToken = await requestGoogleIdToken();
+      if (!idToken) {
+        return;
+      }
+      const device = await currentDeviceInfo();
+      const result = await restoreAccountWithGoogle(idToken, device);
+      logger.debug("auth.restore", "account restored", { nextAction: result.nextAction });
+      setState(applyLoginResult(result));
+    } catch (error) {
+      logger.error("auth.restore", "google account restore failed", {
+        code: error instanceof ApiError ? error.code : undefined,
+        name: error instanceof Error ? error.name : undefined,
+      });
+      throw error;
+    }
+  }, []);
+
+  const handleLoginWithApple = useCallback(async () => {
+    try {
+      const credential = await requestAppleCredential();
+      if (!credential) {
+        return;
+      }
+      const device = await currentDeviceInfo();
+      const result = await loginWithApple(credential.identityToken, credential.rawNonce, credential.fullName, device);
+      logger.debug("auth.login", "apple login succeeded", { nextAction: result.nextAction });
+      setState(applyLoginResult(result));
+    } catch (error) {
+      const pending = pendingDeletionStateFrom(error);
+      if (pending) {
+        logger.debug("auth.login", "account pending deletion; showing restore confirmation");
+        setState(pending);
+        return;
+      }
+      logger.error("auth.login", "apple login failed", {
+        code: error instanceof ApiError ? error.code : undefined,
+        name: error instanceof Error ? error.name : undefined,
+      });
+      throw error;
+    }
+  }, []);
+
+  const handleRestoreWithApple = useCallback(async () => {
+    try {
+      const credential = await requestAppleCredential();
+      if (!credential) {
+        return;
+      }
+      const device = await currentDeviceInfo();
+      const result = await restoreAccountWithApple(
+        credential.identityToken,
+        credential.rawNonce,
+        credential.fullName,
+        device,
+      );
+      logger.debug("auth.restore", "account restored", { nextAction: result.nextAction });
+      setState(applyLoginResult(result));
+    } catch (error) {
+      logger.error("auth.restore", "apple account restore failed", {
         code: error instanceof ApiError ? error.code : undefined,
         name: error instanceof Error ? error.name : undefined,
       });
@@ -199,12 +310,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       state,
       loginWithKakao: handleLoginWithKakao,
+      restoreWithKakao: handleRestoreWithKakao,
+      loginWithGoogle: handleLoginWithGoogle,
+      restoreWithGoogle: handleRestoreWithGoogle,
+      loginWithApple: handleLoginWithApple,
+      restoreWithApple: handleRestoreWithApple,
       completeOnboarding: handleCompleteOnboarding,
       logout: handleLogout,
-      restoreAccount: handleRestoreAccount,
       retry,
     }),
-    [state, handleLoginWithKakao, handleCompleteOnboarding, handleLogout, handleRestoreAccount, retry],
+    [
+      state,
+      handleLoginWithKakao,
+      handleRestoreWithKakao,
+      handleLoginWithGoogle,
+      handleRestoreWithGoogle,
+      handleLoginWithApple,
+      handleRestoreWithApple,
+      handleCompleteOnboarding,
+      handleLogout,
+      retry,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

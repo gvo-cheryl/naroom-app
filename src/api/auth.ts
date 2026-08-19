@@ -5,33 +5,40 @@ import {
   toAccountSummary,
   toSessionSummary,
   type DeviceInfo,
-  type KakaoLoginResult,
   type OnboardingCompleteResult,
   type RefreshResult,
   type SessionCheckResult,
+  type SocialLoginResult,
 } from "./types";
+
+function toSocialLoginResult(
+  data: components["schemas"]["SocialLoginResponse"],
+  label: string,
+): SocialLoginResult {
+  return {
+    tokenType: data.tokenType ?? "Bearer",
+    accessToken: requireDefined(data.accessToken, `${label}.accessToken`),
+    accessTokenExpiresAt: requireDefined(data.accessTokenExpiresAt, `${label}.accessTokenExpiresAt`),
+    refreshToken: requireDefined(data.refreshToken, `${label}.refreshToken`),
+    refreshTokenExpiresAt: requireDefined(data.refreshTokenExpiresAt, `${label}.refreshTokenExpiresAt`),
+    session: toSessionSummary(data.session, `${label}.session`),
+    account: toAccountSummary(data.account, `${label}.account`),
+    nextAction: requireDefined(data.nextAction, `${label}.nextAction`),
+  };
+}
 
 export async function kakaoLogin(request: {
   providerAccessToken: string;
   device: DeviceInfo;
-}): Promise<KakaoLoginResult> {
+}): Promise<SocialLoginResult> {
   const data = requireData(
-    await apiFetch<components["schemas"]["KakaoLoginResponse"]>("/api/v1/auth/kakao/login", {
+    await apiFetch<components["schemas"]["SocialLoginResponse"]>("/api/v1/auth/kakao/login", {
       method: "POST",
       body: request,
     }),
     "kakaoLogin",
   );
-  return {
-    tokenType: data.tokenType ?? "Bearer",
-    accessToken: requireDefined(data.accessToken, "kakaoLogin.accessToken"),
-    accessTokenExpiresAt: requireDefined(data.accessTokenExpiresAt, "kakaoLogin.accessTokenExpiresAt"),
-    refreshToken: requireDefined(data.refreshToken, "kakaoLogin.refreshToken"),
-    refreshTokenExpiresAt: requireDefined(data.refreshTokenExpiresAt, "kakaoLogin.refreshTokenExpiresAt"),
-    session: toSessionSummary(data.session, "kakaoLogin.session"),
-    account: toAccountSummary(data.account, "kakaoLogin.account"),
-    nextAction: requireDefined(data.nextAction, "kakaoLogin.nextAction"),
-  };
+  return toSocialLoginResult(data, "kakaoLogin");
 }
 
 // PENDING_DELETION 상태에서 카카오 재인증으로 명시적 복구를 확인하는 전용 엔드포인트다.
@@ -39,24 +46,77 @@ export async function kakaoLogin(request: {
 export async function restoreAccount(request: {
   providerAccessToken: string;
   device: DeviceInfo;
-}): Promise<KakaoLoginResult> {
+}): Promise<SocialLoginResult> {
   const data = requireData(
-    await apiFetch<components["schemas"]["KakaoLoginResponse"]>("/api/v1/auth/restore", {
+    await apiFetch<components["schemas"]["SocialLoginResponse"]>("/api/v1/auth/restore", {
       method: "POST",
       body: request,
     }),
     "restoreAccount",
   );
-  return {
-    tokenType: data.tokenType ?? "Bearer",
-    accessToken: requireDefined(data.accessToken, "restoreAccount.accessToken"),
-    accessTokenExpiresAt: requireDefined(data.accessTokenExpiresAt, "restoreAccount.accessTokenExpiresAt"),
-    refreshToken: requireDefined(data.refreshToken, "restoreAccount.refreshToken"),
-    refreshTokenExpiresAt: requireDefined(data.refreshTokenExpiresAt, "restoreAccount.refreshTokenExpiresAt"),
-    session: toSessionSummary(data.session, "restoreAccount.session"),
-    account: toAccountSummary(data.account, "restoreAccount.account"),
-    nextAction: requireDefined(data.nextAction, "restoreAccount.nextAction"),
-  };
+  return toSocialLoginResult(data, "restoreAccount");
+}
+
+export async function googleLogin(request: {
+  idToken: string;
+  device: DeviceInfo;
+}): Promise<SocialLoginResult> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["SocialLoginResponse"]>("/api/v1/auth/google/login", {
+      method: "POST",
+      body: request,
+    }),
+    "googleLogin",
+  );
+  return toSocialLoginResult(data, "googleLogin");
+}
+
+// PENDING_DELETION 상태에서 Google 재인증으로 명시적 복구를 확인하는 전용 엔드포인트다.
+export async function googleRestore(request: {
+  idToken: string;
+  device: DeviceInfo;
+}): Promise<SocialLoginResult> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["SocialLoginResponse"]>("/api/v1/auth/google/restore", {
+      method: "POST",
+      body: request,
+    }),
+    "googleRestore",
+  );
+  return toSocialLoginResult(data, "googleRestore");
+}
+
+export async function appleLogin(request: {
+  identityToken: string;
+  rawNonce: string;
+  fullName?: string;
+  device: DeviceInfo;
+}): Promise<SocialLoginResult> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["SocialLoginResponse"]>("/api/v1/auth/apple/login", {
+      method: "POST",
+      body: request,
+    }),
+    "appleLogin",
+  );
+  return toSocialLoginResult(data, "appleLogin");
+}
+
+// PENDING_DELETION 상태에서 Apple 재인증으로 명시적 복구를 확인하는 전용 엔드포인트다.
+export async function appleRestore(request: {
+  identityToken: string;
+  rawNonce: string;
+  fullName?: string;
+  device: DeviceInfo;
+}): Promise<SocialLoginResult> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["SocialLoginResponse"]>("/api/v1/auth/apple/restore", {
+      method: "POST",
+      body: request,
+    }),
+    "appleRestore",
+  );
+  return toSocialLoginResult(data, "appleRestore");
 }
 
 export async function refreshToken(request: {

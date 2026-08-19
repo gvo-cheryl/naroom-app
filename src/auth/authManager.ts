@@ -1,10 +1,14 @@
 import {
+  appleLogin,
+  appleRestore,
+  googleLogin,
+  googleRestore,
   kakaoLogin,
   logout as logoutRequest,
   refreshToken as refreshTokenRequest,
   restoreAccount as restoreAccountRequest,
 } from "@/api/auth";
-import type { DeviceInfo, KakaoLoginResult } from "@/api/types";
+import type { DeviceInfo, SocialLoginResult } from "@/api/types";
 import { getOrCreateInstallationKey } from "@/auth/deviceIdentity";
 import { clearSession, loadSession, saveSession, type StoredSession } from "@/auth/tokenStorage";
 import { logger } from "@/lib/logger";
@@ -23,7 +27,7 @@ let inFlightRefresh: Promise<string | null> | null = null;
 export async function loginWithKakao(
   providerAccessToken: string,
   device: DeviceInfo,
-): Promise<KakaoLoginResult> {
+): Promise<SocialLoginResult> {
   const result = await kakaoLogin({ providerAccessToken, device });
   await saveSession(toStoredSession(result));
   return result;
@@ -33,8 +37,42 @@ export async function loginWithKakao(
 export async function restoreAccount(
   providerAccessToken: string,
   device: DeviceInfo,
-): Promise<KakaoLoginResult> {
+): Promise<SocialLoginResult> {
   const result = await restoreAccountRequest({ providerAccessToken, device });
+  await saveSession(toStoredSession(result));
+  return result;
+}
+
+export async function loginWithGoogle(idToken: string, device: DeviceInfo): Promise<SocialLoginResult> {
+  const result = await googleLogin({ idToken, device });
+  await saveSession(toStoredSession(result));
+  return result;
+}
+
+export async function restoreAccountWithGoogle(idToken: string, device: DeviceInfo): Promise<SocialLoginResult> {
+  const result = await googleRestore({ idToken, device });
+  await saveSession(toStoredSession(result));
+  return result;
+}
+
+export async function loginWithApple(
+  identityToken: string,
+  rawNonce: string,
+  fullName: string | undefined,
+  device: DeviceInfo,
+): Promise<SocialLoginResult> {
+  const result = await appleLogin({ identityToken, rawNonce, fullName, device });
+  await saveSession(toStoredSession(result));
+  return result;
+}
+
+export async function restoreAccountWithApple(
+  identityToken: string,
+  rawNonce: string,
+  fullName: string | undefined,
+  device: DeviceInfo,
+): Promise<SocialLoginResult> {
+  const result = await appleRestore({ identityToken, rawNonce, fullName, device });
   await saveSession(toStoredSession(result));
   return result;
 }
@@ -107,7 +145,7 @@ export async function logout(): Promise<void> {
   }
 }
 
-function toStoredSession(result: KakaoLoginResult): StoredSession {
+function toStoredSession(result: SocialLoginResult): StoredSession {
   return {
     accessToken: result.accessToken,
     accessTokenExpiresAt: result.accessTokenExpiresAt,

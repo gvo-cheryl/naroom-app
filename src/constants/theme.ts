@@ -48,6 +48,13 @@ export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 export const BrandColors = {
   kakaoYellow: '#FEE500',
   onKakaoYellow: '#191600',
+  // Google 브랜딩 가이드(흰 배경·짙은 회색 글자·연회색 테두리)
+  googleWhite: '#FFFFFF',
+  onGoogleWhite: '#1F1F1F',
+  googleBorder: '#747775',
+  // Apple 브랜딩 가이드("Sign in with Apple" 검정 배경·흰 글자)
+  appleBlack: '#000000',
+  onAppleBlack: '#FFFFFF',
 } as const;
 
 // 프로토타입의 --serif(Nanum Myeongjo)에 대응한다. 실제 로딩은 앱 진입점의 useFonts로 한다.

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { Platform, Pressable, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAuth } from "@/auth/AuthContext";
@@ -7,22 +7,29 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { BrandColors, Radius, Spacing } from "@/constants/theme";
 
-// 프로토타입 A02(로그인)에 대응한다. Beta 1 승인 범위가 카카오 로그인뿐이라 Google 버튼은 넣지 않는다.
+type Provider = "kakao" | "google" | "apple";
+
+// 프로토타입 A02(로그인)에 대응한다. Beta 1 승인 범위가 카카오·Google·Apple로 확장됨에 따라
+// 세 버튼을 나란히 둔다.
 export default function LoginScreen() {
-  const { state, loginWithKakao, restoreAccount } = useAuth();
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const { state, loginWithKakao, restoreWithKakao, loginWithGoogle, restoreWithGoogle, loginWithApple, restoreWithApple } =
+    useAuth();
+  const [activeProvider, setActiveProvider] = useState<Provider | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const isPendingDeletion = state.status === "account_pending_deletion";
+  const isBusy = activeProvider !== null;
 
-  const handlePress = async () => {
+  const handlePress = async (provider: Provider) => {
     setErrorMessage(null);
-    setIsLoggingIn(true);
+    setActiveProvider(provider);
     try {
-      if (isPendingDeletion) {
-        await restoreAccount();
+      if (provider === "kakao") {
+        await (isPendingDeletion ? restoreWithKakao() : loginWithKakao());
+      } else if (provider === "google") {
+        await (isPendingDeletion ? restoreWithGoogle() : loginWithGoogle());
       } else {
-        await loginWithKakao();
+        await (isPendingDeletion ? restoreWithApple() : loginWithApple());
       }
     } catch {
       setErrorMessage(
@@ -31,7 +38,7 @@ export default function LoginScreen() {
           : "로그인에 실패했어요. 잠시 후 다시 시도해 주세요.",
       );
     } finally {
-      setIsLoggingIn(false);
+      setActiveProvider(null);
     }
   };
 
@@ -55,23 +62,45 @@ export default function LoginScreen() {
           )}
 
           <Pressable
-            onPress={handlePress}
-            disabled={isLoggingIn}
+            onPress={() => handlePress("kakao")}
+            disabled={isBusy}
             style={({ pressed }) => [
               styles.kakaoButton,
-              isLoggingIn && styles.disabled,
-              pressed && !isLoggingIn && styles.pressed,
+              isBusy && styles.disabled,
+              pressed && !isBusy && styles.pressed,
             ]}>
             <ThemedText type="smallBold" style={styles.kakaoButtonText}>
-              {isLoggingIn
-                ? isPendingDeletion
-                  ? "복구하는 중…"
-                  : "로그인 중…"
-                : isPendingDeletion
-                  ? "카카오로 본인 확인 후 계정 복구하기"
-                  : "카카오로 시작하기"}
+              {buttonLabel("카카오", activeProvider === "kakao", isPendingDeletion)}
             </ThemedText>
           </Pressable>
+
+          <Pressable
+            onPress={() => handlePress("google")}
+            disabled={isBusy}
+            style={({ pressed }) => [
+              styles.googleButton,
+              isBusy && styles.disabled,
+              pressed && !isBusy && styles.pressed,
+            ]}>
+            <ThemedText type="smallBold" style={styles.googleButtonText}>
+              {buttonLabel("Google", activeProvider === "google", isPendingDeletion)}
+            </ThemedText>
+          </Pressable>
+
+          {Platform.OS === "ios" && (
+            <Pressable
+              onPress={() => handlePress("apple")}
+              disabled={isBusy}
+              style={({ pressed }) => [
+                styles.appleButton,
+                isBusy && styles.disabled,
+                pressed && !isBusy && styles.pressed,
+              ]}>
+              <ThemedText type="smallBold" style={styles.appleButtonText}>
+                {buttonLabel("Apple", activeProvider === "apple", isPendingDeletion)}
+              </ThemedText>
+            </Pressable>
+          )}
 
           <ThemedText type="small" themeColor="textTertiary" style={styles.legal}>
             계속하면 이용약관과 개인정보 처리방침에 동의하는 것으로 봅니다.
@@ -80,6 +109,13 @@ export default function LoginScreen() {
       </SafeAreaView>
     </ThemedView>
   );
+}
+
+function buttonLabel(providerLabel: string, isActive: boolean, isPendingDeletion: boolean): string {
+  if (isActive) {
+    return isPendingDeletion ? "복구하는 중…" : "로그인 중…";
+  }
+  return isPendingDeletion ? `${providerLabel}로 본인 확인 후 계정 복구하기` : `${providerLabel}로 시작하기`;
 }
 
 function noticeFor(state: { status: string; scheduledDeletionAt?: string }): string | null {
@@ -132,6 +168,30 @@ const styles = StyleSheet.create({
   },
   kakaoButtonText: {
     color: BrandColors.onKakaoYellow,
+  },
+  googleButton: {
+    alignSelf: "stretch",
+    backgroundColor: BrandColors.googleWhite,
+    borderRadius: Radius.button,
+    borderWidth: 1,
+    borderColor: BrandColors.googleBorder,
+    paddingVertical: Spacing.three,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  googleButtonText: {
+    color: BrandColors.onGoogleWhite,
+  },
+  appleButton: {
+    alignSelf: "stretch",
+    backgroundColor: BrandColors.appleBlack,
+    borderRadius: Radius.button,
+    paddingVertical: Spacing.three,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  appleButtonText: {
+    color: BrandColors.onAppleBlack,
   },
   legal: {
     textAlign: "center",

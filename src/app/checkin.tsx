@@ -9,6 +9,7 @@ import { ApiError } from '@/api/errors';
 import type { EmotionTagTopicSummary, TagSummary } from '@/api/types';
 import { useAuth } from '@/auth/AuthContext';
 import { getValidAccessToken } from '@/auth/authManager';
+import { CharCounter } from '@/components/char-counter';
 import { LevelBar } from '@/components/level-bar';
 import { LevelSlider } from '@/components/level-slider';
 import { NeedSummary } from '@/components/need-summary';
@@ -21,6 +22,10 @@ import { CHECKIN_NEEDS, ENERGY_LABELS, INTENSITY_LABELS, levelLabelIndex } from 
 import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { logger } from '@/lib/logger';
+
+// naroom-api ai-policy-architecture.md §4: 체크인 문장형 입력 상한.
+const MEMORABLE_EVENT_MAX_LENGTH = 500;
+const GRATITUDE_NOTE_MAX_LENGTH = 300;
 
 function todayIsoDate(): string {
   const now = new Date();
@@ -330,9 +335,11 @@ export default function CheckInScreen() {
             placeholderTextColor={theme.textTertiary}
             value={memorableEvent}
             onChangeText={setMemorableEvent}
+            maxLength={MEMORABLE_EVENT_MAX_LENGTH}
             multiline
             textAlignVertical="top"
           />
+          <CharCounter length={memorableEvent.length} max={MEMORABLE_EVENT_MAX_LENGTH} style={styles.charCounter} />
 
           <SectionHeading
             icon={{ ios: 'star.fill', android: 'star' }}
@@ -345,9 +352,11 @@ export default function CheckInScreen() {
             placeholderTextColor={theme.textTertiary}
             value={gratitudeNote}
             onChangeText={setGratitudeNote}
+            maxLength={GRATITUDE_NOTE_MAX_LENGTH}
             multiline
             textAlignVertical="top"
           />
+          <CharCounter length={gratitudeNote.length} max={GRATITUDE_NOTE_MAX_LENGTH} style={styles.charCounter} />
 
           <SectionHeading
             icon={{ ios: 'leaf.fill', android: 'eco' }}
@@ -454,6 +463,10 @@ const styles = StyleSheet.create({
   },
   hint: {
     marginTop: Spacing.one,
+  },
+  charCounter: {
+    marginTop: Spacing.one,
+    textAlign: 'right',
   },
   field: {
     marginTop: Spacing.three,

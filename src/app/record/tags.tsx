@@ -21,6 +21,7 @@ import {
 import { ApiError } from "@/api/errors";
 import type { EntryTagSummary, TagCategory, TagSummary } from "@/api/types";
 import { getValidAccessToken } from "@/auth/authManager";
+import { CharCounter } from "@/components/char-counter";
 import { RecordScreenHeader } from "@/components/record-screen-header";
 import { SectionHeading } from "@/components/section-heading";
 import { ThemedText } from "@/components/themed-text";
@@ -31,6 +32,9 @@ import { MaxContentWidth, Radius, Spacing } from "@/constants/theme";
 import { AI_REFLECTION_TERMINAL_STATUSES, useAiReflectionPoll } from "@/hooks/use-ai-reflection-poll";
 import { useTheme } from "@/hooks/use-theme";
 import { logger } from "@/lib/logger";
+
+// naroom-api ai-policy-architecture.md §4: 태그명(감정 직접 입력 포함) 상한.
+const TAG_NAME_MAX_LENGTH = 30;
 
 const CATEGORY_ORDER: TagCategory[] = [
   "EMOTION",
@@ -350,6 +354,7 @@ export default function RecordTagsScreen() {
                   value={newTagName}
                   onChangeText={setNewTagName}
                   onSubmitEditing={handleAddCustomTag}
+                  maxLength={TAG_NAME_MAX_LENGTH}
                 />
                 <Pressable
                   onPress={handleAddCustomTag}
@@ -359,6 +364,11 @@ export default function RecordTagsScreen() {
                   <ThemedText type="smallBold">추가</ThemedText>
                 </Pressable>
               </View>
+              <CharCounter
+                length={newTagName.length}
+                max={TAG_NAME_MAX_LENGTH}
+                style={styles.charCounter}
+              />
 
               {CATEGORY_ORDER.filter(
                 (category) =>
@@ -504,6 +514,10 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.two,
     paddingHorizontal: Spacing.three,
     fontSize: 16,
+  },
+  charCounter: {
+    marginTop: Spacing.one,
+    textAlign: "right",
   },
   addButton: {
     borderWidth: 1,

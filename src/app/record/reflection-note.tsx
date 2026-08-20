@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { createSelfReflection } from '@/api';
 import { ApiError } from '@/api/errors';
 import { getValidAccessToken } from '@/auth/authManager';
+import { CharCounter } from '@/components/char-counter';
 import { RecordScreenHeader } from '@/components/record-screen-header';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -13,6 +14,9 @@ import { AppButton } from '@/components/ui/app-button';
 import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { logger } from '@/lib/logger';
+
+// naroom-api ai-policy-architecture.md §4: 생각 덧붙이기·자기정리 상한.
+const CONTENT_MAX_LENGTH = 1000;
 
 // 프로토타입 R04(내 생각 추가)에 대응한다. AI 정리와 분리해서 저장되고 LifeTime에서도
 // "나의 생각"으로 따로 보인다(entry_self_reflections).
@@ -64,9 +68,11 @@ export default function RecordReflectionNoteScreen() {
             placeholderTextColor={theme.textTertiary}
             value={content}
             onChangeText={setContent}
+            maxLength={CONTENT_MAX_LENGTH}
             multiline
             textAlignVertical="top"
           />
+          <CharCounter length={content.length} max={CONTENT_MAX_LENGTH} style={styles.charCounter} />
           <ThemedText type="small" themeColor="textTertiary" style={styles.note}>
             여기에 적은 내용은 AI 응답과 분리해서 저장돼요.
           </ThemedText>
@@ -108,6 +114,10 @@ const styles = StyleSheet.create({
     borderRadius: Radius.medium,
     padding: Spacing.three,
     fontSize: 16,
+  },
+  charCounter: {
+    marginTop: Spacing.one,
+    textAlign: 'right',
   },
   note: {
     marginTop: Spacing.two,

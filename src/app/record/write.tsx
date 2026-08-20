@@ -7,6 +7,7 @@ import { createEntry, getTodayQuote, publishEntry } from '@/api';
 import { ApiError } from '@/api/errors';
 import type { QuoteSummary } from '@/api/types';
 import { getValidAccessToken } from '@/auth/authManager';
+import { CharCounter } from '@/components/char-counter';
 import { RecordScreenHeader } from '@/components/record-screen-header';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -15,6 +16,9 @@ import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { RECORD_PROMPTS, recordTypeOf } from '@/constants/record';
 import { useTheme } from '@/hooks/use-theme';
 import { logger } from '@/lib/logger';
+
+// naroom-api ai-policy-architecture.md §4: 감정 기록·더 기록하기(자유 기록류) 상한.
+const BODY_MAX_LENGTH = 2000;
 
 function todayIsoDate(): string {
   const now = new Date();
@@ -30,7 +34,6 @@ export default function RecordWriteScreen() {
   const recordType = recordTypeOf(type);
   const theme = useTheme();
 
-  const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -93,7 +96,6 @@ export default function RecordWriteScreen() {
       }
       const created = await createEntry(accessToken, {
         entryType: recordType.id,
-        title: title.trim().length > 0 ? title.trim() : undefined,
         body: body.trim(),
         recordDate: todayIsoDate(),
         quoteId: recordType.id === 'QUOTE_REFLECTION' ? (quote?.id ?? undefined) : undefined,
@@ -143,21 +145,16 @@ export default function RecordWriteScreen() {
           )}
 
           <TextInput
-            style={[styles.field, { borderColor: theme.border, color: theme.text }]}
-            placeholder="제목 (선택)"
-            placeholderTextColor={theme.textTertiary}
-            value={title}
-            onChangeText={setTitle}
-          />
-          <TextInput
             style={[styles.field, styles.bodyField, { borderColor: theme.border, color: theme.text }]}
             placeholder={recordType.placeholder}
             placeholderTextColor={theme.textTertiary}
             value={body}
             onChangeText={setBody}
+            maxLength={BODY_MAX_LENGTH}
             multiline
             textAlignVertical="top"
           />
+          <CharCounter length={body.length} max={BODY_MAX_LENGTH} style={styles.charCounter} />
 
           {errorMessage && (
             <ThemedText type="small" themeColor="textTertiary" style={styles.error}>
@@ -209,6 +206,10 @@ const styles = StyleSheet.create({
   },
   bodyField: {
     minHeight: 160,
+  },
+  charCounter: {
+    marginTop: Spacing.one,
+    textAlign: 'right',
   },
   error: {
     marginTop: Spacing.two,

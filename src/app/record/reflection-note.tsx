@@ -11,12 +11,10 @@ import { RecordScreenHeader } from '@/components/record-screen-header';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { AppButton } from '@/components/ui/app-button';
+import { SELF_REFLECTION_MAX_LENGTH } from '@/constants/record';
 import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { logger } from '@/lib/logger';
-
-// naroom-api ai-policy-architecture.md §4: 생각 덧붙이기·자기정리 상한.
-const CONTENT_MAX_LENGTH = 1000;
 
 // 프로토타입 R04(내 생각 추가)에 대응한다. AI 정리와 분리해서 저장되고 LifeTime에서도
 // "나의 생각"으로 따로 보인다(entry_self_reflections).
@@ -62,17 +60,18 @@ export default function RecordReflectionNoteScreen() {
           <ThemedText type="default" themeColor="textSecondary" style={styles.lead}>
             이 기록을 다시 보니 나는 어떻게 느껴지나요?
           </ThemedText>
+          {/* maxLength prop 대신 onChangeText에서 잘라낸다 - 네이티브 maxLength(Android LengthFilter)는
+              한글 조합 중인 글자를 끊어버릴 수 있다. */}
           <TextInput
             style={[styles.field, { borderColor: theme.border, color: theme.text }]}
             placeholder="AI의 정리와 다르게 느껴진 부분이 있다면 그대로 적어도 좋아요."
             placeholderTextColor={theme.textTertiary}
             value={content}
-            onChangeText={setContent}
-            maxLength={CONTENT_MAX_LENGTH}
+            onChangeText={(text) => setContent(text.slice(0, SELF_REFLECTION_MAX_LENGTH))}
             multiline
             textAlignVertical="top"
           />
-          <CharCounter length={content.length} max={CONTENT_MAX_LENGTH} style={styles.charCounter} />
+          <CharCounter length={content.length} max={SELF_REFLECTION_MAX_LENGTH} style={styles.charCounter} />
           <ThemedText type="small" themeColor="textTertiary" style={styles.note}>
             여기에 적은 내용은 AI 응답과 분리해서 저장돼요.
           </ThemedText>

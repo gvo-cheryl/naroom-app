@@ -27,14 +27,11 @@ import { SectionHeading } from "@/components/section-heading";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { AppButton } from "@/components/ui/app-button";
-import { TAG_CATEGORY_LABELS } from "@/constants/record";
+import { TAG_CATEGORY_LABELS, TAG_NAME_MAX_LENGTH } from "@/constants/record";
 import { MaxContentWidth, Radius, Spacing } from "@/constants/theme";
 import { AI_REFLECTION_TERMINAL_STATUSES, useAiReflectionPoll } from "@/hooks/use-ai-reflection-poll";
 import { useTheme } from "@/hooks/use-theme";
 import { logger } from "@/lib/logger";
-
-// naroom-api ai-policy-architecture.md §4: 태그명(감정 직접 입력 포함) 상한.
-const TAG_NAME_MAX_LENGTH = 30;
 
 const CATEGORY_ORDER: TagCategory[] = [
   "EMOTION",
@@ -344,6 +341,8 @@ export default function RecordTagsScreen() {
                 style={styles.addHeading}
               />
               <View style={styles.row}>
+                {/* maxLength prop 대신 onChangeText에서 잘라낸다 - 네이티브 maxLength(Android
+                    LengthFilter)는 한글 조합 중인 글자를 끊어버릴 수 있다. */}
                 <TextInput
                   style={[
                     styles.input,
@@ -352,9 +351,8 @@ export default function RecordTagsScreen() {
                   placeholder="직접 입력"
                   placeholderTextColor={theme.textTertiary}
                   value={newTagName}
-                  onChangeText={setNewTagName}
+                  onChangeText={(text) => setNewTagName(text.slice(0, TAG_NAME_MAX_LENGTH))}
                   onSubmitEditing={handleAddCustomTag}
-                  maxLength={TAG_NAME_MAX_LENGTH}
                 />
                 <Pressable
                   onPress={handleAddCustomTag}

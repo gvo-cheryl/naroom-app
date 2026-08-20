@@ -13,12 +13,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { AppButton } from '@/components/ui/app-button';
 import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
-import { RECORD_PROMPTS, recordTypeOf } from '@/constants/record';
+import { RECORD_BODY_MAX_LENGTH, RECORD_PROMPTS, recordTypeOf } from '@/constants/record';
 import { useTheme } from '@/hooks/use-theme';
 import { logger } from '@/lib/logger';
-
-// naroom-api ai-policy-architecture.md §4: 감정 기록·더 기록하기(자유 기록류) 상한.
-const BODY_MAX_LENGTH = 2000;
 
 function todayIsoDate(): string {
   const now = new Date();
@@ -144,17 +141,18 @@ export default function RecordWriteScreen() {
             </ThemedView>
           )}
 
+          {/* maxLength prop 대신 onChangeText에서 잘라낸다 - 네이티브 maxLength(Android LengthFilter)는
+              한글 조합 중인 글자를 끊어버릴 수 있다. */}
           <TextInput
             style={[styles.field, styles.bodyField, { borderColor: theme.border, color: theme.text }]}
             placeholder={recordType.placeholder}
             placeholderTextColor={theme.textTertiary}
             value={body}
-            onChangeText={setBody}
-            maxLength={BODY_MAX_LENGTH}
+            onChangeText={(text) => setBody(text.slice(0, RECORD_BODY_MAX_LENGTH))}
             multiline
             textAlignVertical="top"
           />
-          <CharCounter length={body.length} max={BODY_MAX_LENGTH} style={styles.charCounter} />
+          <CharCounter length={body.length} max={RECORD_BODY_MAX_LENGTH} style={styles.charCounter} />
 
           {errorMessage && (
             <ThemedText type="small" themeColor="textTertiary" style={styles.error}>

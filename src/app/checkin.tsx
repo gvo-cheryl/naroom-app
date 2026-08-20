@@ -18,14 +18,17 @@ import { SectionHeading } from '@/components/section-heading';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { AppButton } from '@/components/ui/app-button';
-import { CHECKIN_NEEDS, ENERGY_LABELS, INTENSITY_LABELS, levelLabelIndex } from '@/constants/checkin';
+import {
+  CHECKIN_NEEDS,
+  ENERGY_LABELS,
+  GRATITUDE_NOTE_MAX_LENGTH,
+  INTENSITY_LABELS,
+  MEMORABLE_EVENT_MAX_LENGTH,
+  levelLabelIndex,
+} from '@/constants/checkin';
 import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { logger } from '@/lib/logger';
-
-// naroom-api ai-policy-architecture.md §4: 체크인 문장형 입력 상한.
-const MEMORABLE_EVENT_MAX_LENGTH = 500;
-const GRATITUDE_NOTE_MAX_LENGTH = 300;
 
 function todayIsoDate(): string {
   const now = new Date();
@@ -79,8 +82,10 @@ export default function CheckInScreen() {
           setSelectedEmotionIds(new Set(existing.emotions.map((tag) => tag.id)));
           setIntensity(existing.emotionIntensity);
           setEnergy(existing.energyLevel);
-          setMemorableEvent(existing.memorableEvent ?? '');
-          setGratitudeNote(existing.gratitudeNote ?? '');
+          // 이 클라이언트 제한보다 먼저 저장된 값이 상한을 넘을 수 있어(과거 클라이언트, 다른 경로),
+          // 편집 화면에 불러올 때 잘라낸다 - 그래야 손대지 않고 저장해도 백엔드 @Size 검증에 걸리지 않는다.
+          setMemorableEvent((existing.memorableEvent ?? '').slice(0, MEMORABLE_EVENT_MAX_LENGTH));
+          setGratitudeNote((existing.gratitudeNote ?? '').slice(0, GRATITUDE_NOTE_MAX_LENGTH));
           setCurrentNeed(existing.currentNeed);
         }
       } catch (error) {
@@ -329,13 +334,14 @@ export default function CheckInScreen() {
             title="오늘 마음에 남아 있는 일이 있나요?"
             style={styles.sectionHeading}
           />
+          {/* maxLength prop 대신 onChangeText에서 잘라낸다 - 네이티브 maxLength(Android LengthFilter)는
+              한글 조합 중인 글자를 끊어버릴 수 있다. */}
           <TextInput
             style={[styles.field, { borderColor: theme.border, color: theme.text }]}
             placeholder="한 줄이어도 괜찮아요"
             placeholderTextColor={theme.textTertiary}
             value={memorableEvent}
-            onChangeText={setMemorableEvent}
-            maxLength={MEMORABLE_EVENT_MAX_LENGTH}
+            onChangeText={(text) => setMemorableEvent(text.slice(0, MEMORABLE_EVENT_MAX_LENGTH))}
             multiline
             textAlignVertical="top"
           />
@@ -346,13 +352,14 @@ export default function CheckInScreen() {
             title="감사했거나, 조금이라도 다행이라 느낀 일이 있었나요?"
             style={styles.sectionHeading}
           />
+          {/* maxLength prop 대신 onChangeText에서 잘라낸다 - 네이티브 maxLength(Android LengthFilter)는
+              한글 조합 중인 글자를 끊어버릴 수 있다. */}
           <TextInput
             style={[styles.field, { borderColor: theme.border, color: theme.text }]}
             placeholder="넘어가도 괜찮아요"
             placeholderTextColor={theme.textTertiary}
             value={gratitudeNote}
-            onChangeText={setGratitudeNote}
-            maxLength={GRATITUDE_NOTE_MAX_LENGTH}
+            onChangeText={(text) => setGratitudeNote(text.slice(0, GRATITUDE_NOTE_MAX_LENGTH))}
             multiline
             textAlignVertical="top"
           />

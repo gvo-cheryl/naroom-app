@@ -4,6 +4,10 @@ export const INTENSITY_LABELS = ['거의 없음', '조금', '보통', '크게', 
 export const ENERGY_LABELS = ['거의 없음', '낮음', '보통', '있음', '충분함'];
 export const CHECKIN_NEEDS = ['휴식', '이해', '거리', '대화', '안정', '정리', '용기', '도움'];
 
+// naroom-api ai-policy-architecture.md §4: 체크인 문장형 입력 상한.
+export const MEMORABLE_EVENT_MAX_LENGTH = 500;
+export const GRATITUDE_NOTE_MAX_LENGTH = 300;
+
 // 0~100 값을 라벨 개수만큼 균등한 구간(5개 라벨이면 20%씩)으로 나눠 인덱스를 고른다.
 export function levelLabelIndex(value: number, labelCount: number): number {
   const binWidth = 100 / labelCount;

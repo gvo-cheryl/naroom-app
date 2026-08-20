@@ -7,12 +7,13 @@ import { createEntry, getTodayQuote, publishEntry } from '@/api';
 import { ApiError } from '@/api/errors';
 import type { QuoteSummary } from '@/api/types';
 import { getValidAccessToken } from '@/auth/authManager';
+import { CharCounter } from '@/components/char-counter';
 import { RecordScreenHeader } from '@/components/record-screen-header';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { AppButton } from '@/components/ui/app-button';
 import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
-import { RECORD_PROMPTS, recordTypeOf } from '@/constants/record';
+import { RECORD_BODY_MAX_LENGTH, RECORD_PROMPTS, recordTypeOf } from '@/constants/record';
 import { useTheme } from '@/hooks/use-theme';
 import { logger } from '@/lib/logger';
 
@@ -30,7 +31,6 @@ export default function RecordWriteScreen() {
   const recordType = recordTypeOf(type);
   const theme = useTheme();
 
-  const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -93,7 +93,6 @@ export default function RecordWriteScreen() {
       }
       const created = await createEntry(accessToken, {
         entryType: recordType.id,
-        title: title.trim().length > 0 ? title.trim() : undefined,
         body: body.trim(),
         recordDate: todayIsoDate(),
         quoteId: recordType.id === 'QUOTE_REFLECTION' ? (quote?.id ?? undefined) : undefined,
@@ -142,22 +141,18 @@ export default function RecordWriteScreen() {
             </ThemedView>
           )}
 
-          <TextInput
-            style={[styles.field, { borderColor: theme.border, color: theme.text }]}
-            placeholder="제목 (선택)"
-            placeholderTextColor={theme.textTertiary}
-            value={title}
-            onChangeText={setTitle}
-          />
+          {/* maxLength prop 대신 onChangeText에서 잘라낸다 - 네이티브 maxLength(Android LengthFilter)는
+              한글 조합 중인 글자를 끊어버릴 수 있다. */}
           <TextInput
             style={[styles.field, styles.bodyField, { borderColor: theme.border, color: theme.text }]}
             placeholder={recordType.placeholder}
             placeholderTextColor={theme.textTertiary}
             value={body}
-            onChangeText={setBody}
+            onChangeText={(text) => setBody(text.slice(0, RECORD_BODY_MAX_LENGTH))}
             multiline
             textAlignVertical="top"
           />
+          <CharCounter length={body.length} max={RECORD_BODY_MAX_LENGTH} style={styles.charCounter} />
 
           {errorMessage && (
             <ThemedText type="small" themeColor="textTertiary" style={styles.error}>
@@ -209,6 +204,10 @@ const styles = StyleSheet.create({
   },
   bodyField: {
     minHeight: 160,
+  },
+  charCounter: {
+    marginTop: Spacing.one,
+    textAlign: 'right',
   },
   error: {
     marginTop: Spacing.two,

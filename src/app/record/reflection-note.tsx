@@ -6,10 +6,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { createSelfReflection } from '@/api';
 import { ApiError } from '@/api/errors';
 import { getValidAccessToken } from '@/auth/authManager';
+import { CharCounter } from '@/components/char-counter';
 import { RecordScreenHeader } from '@/components/record-screen-header';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { AppButton } from '@/components/ui/app-button';
+import { SELF_REFLECTION_MAX_LENGTH } from '@/constants/record';
 import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { logger } from '@/lib/logger';
@@ -58,15 +60,18 @@ export default function RecordReflectionNoteScreen() {
           <ThemedText type="default" themeColor="textSecondary" style={styles.lead}>
             이 기록을 다시 보니 나는 어떻게 느껴지나요?
           </ThemedText>
+          {/* maxLength prop 대신 onChangeText에서 잘라낸다 - 네이티브 maxLength(Android LengthFilter)는
+              한글 조합 중인 글자를 끊어버릴 수 있다. */}
           <TextInput
             style={[styles.field, { borderColor: theme.border, color: theme.text }]}
             placeholder="AI의 정리와 다르게 느껴진 부분이 있다면 그대로 적어도 좋아요."
             placeholderTextColor={theme.textTertiary}
             value={content}
-            onChangeText={setContent}
+            onChangeText={(text) => setContent(text.slice(0, SELF_REFLECTION_MAX_LENGTH))}
             multiline
             textAlignVertical="top"
           />
+          <CharCounter length={content.length} max={SELF_REFLECTION_MAX_LENGTH} style={styles.charCounter} />
           <ThemedText type="small" themeColor="textTertiary" style={styles.note}>
             여기에 적은 내용은 AI 응답과 분리해서 저장돼요.
           </ThemedText>
@@ -108,6 +113,10 @@ const styles = StyleSheet.create({
     borderRadius: Radius.medium,
     padding: Spacing.three,
     fontSize: 16,
+  },
+  charCounter: {
+    marginTop: Spacing.one,
+    textAlign: 'right',
   },
   note: {
     marginTop: Spacing.two,

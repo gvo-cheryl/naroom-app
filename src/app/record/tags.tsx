@@ -21,12 +21,13 @@ import {
 import { ApiError } from "@/api/errors";
 import type { EntryTagSummary, TagCategory, TagSummary } from "@/api/types";
 import { getValidAccessToken } from "@/auth/authManager";
+import { CharCounter } from "@/components/char-counter";
 import { RecordScreenHeader } from "@/components/record-screen-header";
 import { SectionHeading } from "@/components/section-heading";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { AppButton } from "@/components/ui/app-button";
-import { TAG_CATEGORY_LABELS } from "@/constants/record";
+import { TAG_CATEGORY_LABELS, TAG_NAME_MAX_LENGTH } from "@/constants/record";
 import { MaxContentWidth, Radius, Spacing } from "@/constants/theme";
 import { AI_REFLECTION_TERMINAL_STATUSES, useAiReflectionPoll } from "@/hooks/use-ai-reflection-poll";
 import { useTheme } from "@/hooks/use-theme";
@@ -340,6 +341,8 @@ export default function RecordTagsScreen() {
                 style={styles.addHeading}
               />
               <View style={styles.row}>
+                {/* maxLength prop 대신 onChangeText에서 잘라낸다 - 네이티브 maxLength(Android
+                    LengthFilter)는 한글 조합 중인 글자를 끊어버릴 수 있다. */}
                 <TextInput
                   style={[
                     styles.input,
@@ -348,7 +351,7 @@ export default function RecordTagsScreen() {
                   placeholder="직접 입력"
                   placeholderTextColor={theme.textTertiary}
                   value={newTagName}
-                  onChangeText={setNewTagName}
+                  onChangeText={(text) => setNewTagName(text.slice(0, TAG_NAME_MAX_LENGTH))}
                   onSubmitEditing={handleAddCustomTag}
                 />
                 <Pressable
@@ -359,6 +362,11 @@ export default function RecordTagsScreen() {
                   <ThemedText type="smallBold">추가</ThemedText>
                 </Pressable>
               </View>
+              <CharCounter
+                length={newTagName.length}
+                max={TAG_NAME_MAX_LENGTH}
+                style={styles.charCounter}
+              />
 
               {CATEGORY_ORDER.filter(
                 (category) =>
@@ -504,6 +512,10 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.two,
     paddingHorizontal: Spacing.three,
     fontSize: 16,
+  },
+  charCounter: {
+    marginTop: Spacing.one,
+    textAlign: "right",
   },
   addButton: {
     borderWidth: 1,

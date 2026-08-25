@@ -6,6 +6,7 @@ interface ApiFetchOptions {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
   accessToken?: string;
+  previewToken?: string;
 }
 
 function getApiBaseUrl(): string {
@@ -27,6 +28,9 @@ export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): 
   }
   if (options.accessToken) {
     headers.Authorization = `Bearer ${options.accessToken}`;
+  }
+  if (options.previewToken) {
+    headers["X-Preview-Token"] = options.previewToken;
   }
 
   const method = options.method ?? "GET";

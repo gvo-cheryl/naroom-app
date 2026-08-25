@@ -52,6 +52,102 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/experiments/topics/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get"];
+        put: operations["update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/experiments/programs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_1"];
+        put: operations["update_1"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/experiments/missions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_2"];
+        put: operations["update_2"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/record-prompts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_3"];
+        put: operations["update_3"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/quotes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_4"];
+        put: operations["update_4"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/app-copy/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_5"];
+        put: operations["update_5"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/account/notification-preferences/{type}": {
         parameters: {
             query?: never;
@@ -548,6 +644,310 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/preview/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/experiments/topics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list"];
+        put?: never;
+        post: operations["create_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/experiments/programs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_1"];
+        put?: never;
+        post: operations["create_2"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/experiments/programs/{id}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createRevision"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/experiments/programs/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/experiments/programs/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["archive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/experiments/missions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_2"];
+        put?: never;
+        post: operations["create_3"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/record-prompts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_3"];
+        put?: never;
+        post: operations["create_4"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/record-prompts/{id}/revisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createRevision_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/record-prompts/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["publish_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/record-prompts/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["archive_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/quotes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_4"];
+        put?: never;
+        post: operations["create_5"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/quotes/{id}/revisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createRevision_2"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/quotes/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["publish_2"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/quotes/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["archive_2"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/app-copy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_5"];
+        put?: never;
+        post: operations["create_6"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/app-copy/{id}/revisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createRevision_3"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/app-copy/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["publish_3"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/content/app-copy/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["archive_3"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/account/withdrawal": {
         parameters: {
             query?: never;
@@ -732,6 +1132,38 @@ export interface paths {
             cookie?: never;
         };
         get: operations["getAiReflectionStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/preview/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_6"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/preview/content/quotes/today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPreviewTodayQuote"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1140,6 +1572,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/auth/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["session_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ai/runtime-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_6"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/account/notification-preferences": {
         parameters: {
             query?: never;
@@ -1251,6 +1715,284 @@ export interface components {
         };
         ApiResponseAiFeedbackResponse: {
             data?: components["schemas"]["AiFeedbackResponse"];
+        };
+        AdminExperimentTopicUpdateRequest: {
+            name: string;
+            description?: string;
+            /** Format: int32 */
+            displayOrder: number;
+            active: boolean;
+        };
+        AdminExperimentTopicResponse: {
+            /** Format: uuid */
+            id?: string;
+            code?: string;
+            name?: string;
+            description?: string;
+            /** Format: int32 */
+            displayOrder?: number;
+            active?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        ApiResponseAdminExperimentTopicResponse: {
+            data?: components["schemas"]["AdminExperimentTopicResponse"];
+        };
+        AdminExperimentProgramDayMissionRequest: {
+            /** Format: int32 */
+            dayNumber?: number;
+            /** Format: uuid */
+            missionId: string;
+            replaceable: boolean;
+            replacementGroup?: string;
+        };
+        AdminExperimentProgramUpdateRequest: {
+            /** Format: uuid */
+            primaryTopicId: string;
+            title: string;
+            description: string;
+            /** Format: int32 */
+            durationDays?: number;
+            /** @enum {string} */
+            sourceType: "TEMPLATE" | "RANDOM" | "AI_RECOMMENDED" | "USER_COMPOSED";
+            /** Format: int32 */
+            estimatedMinutesMin?: number;
+            /** Format: int32 */
+            estimatedMinutesMax?: number;
+            featured: boolean;
+            beginner: boolean;
+            /** Format: int32 */
+            displayOrder?: number;
+            days: components["schemas"]["AdminExperimentProgramDayMissionRequest"][];
+        };
+        AdminExperimentProgramDayMissionResponse: {
+            /** Format: int32 */
+            dayNumber?: number;
+            /** Format: uuid */
+            missionId?: string;
+            missionCode?: string;
+            missionTitle?: string;
+            missionActive?: boolean;
+            replaceable?: boolean;
+            replacementGroup?: string;
+        };
+        AdminExperimentProgramResponse: {
+            /** Format: uuid */
+            id?: string;
+            code?: string;
+            /** Format: int32 */
+            contentVersion?: number;
+            /** Format: uuid */
+            primaryTopicId?: string;
+            primaryTopicCode?: string;
+            title?: string;
+            description?: string;
+            /** Format: int32 */
+            durationDays?: number;
+            /** @enum {string} */
+            sourceType?: "TEMPLATE" | "RANDOM" | "AI_RECOMMENDED" | "USER_COMPOSED";
+            /** @enum {string} */
+            status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+            /** Format: int32 */
+            estimatedMinutesMin?: number;
+            /** Format: int32 */
+            estimatedMinutesMax?: number;
+            featured?: boolean;
+            beginner?: boolean;
+            /** Format: int32 */
+            displayOrder?: number;
+            /** Format: uuid */
+            supersedesProgramId?: string;
+            /** Format: uuid */
+            createdByAdminId?: string;
+            days?: components["schemas"]["AdminExperimentProgramDayMissionResponse"][];
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        ApiResponseAdminExperimentProgramResponse: {
+            data?: components["schemas"]["AdminExperimentProgramResponse"];
+        };
+        AdminExperimentMissionUpdateRequest: {
+            /** Format: uuid */
+            topicId: string;
+            title: string;
+            description: string;
+            instruction: string;
+            /** @enum {string} */
+            missionType: "OBSERVATION" | "QUESTION" | "ACTION" | "RECORD" | "REVIEW";
+            responseType: string;
+            /** Format: int32 */
+            estimatedMinutes?: number;
+            /** @enum {string} */
+            emotionalLoad: "LOW" | "MEDIUM" | "HIGH";
+            reflectionQuestions: string;
+            examples: string;
+            responseSchema: string;
+            safetyNote?: string;
+            active: boolean;
+        };
+        AdminExperimentMissionResponse: {
+            /** Format: uuid */
+            id?: string;
+            code?: string;
+            /** Format: int32 */
+            contentVersion?: number;
+            /** Format: uuid */
+            topicId?: string;
+            topicCode?: string;
+            title?: string;
+            description?: string;
+            instruction?: string;
+            /** @enum {string} */
+            missionType?: "OBSERVATION" | "QUESTION" | "ACTION" | "RECORD" | "REVIEW";
+            responseType?: string;
+            /** Format: int32 */
+            estimatedMinutes?: number;
+            /** @enum {string} */
+            emotionalLoad?: "LOW" | "MEDIUM" | "HIGH";
+            reflectionQuestions?: string;
+            examples?: string;
+            responseSchema?: string;
+            safetyNote?: string;
+            active?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        ApiResponseAdminExperimentMissionResponse: {
+            data?: components["schemas"]["AdminExperimentMissionResponse"];
+        };
+        AdminRecordPromptUpdateRequest: {
+            questionText: string;
+            helperText?: string;
+            /** @enum {string} */
+            entryType: "FREE" | "CHECK_IN" | "GRATITUDE" | "EMOTION" | "PROMPT" | "QUOTE_REFLECTION" | "EXPERIMENT_MISSION" | "EXPERIMENT_REVIEW" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "SELF_SUMMARY";
+            /** Format: int32 */
+            displayOrder: number;
+            /** Format: date-time */
+            activeFrom?: string;
+            /** Format: date-time */
+            activeUntil?: string;
+        };
+        AdminRecordPromptResponse: {
+            /** Format: uuid */
+            id?: string;
+            code?: string;
+            /** Format: int32 */
+            versionNo?: number;
+            questionText?: string;
+            helperText?: string;
+            /** @enum {string} */
+            entryType?: "FREE" | "CHECK_IN" | "GRATITUDE" | "EMOTION" | "PROMPT" | "QUOTE_REFLECTION" | "EXPERIMENT_MISSION" | "EXPERIMENT_REVIEW" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "SELF_SUMMARY";
+            /** Format: int32 */
+            displayOrder?: number;
+            /** @enum {string} */
+            status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+            /** Format: date-time */
+            activeFrom?: string;
+            /** Format: date-time */
+            activeUntil?: string;
+            /** Format: uuid */
+            supersedesPromptId?: string;
+            /** Format: uuid */
+            createdByAdminId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        ApiResponseAdminRecordPromptResponse: {
+            data?: components["schemas"]["AdminRecordPromptResponse"];
+        };
+        AdminQuoteUpdateRequest: {
+            text: string;
+            authorName?: string;
+            sourceName?: string;
+            sourceUrl?: string;
+            topicIds: string[];
+            /** Format: date-time */
+            activeFrom?: string;
+            /** Format: date-time */
+            activeUntil?: string;
+        };
+        AdminQuoteResponse: {
+            /** Format: uuid */
+            id?: string;
+            code?: string;
+            /** Format: int32 */
+            versionNo?: number;
+            text?: string;
+            authorName?: string;
+            sourceName?: string;
+            sourceUrl?: string;
+            /** @enum {string} */
+            status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+            /** Format: date-time */
+            activeFrom?: string;
+            /** Format: date-time */
+            activeUntil?: string;
+            /** Format: uuid */
+            supersedesQuoteId?: string;
+            /** Format: uuid */
+            createdByAdminId?: string;
+            topicIds?: string[];
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        ApiResponseAdminQuoteResponse: {
+            data?: components["schemas"]["AdminQuoteResponse"];
+        };
+        AdminAppContentItemUpdateRequest: {
+            surface: string;
+            /** @enum {string} */
+            valueType: "TEXT" | "JSON";
+            valueText?: string;
+            valueJson?: string;
+            schemaVersion: string;
+            /** Format: date-time */
+            activeFrom?: string;
+            /** Format: date-time */
+            activeUntil?: string;
+            fallbackRequired: boolean;
+        };
+        AdminAppContentItemResponse: {
+            /** Format: uuid */
+            id?: string;
+            contentKey?: string;
+            surface?: string;
+            locale?: string;
+            /** @enum {string} */
+            valueType?: "TEXT" | "JSON";
+            valueText?: string;
+            valueJson?: string;
+            schemaVersion?: string;
+            /** Format: int32 */
+            versionNo?: number;
+            /** @enum {string} */
+            status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+            /** Format: date-time */
+            activeFrom?: string;
+            /** Format: date-time */
+            activeUntil?: string;
+            fallbackRequired?: boolean;
+            /** Format: uuid */
+            createdByAdminId?: string;
+            /** Format: uuid */
+            supersedesItemId?: string;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        ApiResponseAdminAppContentItemResponse: {
+            data?: components["schemas"]["AdminAppContentItemResponse"];
         };
         NotificationPreferenceUpdateRequest: {
             enabled: boolean;
@@ -1713,6 +2455,108 @@ export interface components {
         ApiResponseAiFeedbackReportResponse: {
             data?: components["schemas"]["AiFeedbackReportResponse"];
         };
+        AdminPreviewSessionCreateRequest: {
+            selectedContentVersions: {
+                [key: string]: string;
+            };
+            scenarioKey?: string;
+        };
+        AdminPreviewSessionResponse: {
+            token?: string;
+            /** Format: date-time */
+            expiresAt?: string;
+        };
+        ApiResponseAdminPreviewSessionResponse: {
+            data?: components["schemas"]["AdminPreviewSessionResponse"];
+        };
+        AdminExperimentTopicCreateRequest: {
+            code: string;
+            name: string;
+            description?: string;
+            /** Format: int32 */
+            displayOrder: number;
+            active: boolean;
+        };
+        AdminExperimentProgramCreateRequest: {
+            code: string;
+            /** Format: uuid */
+            primaryTopicId: string;
+            title: string;
+            description: string;
+            /** Format: int32 */
+            durationDays?: number;
+            /** @enum {string} */
+            sourceType: "TEMPLATE" | "RANDOM" | "AI_RECOMMENDED" | "USER_COMPOSED";
+            /** Format: int32 */
+            estimatedMinutesMin?: number;
+            /** Format: int32 */
+            estimatedMinutesMax?: number;
+            featured: boolean;
+            beginner: boolean;
+            /** Format: int32 */
+            displayOrder?: number;
+            days: components["schemas"]["AdminExperimentProgramDayMissionRequest"][];
+        };
+        AdminExperimentMissionCreateRequest: {
+            code: string;
+            /** Format: uuid */
+            topicId: string;
+            title: string;
+            description: string;
+            instruction: string;
+            /** @enum {string} */
+            missionType: "OBSERVATION" | "QUESTION" | "ACTION" | "RECORD" | "REVIEW";
+            responseType: string;
+            /** Format: int32 */
+            estimatedMinutes?: number;
+            /** @enum {string} */
+            emotionalLoad: "LOW" | "MEDIUM" | "HIGH";
+            reflectionQuestions: string;
+            examples: string;
+            responseSchema: string;
+            safetyNote?: string;
+            active: boolean;
+        };
+        AdminRecordPromptCreateRequest: {
+            code: string;
+            questionText: string;
+            helperText?: string;
+            /** @enum {string} */
+            entryType: "FREE" | "CHECK_IN" | "GRATITUDE" | "EMOTION" | "PROMPT" | "QUOTE_REFLECTION" | "EXPERIMENT_MISSION" | "EXPERIMENT_REVIEW" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "SELF_SUMMARY";
+            /** Format: int32 */
+            displayOrder: number;
+            /** Format: date-time */
+            activeFrom?: string;
+            /** Format: date-time */
+            activeUntil?: string;
+        };
+        AdminQuoteCreateRequest: {
+            code: string;
+            text: string;
+            authorName?: string;
+            sourceName?: string;
+            sourceUrl?: string;
+            topicIds: string[];
+            /** Format: date-time */
+            activeFrom?: string;
+            /** Format: date-time */
+            activeUntil?: string;
+        };
+        AdminAppContentItemCreateRequest: {
+            contentKey: string;
+            surface: string;
+            locale?: string;
+            /** @enum {string} */
+            valueType: "TEXT" | "JSON";
+            valueText?: string;
+            valueJson?: string;
+            schemaVersion: string;
+            /** Format: date-time */
+            activeFrom?: string;
+            /** Format: date-time */
+            activeUntil?: string;
+            fallbackRequired: boolean;
+        };
         AccountWithdrawalResponse: {
             /** Format: date-time */
             scheduledDeletionAt?: string;
@@ -1813,6 +2657,36 @@ export interface components {
             reflectionQuestion?: string;
             /** Format: date-time */
             completedAt?: string;
+        };
+        ApiResponsePreviewSessionInfoResponse: {
+            data?: components["schemas"]["PreviewSessionInfoResponse"];
+        };
+        PreviewSessionInfoResponse: {
+            /** Format: uuid */
+            previewSessionId?: string;
+            selectedContentVersions?: {
+                [key: string]: string;
+            };
+            scenarioKey?: string;
+        };
+        ApiResponseQuoteResponse: {
+            data?: components["schemas"]["QuoteResponse"];
+        };
+        QuoteResponse: {
+            /** Format: uuid */
+            id?: string;
+            text?: string;
+            authorName?: string;
+            sourceName?: string;
+            sourceUrl?: string;
+            topics?: components["schemas"]["QuoteTopicResponse"][];
+            saved?: boolean;
+        };
+        QuoteTopicResponse: {
+            /** Format: uuid */
+            id?: string;
+            code?: string;
+            name?: string;
         };
         ApiResponseListEntryTimelineResponse: {
             data?: components["schemas"]["EntryTimelineResponse"][];
@@ -2044,27 +2918,8 @@ export interface components {
         ApiResponseListQuoteTopicResponse: {
             data?: components["schemas"]["QuoteTopicResponse"][];
         };
-        QuoteTopicResponse: {
-            /** Format: uuid */
-            id?: string;
-            code?: string;
-            name?: string;
-        };
         ApiResponseListQuoteResponse: {
             data?: components["schemas"]["QuoteResponse"][];
-        };
-        QuoteResponse: {
-            /** Format: uuid */
-            id?: string;
-            text?: string;
-            authorName?: string;
-            sourceName?: string;
-            sourceUrl?: string;
-            topics?: components["schemas"]["QuoteTopicResponse"][];
-            saved?: boolean;
-        };
-        ApiResponseQuoteResponse: {
-            data?: components["schemas"]["QuoteResponse"];
         };
         ApiResponseListSavedQuoteResponse: {
             data?: components["schemas"]["SavedQuoteResponse"][];
@@ -2098,6 +2953,62 @@ export interface components {
             account?: components["schemas"]["AccountSummary"];
             /** @enum {string} */
             nextAction?: "COMPLETE_ONBOARDING" | "ENTER_APP";
+        };
+        ApiResponseListAdminExperimentTopicResponse: {
+            data?: components["schemas"]["AdminExperimentTopicResponse"][];
+        };
+        ApiResponseListAdminExperimentProgramResponse: {
+            data?: components["schemas"]["AdminExperimentProgramResponse"][];
+        };
+        ApiResponseListAdminExperimentMissionResponse: {
+            data?: components["schemas"]["AdminExperimentMissionResponse"][];
+        };
+        ApiResponseListAdminRecordPromptResponse: {
+            data?: components["schemas"]["AdminRecordPromptResponse"][];
+        };
+        ApiResponseListAdminQuoteResponse: {
+            data?: components["schemas"]["AdminQuoteResponse"][];
+        };
+        ApiResponseListAdminAppContentItemResponse: {
+            data?: components["schemas"]["AdminAppContentItemResponse"][];
+        };
+        AdminSessionResponse: {
+            /** Format: uuid */
+            adminId?: string;
+            email?: string;
+            displayName?: string;
+            roles?: ("SUPER_ADMIN" | "CONTENT_EDITOR" | "AI_OPERATOR" | "SUPPORT_READ_ONLY")[];
+            /** Format: date-time */
+            expiresAt?: string;
+        };
+        ApiResponseAdminSessionResponse: {
+            data?: components["schemas"]["AdminSessionResponse"];
+        };
+        AdminAiRuntimeStatusResponse: {
+            /** @enum {string} */
+            featureType?: "ENTRY_REFLECTION" | "THREE_DAY_REFLECTION" | "WEEKLY_REFLECTION" | "CONVERSATION_REPLY" | "CONVERSATION_SUMMARY";
+            modelName?: string;
+            commonPromptVersionLabel?: string;
+            commonPromptOutputSchemaVersion?: string;
+            featurePromptVersionLabel?: string;
+            featurePromptOutputSchemaVersion?: string;
+            /** Format: int32 */
+            windowDays?: number;
+            /** Format: int64 */
+            totalJobCount?: number;
+            /** Format: int64 */
+            completedJobCount?: number;
+            /** Format: double */
+            successRate?: number;
+            /** Format: double */
+            avgLatencyMs?: number;
+            /** Format: double */
+            avgInputTokens?: number;
+            /** Format: double */
+            avgOutputTokens?: number;
+        };
+        ApiResponseListAdminAiRuntimeStatusResponse: {
+            data?: components["schemas"]["AdminAiRuntimeStatusResponse"][];
         };
         ApiResponseListNotificationPreferenceResponse: {
             data?: components["schemas"]["NotificationPreferenceResponse"][];
@@ -2223,6 +3134,294 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseAiFeedbackResponse"];
+                };
+            };
+        };
+    };
+    get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminExperimentTopicResponse"];
+                };
+            };
+        };
+    };
+    update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminExperimentTopicUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminExperimentTopicResponse"];
+                };
+            };
+        };
+    };
+    get_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminExperimentProgramResponse"];
+                };
+            };
+        };
+    };
+    update_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminExperimentProgramUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminExperimentProgramResponse"];
+                };
+            };
+        };
+    };
+    get_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminExperimentMissionResponse"];
+                };
+            };
+        };
+    };
+    update_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminExperimentMissionUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminExperimentMissionResponse"];
+                };
+            };
+        };
+    };
+    get_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminRecordPromptResponse"];
+                };
+            };
+        };
+    };
+    update_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminRecordPromptUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminRecordPromptResponse"];
+                };
+            };
+        };
+    };
+    get_4: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminQuoteResponse"];
+                };
+            };
+        };
+    };
+    update_4: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminQuoteUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminQuoteResponse"];
+                };
+            };
+        };
+    };
+    get_5: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminAppContentItemResponse"];
+                };
+            };
+        };
+    };
+    update_5: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminAppContentItemUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminAppContentItemResponse"];
                 };
             };
         };
@@ -3078,6 +4277,576 @@ export interface operations {
             };
         };
     };
+    create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminPreviewSessionCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminPreviewSessionResponse"];
+                };
+            };
+        };
+    };
+    list: {
+        parameters: {
+            query?: {
+                q?: string;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListAdminExperimentTopicResponse"];
+                };
+            };
+        };
+    };
+    create_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminExperimentTopicCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminExperimentTopicResponse"];
+                };
+            };
+        };
+    };
+    list_1: {
+        parameters: {
+            query?: {
+                q?: string;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListAdminExperimentProgramResponse"];
+                };
+            };
+        };
+    };
+    create_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminExperimentProgramCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminExperimentProgramResponse"];
+                };
+            };
+        };
+    };
+    createRevision: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminExperimentProgramResponse"];
+                };
+            };
+        };
+    };
+    publish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminExperimentProgramResponse"];
+                };
+            };
+        };
+    };
+    archive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminExperimentProgramResponse"];
+                };
+            };
+        };
+    };
+    list_2: {
+        parameters: {
+            query?: {
+                q?: string;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListAdminExperimentMissionResponse"];
+                };
+            };
+        };
+    };
+    create_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminExperimentMissionCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminExperimentMissionResponse"];
+                };
+            };
+        };
+    };
+    list_3: {
+        parameters: {
+            query?: {
+                q?: string;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListAdminRecordPromptResponse"];
+                };
+            };
+        };
+    };
+    create_4: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminRecordPromptCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminRecordPromptResponse"];
+                };
+            };
+        };
+    };
+    createRevision_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminRecordPromptResponse"];
+                };
+            };
+        };
+    };
+    publish_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminRecordPromptResponse"];
+                };
+            };
+        };
+    };
+    archive_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminRecordPromptResponse"];
+                };
+            };
+        };
+    };
+    list_4: {
+        parameters: {
+            query?: {
+                q?: string;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListAdminQuoteResponse"];
+                };
+            };
+        };
+    };
+    create_5: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminQuoteCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminQuoteResponse"];
+                };
+            };
+        };
+    };
+    createRevision_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminQuoteResponse"];
+                };
+            };
+        };
+    };
+    publish_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminQuoteResponse"];
+                };
+            };
+        };
+    };
+    archive_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminQuoteResponse"];
+                };
+            };
+        };
+    };
+    list_5: {
+        parameters: {
+            query?: {
+                q?: string;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListAdminAppContentItemResponse"];
+                };
+            };
+        };
+    };
+    create_6: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminAppContentItemCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminAppContentItemResponse"];
+                };
+            };
+        };
+    };
+    createRevision_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminAppContentItemResponse"];
+                };
+            };
+        };
+    };
+    publish_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminAppContentItemResponse"];
+                };
+            };
+        };
+    };
+    archive_3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminAppContentItemResponse"];
+                };
+            };
+        };
+    };
     requestWithdrawal: {
         parameters: {
             query?: never;
@@ -3393,6 +5162,46 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseEntryAiReflectionResponse"];
+                };
+            };
+        };
+    };
+    get_6: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponsePreviewSessionInfoResponse"];
+                };
+            };
+        };
+    };
+    getPreviewTodayQuote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseQuoteResponse"];
                 };
             };
         };
@@ -3926,6 +5735,46 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseSessionCheckResponse"];
+                };
+            };
+        };
+    };
+    session_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAdminSessionResponse"];
+                };
+            };
+        };
+    };
+    list_6: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListAdminAiRuntimeStatusResponse"];
                 };
             };
         };

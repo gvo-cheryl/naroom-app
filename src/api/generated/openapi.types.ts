@@ -1172,6 +1172,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/preview/content/experiment-programs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPreviewProgramDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/lifetime/timeline": {
         parameters: {
             query?: never;
@@ -2688,6 +2704,46 @@ export interface components {
             code?: string;
             name?: string;
         };
+        ApiResponseExperimentProgramDetailResponse: {
+            data?: components["schemas"]["ExperimentProgramDetailResponse"];
+        };
+        ExperimentProgramDetailResponse: {
+            /** Format: uuid */
+            id?: string;
+            code?: string;
+            /** Format: int32 */
+            contentVersion?: number;
+            title?: string;
+            description?: string;
+            /** Format: int32 */
+            durationDays?: number;
+            primaryTopicCode?: string;
+            /** @enum {string} */
+            sourceType?: "TEMPLATE" | "RANDOM" | "AI_RECOMMENDED" | "USER_COMPOSED";
+            /** @enum {string} */
+            status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+            isFeatured?: boolean;
+            isBeginner?: boolean;
+            /** Format: int32 */
+            estimatedMinutesMin?: number;
+            /** Format: int32 */
+            estimatedMinutesMax?: number;
+            /** Format: int32 */
+            displayOrder?: number;
+            missions?: components["schemas"]["ExperimentProgramMissionResponse"][];
+        };
+        ExperimentProgramMissionResponse: {
+            /** Format: int32 */
+            dayNumber?: number;
+            /** Format: uuid */
+            missionId?: string;
+            missionCode?: string;
+            title?: string;
+            /** @enum {string} */
+            missionType?: "OBSERVATION" | "QUESTION" | "ACTION" | "RECORD" | "REVIEW";
+            /** Format: int32 */
+            estimatedMinutes?: number;
+        };
         ApiResponseListEntryTimelineResponse: {
             data?: components["schemas"]["EntryTimelineResponse"][];
         };
@@ -2851,46 +2907,6 @@ export interface components {
         };
         ApiResponseListExperimentProgramSummaryResponse: {
             data?: components["schemas"]["ExperimentProgramSummaryResponse"][];
-        };
-        ApiResponseExperimentProgramDetailResponse: {
-            data?: components["schemas"]["ExperimentProgramDetailResponse"];
-        };
-        ExperimentProgramDetailResponse: {
-            /** Format: uuid */
-            id?: string;
-            code?: string;
-            /** Format: int32 */
-            contentVersion?: number;
-            title?: string;
-            description?: string;
-            /** Format: int32 */
-            durationDays?: number;
-            primaryTopicCode?: string;
-            /** @enum {string} */
-            sourceType?: "TEMPLATE" | "RANDOM" | "AI_RECOMMENDED" | "USER_COMPOSED";
-            /** @enum {string} */
-            status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-            isFeatured?: boolean;
-            isBeginner?: boolean;
-            /** Format: int32 */
-            estimatedMinutesMin?: number;
-            /** Format: int32 */
-            estimatedMinutesMax?: number;
-            /** Format: int32 */
-            displayOrder?: number;
-            missions?: components["schemas"]["ExperimentProgramMissionResponse"][];
-        };
-        ExperimentProgramMissionResponse: {
-            /** Format: int32 */
-            dayNumber?: number;
-            /** Format: uuid */
-            missionId?: string;
-            missionCode?: string;
-            title?: string;
-            /** @enum {string} */
-            missionType?: "OBSERVATION" | "QUESTION" | "ACTION" | "RECORD" | "REVIEW";
-            /** Format: int32 */
-            estimatedMinutes?: number;
         };
         ApiResponseExperimentRandomProgramResponse: {
             data?: components["schemas"]["ExperimentRandomProgramResponse"];
@@ -5202,6 +5218,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseQuoteResponse"];
+                };
+            };
+        };
+    };
+    getPreviewProgramDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseExperimentProgramDetailResponse"];
                 };
             };
         };

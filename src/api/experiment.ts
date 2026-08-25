@@ -129,6 +129,19 @@ export async function getExperimentProgramDetail(
   return toExperimentProgramDetailSummary(data, "getExperimentProgramDetail");
 }
 
+// preview session이 관리자 화면에서 지정한 "experimentProgram" 버전을 그대로 돌려준다.
+// 회원 API와 응답 스키마(ExperimentProgramDetailResponse)가 같아 매퍼를 그대로 재사용한다.
+export async function getPreviewExperimentProgramDetail(previewToken: string): Promise<ExperimentProgramDetailSummary> {
+  const data = requireData(
+    await apiFetch<components["schemas"]["ExperimentProgramDetailResponse"]>(
+      "/api/v1/preview/content/experiment-programs",
+      { previewToken },
+    ),
+    "getPreviewExperimentProgramDetail",
+  );
+  return toExperimentProgramDetailSummary(data, "getPreviewExperimentProgramDetail");
+}
+
 export async function getRandomExperimentProgram(
   accessToken: string,
   durationDays: number,

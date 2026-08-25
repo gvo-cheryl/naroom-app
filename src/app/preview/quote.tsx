@@ -1,4 +1,3 @@
-import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,14 +9,15 @@ import { QuoteCard } from "@/components/quote-card";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { MaxContentWidth, Spacing } from "@/constants/theme";
+import { usePreviewToken } from "@/hooks/use-preview-token";
 import { useTheme } from "@/hooks/use-theme";
 import { logger } from "@/lib/logger";
 
 // Admin Web preview iframe에서만 연다 - 회원 인증(AuthContext)과 완전히 분리된 경로라
-// (app) 그룹 밖의 최상위 라우트로 둔다. preview token은 관리자 화면이 iframe src 쿼리로
-// 넘겨준다(Admin Web Implementation Spec §16.2 - handshake 전 초기 전달은 URL 허용).
+// (app) 그룹 밖의 최상위 라우트로 둔다. preview token은 postMessage handshake로 받는다
+// (usePreviewToken - Admin Web Implementation Spec §16.2/16.5).
 export default function PreviewQuoteScreen() {
-  const { token } = useLocalSearchParams<{ token?: string }>();
+  const token = usePreviewToken();
   const theme = useTheme();
   const [loading, setLoading] = useState(true);
   const [quote, setQuote] = useState<QuoteSummary | null>(null);

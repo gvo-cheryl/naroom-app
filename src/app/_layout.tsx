@@ -56,6 +56,7 @@ function RootNavigation() {
         <Stack.Screen name="account-withdrawal" />
         <Stack.Screen name="inquiry" />
         <Stack.Screen name="appearance" />
+        <Stack.Screen name="preview" />
       </Stack>
     </ThemeProvider>
   );

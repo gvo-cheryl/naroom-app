@@ -1,5 +1,4 @@
 import { router, useFocusEffect } from "expo-router";
-import { SymbolView } from "expo-symbols";
 import { useCallback, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,6 +16,7 @@ import { useAuth } from "@/auth/AuthContext";
 import { getValidAccessToken } from "@/auth/authManager";
 import { LevelBar } from "@/components/level-bar";
 import { NeedSummary } from "@/components/need-summary";
+import { QuoteCard } from "@/components/quote-card";
 import { SectionHeading } from "@/components/section-heading";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -131,76 +131,20 @@ export default function HomeScreen() {
           </ThemedText>
 
           {todayQuote && (
-            <ThemedView
-              type="backgroundElement"
-              style={[styles.card, styles.cardFilled]}
-            >
-              <View style={styles.quoteHeader}>
-                <SectionHeading
-                  icon={{ ios: "quote.opening", android: "format_quote" }}
-                  title="오늘의 문장"
-                />
-                <Pressable
-                  onPress={() => router.push("/quotes/saved")}
-                  hitSlop={8}
-                  style={styles.savedQuotesLink}
-                  accessibilityLabel="저장한 문장 모음"
-                >
-                  <SymbolView
-                    name={{ ios: "bookmark", android: "bookmark_border" }}
-                    size={20}
-                    tintColor={theme.textTertiary}
-                  />
-                </Pressable>
-              </View>
-              <ThemedText type="small" style={styles.quoteText}>
-                {todayQuote.text}
-              </ThemedText>
-              {todayQuote.authorName && (
-                <ThemedText
-                  type="small"
-                  themeColor="textTertiary"
-                  style={styles.quoteAuthor}
-                >
-                  — {todayQuote.authorName}
-                </ThemedText>
-              )}
-              <View style={styles.quoteActions}>
-                <Pressable
-                  onPress={handleToggleSaveQuote}
-                  disabled={savingQuote}
-                  hitSlop={8}
-                  style={styles.heartButton}
-                  accessibilityLabel={
-                    todayQuote.saved ? "저장 취소" : "문장 저장"
-                  }
-                >
-                  <SymbolView
-                    name={{
-                      ios: todayQuote.saved ? "heart.fill" : "heart",
-                      android: todayQuote.saved
-                        ? "favorite"
-                        : "favorite_border",
-                    }}
-                    size={22}
-                    tintColor={
-                      todayQuote.saved ? theme.text : theme.textTertiary
-                    }
-                  />
-                </Pressable>
-                <AppButton
-                  title="이 문장으로 기록하기"
-                  variant="ghost"
-                  style={styles.quoteActionButton}
-                  onPress={() =>
-                    router.push({
-                      pathname: "/record/write",
-                      params: { type: "QUOTE_REFLECTION" },
-                    })
-                  }
-                />
-              </View>
-            </ThemedView>
+            <View style={styles.quoteCardWrapper}>
+              <QuoteCard
+                quote={todayQuote}
+                onSavedQuotesPress={() => router.push("/quotes/saved")}
+                onToggleSave={handleToggleSaveQuote}
+                savingQuote={savingQuote}
+                onWriteEntry={() =>
+                  router.push({
+                    pathname: "/record/write",
+                    params: { type: "QUOTE_REFLECTION" },
+                  })
+                }
+              />
+            </View>
           )}
 
           {todayCheckIn ? (
@@ -374,37 +318,8 @@ const styles = StyleSheet.create({
   cardFilled: {
     alignItems: "stretch",
   },
-  quoteHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  savedQuotesLink: {
-    width: 32,
-    height: 32,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  quoteText: {
-    marginTop: Spacing.three,
-  },
-  quoteAuthor: {
-    marginTop: Spacing.two,
-  },
-  quoteActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.two,
+  quoteCardWrapper: {
     marginTop: Spacing.four,
-  },
-  heartButton: {
-    width: 44,
-    height: 44,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  quoteActionButton: {
-    flex: 1,
   },
   cardHint: {
     marginTop: Spacing.one,

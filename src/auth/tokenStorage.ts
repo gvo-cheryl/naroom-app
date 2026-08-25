@@ -1,4 +1,4 @@
-import * as SecureStore from "expo-secure-store";
+import * as SecureStore from "@/lib/secureStorage";
 
 // AGENTS.md 인증 규칙: Refresh Token은 AsyncStorage 등 비암호화 저장소에 두지 않는다.
 // Access Token도 같은 승인된 보안 저장소(SecureStore)에 함께 둔다.

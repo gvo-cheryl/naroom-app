@@ -1,4 +1,4 @@
-import * as SecureStore from "expo-secure-store";
+import * as SecureStore from "@/lib/secureStorage";
 
 export type ThemePreference = "light" | "dark" | "system";
 

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 
 export const PREVIEW_TOKEN_MESSAGE_TYPE = "naroom-admin:preview-token";
+export const PREVIEW_READY_MESSAGE_TYPE = "naroom-app:preview-ready";
 
 interface PreviewTokenMessage {
   type: typeof PREVIEW_TOKEN_MESSAGE_TYPE;
@@ -40,6 +41,15 @@ export function usePreviewToken(): string | undefined {
       }
     }
     window.addEventListener("message", handleMessage);
+
+    // iframe.onLoad는 문서·리소스 로드 시점일 뿐 이 리스너가 걸리기 전일 수 있다(특히 dev 서버처럼
+    // 번들을 그때그때 컴파일하는 경우) - 리스너가 실제로 준비된 뒤 "ready"를 보내 admin이 그 신호를
+    // 받고 나서 토큰을 보내도록 한다(진짜 handshake). window.top이 아니라 window.parent를 쓰는 이유는
+    // 중첩 iframe이 아니라 바로 위 프레임(관리자 페이지)에게만 알리면 되기 때문이다.
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: PREVIEW_READY_MESSAGE_TYPE }, allowedOrigin || "*");
+    }
+
     return () => window.removeEventListener("message", handleMessage);
   }, []);
 

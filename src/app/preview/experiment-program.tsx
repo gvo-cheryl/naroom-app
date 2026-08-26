@@ -1,4 +1,3 @@
-import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,13 +9,14 @@ import { ExperimentProgramDetailCard } from "@/components/experiment-program-det
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { MaxContentWidth, Spacing } from "@/constants/theme";
+import { usePreviewToken } from "@/hooks/use-preview-token";
 import { useTheme } from "@/hooks/use-theme";
 import { logger } from "@/lib/logger";
 
 // Admin Web preview iframe에서만 연다 - "이대로 시작하기" 등 진행 상태를 만드는 액션은 없다
 // (synthetic member 인프라가 아직 없어 카탈로그 열람만 지원). quote.tsx와 동일한 구조.
 export default function PreviewExperimentProgramScreen() {
-  const { token } = useLocalSearchParams<{ token?: string }>();
+  const token = usePreviewToken();
   const theme = useTheme();
   const [loading, setLoading] = useState(true);
   const [program, setProgram] = useState<ExperimentProgramDetailSummary | null>(null);
